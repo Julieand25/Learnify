@@ -246,7 +246,7 @@
 <div class="app">
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <img src="logo.png" alt="L">
+            <img src="{{ asset('images/learnify-logo.png') }}" alt="L">
             <span>LEARNIFY</span>
         </div>
         <ul class="nav">
@@ -256,7 +256,8 @@
             <li><a href="#">Settings</a></li>
         </ul>
         <div class="sidebar-logout">
-            <a href="#">Logout</a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
         </div>
     </aside>
 

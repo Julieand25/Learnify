@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls app/Http/Controllers/Student)",
+      "Bash(ls app/Http/Controllers/Teacher)",
+      "Bash(ls app/Http/Middleware)",
+      "Bash(php artisan:*)",
+      "Bash(php -r ':*)",
+      "Bash(php -l resources/views/auth/login.blade.php)",
+      "Bash(icacls \"c:\\\\laragon\\\\www\\\\Learnify\\\\storage\" /grant \"Everyone:\\(OI\\)\\(CI\\)F\" /T)",
+      "Bash(icacls \"c:\\\\laragon\\\\www\\\\Learnify\\\\bootstrap\\\\cache\" /grant \"Everyone:\\(OI\\)\\(CI\\)F\" /T)",
+      "Bash(cmd //c \"icacls C:\\\\laragon\\\\www\\\\Learnify\\\\storage /grant Everyone:\\(OI\\)\\(CI\\)F /T\")",
+      "Bash(cmd //c \"icacls C:\\\\laragon\\\\www\\\\Learnify\\\\bootstrap\\\\cache /grant Everyone:\\(OI\\)\\(CI\\)F /T\")",
+      "Bash(find app/Http/Middleware -name \"*.php\")",
+      "Bash(find app:*)"
+    ]
+  }
+}
