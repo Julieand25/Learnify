@@ -164,7 +164,7 @@
             <li><a href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
             <li><a href="#">Edit Quiz</a></li>
             <li class="active"><a href="{{ route('teacher.my-classes') }}">My Classes</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="{{ route('teacher.settings') }}">Settings</a></li>
         </ul>
         <div class="sidebar-logout">
             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
