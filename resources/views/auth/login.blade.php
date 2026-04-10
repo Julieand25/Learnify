@@ -16,73 +16,83 @@
             height: 100%;
             width: 100%;
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
+            /* NO overflow here — controlled by JS below */
         }
 
+        /* ═══════════════════════
+           PAGE WRAPPER
+        ═══════════════════════ */
         .page {
             display: flex;
             height: 100vh;
-            width: 100vw;
+            width: 100%;
             background: #2e8b84;
-            position: relative;
         }
 
-        /* ── LEFT: plain mint background ── */
-        .left {
-            position: relative;
-            width: 30%;
+        /* ═══════════════════════
+           LEFT PANEL
+        ═══════════════════════ */
+        .left-panel {
+            width: 620px;
             flex-shrink: 0;
             background: #dff4f2;
-            z-index: 1;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-left: 40px;
+            position: relative;
+            border-radius: 0 50% 50% 0 / 0 50% 50% 0;
+            overflow: visible;
         }
 
-        /* ── BIG FAT CIRCLE: sits on the right edge of .left, bleeds into .right ── */
-        .fat-circle {
-            position: absolute;
-            /* Center it vertically on the page */
-            top: 50%;
-            /* Push it so its center is roughly at the left/right boundary */
-            left: 23%;
-            transform: translate(-50%, -50%);
-            /* Make it very large — 90vh tall so it's fat and prominent */
-            width: 90vh;
-            height: 120vh;
+        /* Fat circle blob */
+        .circle-blob {
+            width: 650px;
+            height: 920px;
             background: #dff4f2;
             border-radius: 50%;
-            z-index: 3;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-left: -60px;
+        }
+
+        .brand {
+            display: flex;
             flex-direction: column;
-            gap: 16px;
+            align-items: center;
+            gap: 14px;
         }
 
         .brand img {
-            width: 300px;
+            width: 240px;
             height: auto;
         }
 
         .brand-name {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: #1c3d6b;
             letter-spacing: 4px;
             text-align: center;
         }
 
-        /* ── RIGHT: teal form panel ── */
-        .right {
+        /* ═══════════════════════
+           RIGHT PANEL
+        ═══════════════════════ */
+        .right-panel {
             flex: 1;
+            min-width: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 5% 0 8%;
-            z-index: 2;
+            padding: 60px 40px;
         }
 
+        /* ═══════════════════════
+           FORM
+        ═══════════════════════ */
         .form-box {
             width: 100%;
             max-width: 400px;
@@ -99,8 +109,8 @@
 
         .welcome {
             font-size: 1rem;
-            font-weight: 600;
-            color: #ffffff;
+            font-weight: 700;
+            color: #fff;
             margin-bottom: 4px;
         }
 
@@ -209,25 +219,103 @@
             font-size: 0.82rem;
             margin-bottom: 14px;
         }
+
+        /* ═══════════════════════
+           TABLET (≤ 1024px)
+        ═══════════════════════ */
+        @media (max-width: 1024px) {
+            .left-panel {
+                width: 340px;
+                padding-left: 30px;
+            }
+
+            .circle-blob {
+                width: 420px;
+                height: 520px;
+                margin-left: -120px;
+            }
+
+            .brand img { width: 190px; }
+            .brand-name { font-size: 1.8rem; }
+
+            h1 { font-size: 2.5rem; }
+
+            .right-panel { padding: 50px 30px; }
+        }
+
+        /* ═══════════════════════
+           MOBILE (≤ 767px)
+        ═══════════════════════ */
+        @media (max-width: 767px) {
+            .page {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .left-panel {
+                width: 100%;
+                border-radius: 0 0 40% 40% / 0 0 50px 50px;
+                justify-content: center;
+                padding: 40px 20px 60px;
+                overflow: hidden;
+            }
+
+            .circle-blob {
+                width: auto;
+                height: auto;
+                background: transparent;
+                border-radius: 0;
+                margin-left: 0;
+            }
+
+            .brand img { width: 150px; }
+            .brand-name { font-size: 1.7rem; }
+
+            .right-panel {
+                padding: 40px 24px 50px;
+                justify-content: flex-start;
+            }
+
+            .form-box { max-width: 100%; }
+
+            h1 { font-size: 2rem; letter-spacing: 3px; }
+        }
+
+        /* ═══════════════════════
+           SMALL MOBILE (≤ 480px)
+        ═══════════════════════ */
+        @media (max-width: 480px) {
+            .brand img { width: 120px; }
+            .brand-name { font-size: 1.4rem; letter-spacing: 3px; }
+            h1 { font-size: 1.7rem; }
+
+            input[type="email"],
+            input[type="password"] {
+                padding: 11px 13px;
+                font-size: 0.82rem;
+            }
+
+            .btn-login { padding: 11px; font-size: 0.92rem; }
+        }
     </style>
 </head>
 <body>
 
 <div class="page">
 
-    {{-- LEFT: plain mint strip --}}
-    <div class="left"></div>
-
-    {{-- BIG FAT CIRCLE with logo inside --}}
-    <div class="fat-circle">
-        <div class="brand">
-            <img src="{{ asset('images/learnify-logo.png') }}" alt="Learnify">
-            <p class="brand-name">LEARNIFY</p>
+    {{-- ── LEFT PANEL ── --}}
+    <div class="left-panel">
+        <div class="circle-blob">
+            <div class="brand">
+                <img src="{{ asset('images/learnify-logo.png') }}" alt="Learnify Logo">
+                <p class="brand-name">LEARNIFY</p>
+            </div>
         </div>
     </div>
 
-    {{-- RIGHT: teal form --}}
-    <div class="right">
+    {{-- ── RIGHT PANEL ── --}}
+    <div class="right-panel">
         <div class="form-box">
 
             <h1>LOGIN</h1>
@@ -292,10 +380,30 @@
                 </p>
 
             </form>
+
         </div>
     </div>
 
 </div>
+
+<script>
+    // Apply overflow:hidden on desktop (> 1024px), allow scroll on smaller screens
+    function handleOverflow() {
+        if (window.innerWidth > 1024) {
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Run on load
+    handleOverflow();
+
+    // Run on every resize
+    window.addEventListener('resize', handleOverflow);
+</script>
 
 </body>
 </html>
