@@ -185,13 +185,13 @@
 
         <div class="content">
             
-            <div class="class-card bg-grey computer-bg">
+            <a href="{{ route('teacher.class-students') }}" class="class-card bg-grey computer-bg" style="text-decoration:none;">
                 <div class="class-info">
                     <h3>Class A</h3>
                     <p>X PPLG 1</p>
                 </div>
                 <div class="student-count">6 students</div>
-            </div>
+            </a>
 
             <div class="class-card bg-green book-bg">
                 <div class="class-info">
