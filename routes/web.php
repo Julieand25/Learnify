@@ -17,6 +17,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
 // Teacher routes
 Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherDashboard::class, 'index'])->name('dashboard');
+    Route::get('/my-classes', [TeacherDashboard::class, 'myClasses'])->name('my-classes');
 });
 
 Route::middleware('auth')->group(function () {

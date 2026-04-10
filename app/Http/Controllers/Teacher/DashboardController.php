@@ -14,4 +14,11 @@ class DashboardController extends Controller
             'user' => $request->user(),
         ]);
     }
+
+    public function myClasses(Request $request): View
+    {
+        return view('teacher.my-classes', [
+            'user' => $request->user(),
+        ]);
+    }
 }

@@ -132,8 +132,9 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: transform 0.2s;
             cursor: pointer;
-            background-size: cover;
-            background-position: center;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            background-size: auto 85%;
         }
 
         .class-card:hover { transform: translateY(-5px); }
@@ -141,9 +142,9 @@
         /* Specific Backgrounds */
         .bg-grey { background-color: var(--grey-card); }
         .bg-green { background-color: var(--green-card); }
-        
-        .computer-bg { background-image: linear-gradient(to right, rgba(0,0,0,0.2), transparent), url("{{ asset('images/computer-class-bg.png') }}"); }
-        .book-bg { background-image: linear-gradient(to right, rgba(0,0,0,0.2), transparent), url("{{ asset('images/book-class-bg.png') }}"); }
+
+        .computer-bg { background-image: url("{{ asset('images/computer-class-bg.png') }}"); }
+        .book-bg { background-image: url("{{ asset('images/book-class-bg.png') }}"); }
 
         .class-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
         .class-info p { font-size: 0.75rem; opacity: 0.9; font-weight: 500; }
@@ -160,13 +161,14 @@
             <span>LEARNIFY</span>
         </div>
         <ul class="nav">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
             <li><a href="#">Edit Quiz</a></li>
-            <li class="active"><a href="#">My Classes</a></li>
+            <li class="active"><a href="{{ route('teacher.my-classes') }}">My Classes</a></li>
             <li><a href="#">Settings</a></li>
         </ul>
         <div class="sidebar-logout">
-            <a href="#">Logout</a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
         </div>
     </aside>
 
