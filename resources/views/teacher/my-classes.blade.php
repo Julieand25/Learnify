@@ -123,7 +123,6 @@
             height: 160px;
             border-radius: 16px;
             position: relative;
-            overflow: hidden;
             color: #fff;
             padding: 20px;
             display: flex;
@@ -138,6 +137,72 @@
         }
 
         .class-card:hover { transform: translateY(-5px); }
+
+        /* ── 3-dot menu ── */
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .card-menu-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .card-menu-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .card-menu-btn:hover { background: rgba(255,255,255,0.4); }
+
+        .card-dropdown {
+            display: none;
+            position: absolute;
+            top: 34px;
+            right: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 130px;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .card-dropdown.open { display: block; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .dropdown-item:hover { background: #f5fbfa; color: var(--teal); }
+
+        .dropdown-item.danger:hover { background: #fdecea; color: #c0392b; }
+
+        .dropdown-item svg { width: 14px; height: 14px; flex-shrink: 0; }
 
         /* Specific Backgrounds */
         .bg-grey { background-color: var(--grey-card); }
@@ -315,6 +380,22 @@
 
         .btn-create:hover { opacity: 0.88; }
 
+        .btn-save {
+            flex: 1;
+            padding: 11px;
+            border-radius: 10px;
+            border: none;
+            background: var(--navy);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-save:hover { opacity: 0.88; }
+
         .computer-bg { background-image: url("{{ asset('images/computer-class-bg.png') }}"); }
         .book-bg { background-image: url("{{ asset('images/book-class-bg.png') }}"); }
 
@@ -352,53 +433,59 @@
                 <span>Create New Class</span>
             </button>
 
-            <a href="{{ route('teacher.class-students') }}" class="class-card bg-grey computer-bg" style="text-decoration:none;">
-                <div class="class-info">
-                    <h3>Class A</h3>
-                    <p>X PPLG 1</p>
-                </div>
-                <div class="student-count">6 students</div>
-            </a>
+            @php
+            $classes = [
+                ['id'=>1, 'name'=>'Class A', 'code'=>'X PPLG 1', 'students'=>6,  'color'=>'bg-grey',  'bg'=>'computer-bg', 'url' => route('teacher.class-students')],
+                ['id'=>2, 'name'=>'Class B', 'code'=>'X PPLG 2', 'students'=>8,  'color'=>'bg-green', 'bg'=>'book-bg',     'url' => null],
+                ['id'=>3, 'name'=>'Class C', 'code'=>'X PPLG 3', 'students'=>12, 'color'=>'bg-grey',  'bg'=>'computer-bg', 'url' => null],
+                ['id'=>4, 'name'=>'Class D', 'code'=>'X PPLG 4', 'students'=>4,  'color'=>'bg-green', 'bg'=>'book-bg',     'url' => null],
+                ['id'=>5, 'name'=>'Class E', 'code'=>'X PPLG 5', 'students'=>4,  'color'=>'bg-grey',  'bg'=>'computer-bg', 'url' => null],
+                ['id'=>6, 'name'=>'Class F', 'code'=>'X PPLG 6', 'students'=>8,  'color'=>'bg-green', 'bg'=>'book-bg',     'url' => null],
+            ];
+            @endphp
 
-            <div class="class-card bg-green book-bg">
-                <div class="class-info">
-                    <h3>Class B</h3>
-                    <p>X PPLG 2</p>
-                </div>
-                <div class="student-count">8 students</div>
-            </div>
+            @foreach ($classes as $class)
+            <div class="class-card {{ $class['color'] }} {{ $class['bg'] }}"
+                 onclick="cardClick(event, {{ $class['id'] }}, '{{ $class['url'] ?? '' }}')"
+                 data-id="{{ $class['id'] }}">
 
-            <div class="class-card bg-grey computer-bg">
-                <div class="class-info">
-                    <h3>Class C</h3>
-                    <p>X PPLG 3</p>
+                <div class="card-top">
+                    <div class="class-info">
+                        <h3>{{ $class['name'] }}</h3>
+                        <p>{{ $class['code'] }}</p>
+                    </div>
+                    <div class="card-menu-wrap">
+                        <button class="card-menu-btn"
+                                onclick="toggleDropdown(event, {{ $class['id'] }})"
+                                title="Options">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="5"  r="1.5"/>
+                                <circle cx="12" cy="12" r="1.5"/>
+                                <circle cx="12" cy="19" r="1.5"/>
+                            </svg>
+                        </button>
+                        <div class="card-dropdown" id="dropdown-{{ $class['id'] }}">
+                            <button class="dropdown-item"
+                                    onclick="openEditModal(event, {{ $class['id'] }}, '{{ $class['name'] }}', '{{ $class['code'] }}')">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                Edit
+                            </button>
+                            <button class="dropdown-item danger"
+                                    onclick="deleteClass(event, {{ $class['id'] }}, '{{ $class['name'] }}')">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="student-count">12 students</div>
-            </div>
 
-            <div class="class-card bg-green book-bg">
-                <div class="class-info">
-                    <h3>Class D</h3>
-                    <p>X PPLG 4</p>
-                </div>
-                <div class="student-count">4 students</div>
+                <div class="student-count">{{ $class['students'] }} students</div>
             </div>
-
-            <div class="class-card bg-grey computer-bg">
-                <div class="class-info">
-                    <h3>Class E</h3>
-                    <p>X PPLG 5</p>
-                </div>
-                <div class="student-count">4 students</div>
-            </div>
-
-            <div class="class-card bg-green book-bg">
-                <div class="class-info">
-                    <h3>Class F</h3>
-                    <p>X PPLG 6</p>
-                </div>
-                <div class="student-count">8 students</div>
-            </div>
+            @endforeach
 
         </div>
     </div>
@@ -449,7 +536,54 @@
     </div>
 </div>
 
+<!-- ══ EDIT CLASS MODAL ══ -->
+<div class="modal-overlay" id="editModalOverlay" onclick="closeOnBackdropEdit(event)">
+    <div class="modal">
+        <button class="modal-close" onclick="closeEditModal()">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <div class="modal-title">Edit Class</div>
+        <div class="modal-subtitle">Update the details for this class</div>
+
+        <form method="POST" action="#">
+            @csrf
+            @method('PUT')
+
+            <div class="form-group">
+                <label>Class Name</label>
+                <input type="text" id="editClassName" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Class Code</label>
+                <input type="text" id="editClassCode" name="code">
+            </div>
+
+            <div class="form-group">
+                <label>Card Colour</label>
+                <div class="color-row">
+                    <div class="color-opt selected" style="background:#8e9499;" data-color="grey"   onclick="selectEditColor(this)"></div>
+                    <div class="color-opt"          style="background:#00c853;" data-color="green"  onclick="selectEditColor(this)"></div>
+                    <div class="color-opt"          style="background:#2e8b84;" data-color="teal"   onclick="selectEditColor(this)"></div>
+                    <div class="color-opt"          style="background:#1c3d6b;" data-color="navy"   onclick="selectEditColor(this)"></div>
+                    <div class="color-opt"          style="background:#6c63ff;" data-color="purple" onclick="selectEditColor(this)"></div>
+                </div>
+                <input type="hidden" name="color" id="editColorInput" value="grey">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+    // ── Create modal ──
     function openModal()  { document.getElementById('modalOverlay').classList.add('open'); }
     function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 
@@ -458,10 +592,61 @@
     }
 
     function selectColor(el) {
-        document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('selected'));
+        document.querySelectorAll('#modalOverlay .color-opt').forEach(o => o.classList.remove('selected'));
         el.classList.add('selected');
         document.getElementById('colorInput').value = el.dataset.color;
     }
+
+    // ── Edit modal ──
+    function openEditModal(e, id, name, code) {
+        e.stopPropagation();
+        closeAllDropdowns();
+        document.getElementById('editClassName').value = name;
+        document.getElementById('editClassCode').value = code;
+        document.getElementById('editModalOverlay').classList.add('open');
+    }
+
+    function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('open'); }
+
+    function closeOnBackdropEdit(e) {
+        if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
+    }
+
+    function selectEditColor(el) {
+        document.querySelectorAll('#editModalOverlay .color-opt').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('editColorInput').value = el.dataset.color;
+    }
+
+    // ── 3-dot dropdown ──
+    function toggleDropdown(e, id) {
+        e.stopPropagation();
+        const target = document.getElementById('dropdown-' + id);
+        const isOpen = target.classList.contains('open');
+        closeAllDropdowns();
+        if (!isOpen) target.classList.add('open');
+    }
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.card-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+
+    // ── Card click (navigate only if no dropdown open) ──
+    function cardClick(e, id, url) {
+        if (!url) return;
+        window.location.href = url;
+    }
+
+    function deleteClass(e, id, name) {
+        e.stopPropagation();
+        closeAllDropdowns();
+        if (confirm('Delete "' + name + '"? This cannot be undone.')) {
+            // TODO: submit delete form when backend is ready
+        }
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', closeAllDropdowns);
 </script>
 
 </body>
