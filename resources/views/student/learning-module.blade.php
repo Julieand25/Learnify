@@ -269,6 +269,61 @@
         .class-info p  { font-size: 0.75rem; opacity: 0.9; font-weight: 500; }
         .class-code    { font-size: 0.7rem; font-weight: 400; opacity: 0.8; }
 
+        /* 3-dot menu — identical to my-classes */
+        .card-menu-wrap { position: relative; flex-shrink: 0; }
+
+        .card-menu-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .card-menu-btn:hover { background: rgba(255,255,255,0.4); }
+
+        .card-dropdown {
+            display: none;
+            position: absolute;
+            top: 34px;
+            right: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            min-width: 130px;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .card-dropdown.open { display: block; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .dropdown-item:hover { background: #f5fbfa; color: var(--teal); }
+        .dropdown-item.danger:hover { background: #fdecea; color: #c0392b; }
+        .dropdown-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+
     </style>
 </head>
 <body>
@@ -345,15 +400,42 @@
             <!-- Enrolled classes grid -->
             <div class="class-grid">
                 @forelse ($enrolledClasses as $class)
-                <a href="#" class="class-card {{ $class->color_class }} {{ $class->bg }}">
+                <div class="class-card {{ $class->color_class }} {{ $class->bg }}">
                     <div class="card-top">
                         <div class="class-info">
                             <h3>{{ $class->name }}</h3>
                             <p>{{ $class->teacher->name ?? 'Unknown Teacher' }}</p>
                         </div>
+                        <div class="card-menu-wrap">
+                            <button class="card-menu-btn"
+                                    onclick="toggleDropdown(event, {{ $class->id }})"
+                                    title="Options">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="5"  r="1.5"/>
+                                    <circle cx="12" cy="12" r="1.5"/>
+                                    <circle cx="12" cy="19" r="1.5"/>
+                                </svg>
+                            </button>
+                            <div class="card-dropdown" id="dropdown-{{ $class->id }}">
+                                <button class="dropdown-item danger"
+                                        onclick="unenrollClass(event, {{ $class->id }}, '{{ addslashes($class->name) }}')">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                    </svg>
+                                    Unenroll
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="class-code">{{ $class->code }}</div>
-                </a>
+
+                    <form id="unenroll-form-{{ $class->id }}" method="POST"
+                          action="{{ route('student.class.unenroll', $class->id) }}"
+                          style="display:none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                </div>
                 @empty
                 <div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:48px 0;font-size:0.88rem;">
                     <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4;">
@@ -444,6 +526,29 @@
 
     // Clear result when user edits the input
     document.getElementById('classCodeInput').addEventListener('input', clearResult);
+
+    // ── 3-dot dropdown ──
+    function toggleDropdown(e, id) {
+        e.stopPropagation();
+        const target = document.getElementById('dropdown-' + id);
+        const isOpen = target.classList.contains('open');
+        closeAllDropdowns();
+        if (!isOpen) target.classList.add('open');
+    }
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.card-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+
+    function unenrollClass(e, id, name) {
+        e.stopPropagation();
+        closeAllDropdowns();
+        if (confirm('Unenroll from "' + name + '"?\nYou can rejoin later with the class code.')) {
+            document.getElementById('unenroll-form-' + id).submit();
+        }
+    }
+
+    document.addEventListener('click', closeAllDropdowns);
 </script>
 
 </body>

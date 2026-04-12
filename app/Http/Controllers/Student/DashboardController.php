@@ -83,4 +83,12 @@ class DashboardController extends Controller
         return redirect()->route('student.learning-module')
             ->with('success', 'You have successfully enrolled in ' . $class->name . '!');
     }
+
+    public function unenrollClass(Request $request, ClassRoom $classRoom): RedirectResponse
+    {
+        $request->user()->enrolledClasses()->detach($classRoom->id);
+
+        return redirect()->route('student.learning-module')
+            ->with('success', 'You have unenrolled from ' . $classRoom->name . '.');
+    }
 }
