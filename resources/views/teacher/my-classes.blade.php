@@ -326,6 +326,101 @@
         .form-group input:focus,
         .form-group select:focus { border-color: var(--teal); background: #fff; }
 
+        .code-preview-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-preview {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #d8e8ea;
+            background: #f0f6f8;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: 2px;
+        }
+
+        .btn-copy {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid #d0e4e2;
+            background: #fff;
+            color: var(--teal);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-copy:hover { background: var(--teal-light); border-color: var(--teal); }
+        .btn-copy.copied { background: #e6f9f0; border-color: #1a8a5a; color: #1a8a5a; }
+
+        /* ── Copy toast ── */
+        .copy-toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a2b3c;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .copy-toast svg { width: 15px; height: 15px; color: #4ade80; flex-shrink: 0; }
+
+        .btn-regen {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid #d0e4e2;
+            background: #fff;
+            color: var(--teal);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-regen:hover { background: var(--teal-light); border-color: var(--teal); }
+
+        .code-hint {
+            font-size: 0.72rem;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
         .color-row {
             display: flex;
             gap: 10px;
@@ -396,8 +491,8 @@
 
         .btn-save:hover { opacity: 0.88; }
 
-        .computer-bg { background-image: url("{{ asset('images/computer-class-bg.png') }}"); }
-        .book-bg { background-image: url("{{ asset('images/book-class-bg.png') }}"); }
+        .computer-bg { background-image: url("{{ asset('images/computer-class-bgtest.png') }}"); }
+        .book-bg { background-image: url("{{ asset('images/book-class-bgtest.png') }}"); }
 
         .class-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
         .class-info p { font-size: 0.75rem; opacity: 0.9; font-weight: 500; }
@@ -513,7 +608,17 @@
 
             <div class="form-group">
                 <label>Class Code</label>
-                <input type="text" name="code" placeholder="e.g. X PPLG 7">
+                <div class="code-preview-wrap">
+                    <span class="code-preview" id="codePreview">—</span>
+                    <button type="button" class="btn-regen" onclick="regenerateCode()" title="Generate new code">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Regenerate
+                    </button>
+                </div>
+                <p class="code-hint">Auto-generated. Unique code assigned by the system.</p>
+                <input type="hidden" name="code" id="codeInput">
             </div>
 
             <div class="form-group">
@@ -559,7 +664,16 @@
 
             <div class="form-group">
                 <label>Class Code</label>
-                <input type="text" id="editClassCode" name="code">
+                <div class="code-preview-wrap">
+                    <span class="code-preview" id="editCodePreview">—</span>
+                    <button type="button" class="btn-copy" id="copyBtn" onclick="copyCode()" title="Copy code">
+                        <svg id="copyIcon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                        <span id="copyLabel">Copy</span>
+                    </button>
+                </div>
+                <p class="code-hint">Class code cannot be changed after creation.</p>
             </div>
 
             <div class="form-group">
@@ -582,9 +696,36 @@
     </div>
 </div>
 
+<!-- ══ COPY TOAST ══ -->
+<div class="copy-toast" id="copyToast">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    Code copied to clipboard!
+</div>
+
 <script>
+    // ── Code generator ──
+    function generateCode() {
+        const chars   = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // no I/O to avoid confusion
+        const digits  = '23456789';                  // no 0/1 to avoid confusion
+        let code = 'CLS-';
+        for (let i = 0; i < 3; i++) code += chars[Math.floor(Math.random() * chars.length)];
+        for (let i = 0; i < 3; i++) code += digits[Math.floor(Math.random() * digits.length)];
+        return code;
+    }
+
+    function regenerateCode() {
+        const code = generateCode();
+        document.getElementById('codePreview').textContent = code;
+        document.getElementById('codeInput').value = code;
+    }
+
     // ── Create modal ──
-    function openModal()  { document.getElementById('modalOverlay').classList.add('open'); }
+    function openModal() {
+        regenerateCode();
+        document.getElementById('modalOverlay').classList.add('open');
+    }
     function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 
     function closeOnBackdrop(e) {
@@ -602,14 +743,61 @@
         e.stopPropagation();
         closeAllDropdowns();
         document.getElementById('editClassName').value = name;
-        document.getElementById('editClassCode').value = code;
+        document.getElementById('editCodePreview').textContent = code;
         document.getElementById('editModalOverlay').classList.add('open');
     }
 
-    function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('open'); }
+    function closeEditModal() {
+        document.getElementById('editModalOverlay').classList.remove('open');
+        // reset copy button
+        const btn = document.getElementById('copyBtn');
+        if (btn) { btn.classList.remove('copied'); document.getElementById('copyLabel').textContent = 'Copy'; }
+    }
 
     function closeOnBackdropEdit(e) {
         if (e.target === document.getElementById('editModalOverlay')) closeEditModal();
+    }
+
+    let toastTimer = null;
+
+    function copyCode() {
+        const code = document.getElementById('editCodePreview').textContent.trim();
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(code).then(showCopied).catch(() => fallbackCopy(code));
+        } else {
+            fallbackCopy(code);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); showCopied(); }
+        catch(e) { alert('Copy failed. Code: ' + text); }
+        document.body.removeChild(ta);
+    }
+
+    function showCopied() {
+        const btn   = document.getElementById('copyBtn');
+        const label = document.getElementById('copyLabel');
+        const icon  = document.getElementById('copyIcon');
+        btn.classList.add('copied');
+        label.textContent = 'Copied!';
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>';
+
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+            btn.classList.remove('copied');
+            label.textContent = 'Copy';
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>';
+        }, 2000);
     }
 
     function selectEditColor(el) {
