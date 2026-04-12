@@ -205,8 +205,11 @@
         .dropdown-item svg { width: 14px; height: 14px; flex-shrink: 0; }
 
         /* Specific Backgrounds */
-        .bg-grey { background-color: var(--grey-card); }
-        .bg-green { background-color: var(--green-card); }
+        .bg-grey   { background-color: var(--grey-card); }
+        .bg-green  { background-color: var(--green-card); }
+        .bg-teal   { background-color: var(--teal); }
+        .bg-navy   { background-color: var(--navy); }
+        .bg-purple { background-color: #6c63ff; }
 
         /* ── New Class Card ── */
         .new-class-card {
@@ -516,6 +519,13 @@
             </div>
         </div>
 
+        @if (session('success'))
+        <div style="margin:0 28px 0;padding:12px 18px;background:#e6f9f0;border-radius:10px;color:#1a8a5a;font-size:0.84rem;font-weight:600;display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            {{ session('success') }}
+        </div>
+        @endif
+
         <div class="content">
             
             <!-- New Class Card -->
@@ -528,30 +538,19 @@
                 <span>Create New Class</span>
             </button>
 
-            @php
-            $classes = [
-                ['id'=>1, 'name'=>'Class A', 'code'=>'X PPLG 1', 'students'=>6,  'color'=>'bg-grey',  'bg'=>'computer-bg', 'url' => route('teacher.class-students')],
-                ['id'=>2, 'name'=>'Class B', 'code'=>'X PPLG 2', 'students'=>8,  'color'=>'bg-green', 'bg'=>'book-bg',     'url' => null],
-                ['id'=>3, 'name'=>'Class C', 'code'=>'X PPLG 3', 'students'=>12, 'color'=>'bg-grey',  'bg'=>'computer-bg', 'url' => null],
-                ['id'=>4, 'name'=>'Class D', 'code'=>'X PPLG 4', 'students'=>4,  'color'=>'bg-green', 'bg'=>'book-bg',     'url' => null],
-                ['id'=>5, 'name'=>'Class E', 'code'=>'X PPLG 5', 'students'=>4,  'color'=>'bg-grey',  'bg'=>'computer-bg', 'url' => null],
-                ['id'=>6, 'name'=>'Class F', 'code'=>'X PPLG 6', 'students'=>8,  'color'=>'bg-green', 'bg'=>'book-bg',     'url' => null],
-            ];
-            @endphp
-
-            @foreach ($classes as $class)
-            <div class="class-card {{ $class['color'] }} {{ $class['bg'] }}"
-                 onclick="cardClick(event, {{ $class['id'] }}, '{{ $class['url'] ?? '' }}')"
-                 data-id="{{ $class['id'] }}">
+            @forelse ($classes as $class)
+            <div class="class-card {{ $class->color_class }} {{ $class->bg }}"
+                 onclick="cardClick(event, {{ $class->id }}, '{{ route('teacher.class-students') }}')"
+                 data-id="{{ $class->id }}">
 
                 <div class="card-top">
                     <div class="class-info">
-                        <h3>{{ $class['name'] }}</h3>
-                        <p>{{ $class['code'] }}</p>
+                        <h3>{{ $class->name }}</h3>
+                        <p>{{ $class->code }}</p>
                     </div>
                     <div class="card-menu-wrap">
                         <button class="card-menu-btn"
-                                onclick="toggleDropdown(event, {{ $class['id'] }})"
+                                onclick="toggleDropdown(event, {{ $class->id }})"
                                 title="Options">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
                                 <circle cx="12" cy="5"  r="1.5"/>
@@ -559,16 +558,16 @@
                                 <circle cx="12" cy="19" r="1.5"/>
                             </svg>
                         </button>
-                        <div class="card-dropdown" id="dropdown-{{ $class['id'] }}">
+                        <div class="card-dropdown" id="dropdown-{{ $class->id }}">
                             <button class="dropdown-item"
-                                    onclick="openEditModal(event, {{ $class['id'] }}, '{{ $class['name'] }}', '{{ $class['code'] }}')">
+                                    onclick="openEditModal(event, {{ $class->id }}, '{{ addslashes($class->name) }}', '{{ $class->code }}', '{{ $class->color }}')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                                 Edit
                             </button>
                             <button class="dropdown-item danger"
-                                    onclick="deleteClass(event, {{ $class['id'] }}, '{{ $class['name'] }}')">
+                                    onclick="deleteClass(event, {{ $class->id }}, '{{ addslashes($class->name) }}')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -578,9 +577,21 @@
                     </div>
                 </div>
 
-                <div class="student-count">{{ $class['students'] }} students</div>
+                <div class="student-count">0 students</div>
+
+                {{-- Hidden delete form --}}
+                <form id="delete-form-{{ $class->id }}" method="POST"
+                      action="{{ route('teacher.my-classes.destroy', $class->id) }}"
+                      style="display:none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
             </div>
-            @endforeach
+            @empty
+            <div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:40px 0;font-size:0.9rem;">
+                No classes yet. Click <strong>Create New Class</strong> to get started.
+            </div>
+            @endforelse
 
         </div>
     </div>
@@ -598,12 +609,13 @@
         <div class="modal-title">Create New Class</div>
         <div class="modal-subtitle">Fill in the details for your new class</div>
 
-        <form method="POST" action="#">
+        <form method="POST" action="{{ route('teacher.my-classes.store') }}">
             @csrf
 
             <div class="form-group">
                 <label>Class Name</label>
-                <input type="text" name="name" placeholder="e.g. Class G" required>
+                <input type="text" name="name" placeholder="e.g. Class G" required
+                       value="{{ old('name') }}">
             </div>
 
             <div class="form-group">
@@ -653,7 +665,7 @@
         <div class="modal-title">Edit Class</div>
         <div class="modal-subtitle">Update the details for this class</div>
 
-        <form method="POST" action="#">
+        <form method="POST" id="editForm">
             @csrf
             @method('PUT')
 
@@ -739,11 +751,18 @@
     }
 
     // ── Edit modal ──
-    function openEditModal(e, id, name, code) {
+    function openEditModal(e, id, name, code, color) {
         e.stopPropagation();
         closeAllDropdowns();
         document.getElementById('editClassName').value = name;
         document.getElementById('editCodePreview').textContent = code;
+        // Set form action to the correct class
+        document.getElementById('editForm').action = '/teacher/my-classes/' + id;
+        // Pre-select the current colour
+        document.querySelectorAll('#editModalOverlay .color-opt').forEach(o => {
+            o.classList.toggle('selected', o.dataset.color === color);
+        });
+        document.getElementById('editColorInput').value = color;
         document.getElementById('editModalOverlay').classList.add('open');
     }
 
@@ -829,7 +848,7 @@
         e.stopPropagation();
         closeAllDropdowns();
         if (confirm('Delete "' + name + '"? This cannot be undone.')) {
-            // TODO: submit delete form when backend is ready
+            document.getElementById('delete-form-' + id).submit();
         }
     }
 

@@ -18,6 +18,9 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
 Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [TeacherDashboard::class, 'index'])->name('dashboard');
     Route::get('/my-classes', [TeacherDashboard::class, 'myClasses'])->name('my-classes');
+    Route::post('/my-classes', [TeacherDashboard::class, 'storeClass'])->name('my-classes.store');
+    Route::put('/my-classes/{classRoom}', [TeacherDashboard::class, 'updateClass'])->name('my-classes.update');
+    Route::delete('/my-classes/{classRoom}', [TeacherDashboard::class, 'destroyClass'])->name('my-classes.destroy');
     Route::get('/my-classes/class-a', [TeacherDashboard::class, 'classStudents'])->name('class-students');
     Route::get('/my-classes/class-a/notes-progress', [TeacherDashboard::class, 'notesProgress'])->name('notes-progress');
     Route::get('/my-classes/class-a/quiz-progress', [TeacherDashboard::class, 'quizProgress'])->name('quiz-progress');
