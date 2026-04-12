@@ -19,6 +19,8 @@
             --text-mid: #5a6a7a;
             --text-light: #9aaabb;
             --sidebar-w: 160px;
+            --grey-card: #8e9499;
+            --green-card: #00c853;
         }
 
         html, body {
@@ -36,9 +38,7 @@
             overflow: hidden;
         }
 
-        /* ══════════════════════════════
-           SIDEBAR
-        ══════════════════════════════ */
+        /* SIDEBAR */
         .sidebar {
             width: var(--sidebar-w);
             background: var(--sidebar-bg);
@@ -57,7 +57,6 @@
             align-items: center;
             gap: 6px;
             margin-bottom: 36px;
-            padding: 0 16px;
         }
 
         .sidebar-logo img { width: 44px; height: auto; }
@@ -69,15 +68,7 @@
             letter-spacing: 2px;
         }
 
-        .nav {
-            list-style: none;
-            width: 100%;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            padding: 0 12px;
-        }
+        .nav { list-style: none; width: 100%; flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 12px; }
 
         .nav li a {
             display: flex;
@@ -89,363 +80,371 @@
             font-size: 0.8rem;
             font-weight: 500;
             color: var(--text-mid);
-            transition: background 0.2s, color 0.2s;
-            white-space: nowrap;
+            transition: all 0.2s;
         }
 
-        .nav li a:hover { background: var(--teal-light); color: var(--teal); }
-        .nav li.active a { background: var(--teal-light); color: var(--teal); font-weight: 600; }
-        .nav li a .icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
-        .nav li.active a .icon { opacity: 1; }
+        .nav li a:hover, .nav li.active a { background: var(--teal-light); color: var(--teal); font-weight: 600; }
+        .nav li a .icon { width: 18px; height: 18px; opacity: 0.7; }
 
-        .sidebar-logout {
-            width: calc(100% - 24px);
-            margin: 0 12px;
-        }
+        .sidebar-logout { width: calc(100% - 24px); margin: 0 12px; }
 
         .sidebar-logout a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 14px;
-            border-radius: 10px;
-            background: var(--navy);
-            color: #fff;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: opacity 0.2s;
-            white-space: nowrap;
+            display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+            border-radius: 10px; background: var(--navy); color: #fff;
+            text-decoration: none; font-size: 0.8rem; font-weight: 600;
         }
 
-        .sidebar-logout a:hover { opacity: 0.85; }
-
-        /* ══════════════════════════════
-           MAIN
-        ══════════════════════════════ */
-        .main {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        /* MAIN */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
         .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 28px;
-            background: var(--main-bg);
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 28px; background: var(--main-bg);
         }
 
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .notif-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: none;
-            background: var(--card-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: box-shadow 0.2s;
-        }
-
-        .notif-btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+        .topbar h2 { font-size: 1.3rem; font-weight: 700; }
 
         .user-chip {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 6px 14px 6px 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex; align-items: center; gap: 10px; background: var(--card-bg);
+            border-radius: 24px; padding: 6px 14px 6px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .user-chip span {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        /* Scrollable content */
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 36px 36px;
-        }
-
+        /* CONTENT */
+        .content { flex: 1; overflow-y: auto; padding: 0 28px 28px; }
         .content::-webkit-scrollbar { width: 5px; }
         .content::-webkit-scrollbar-track { background: transparent; }
         .content::-webkit-scrollbar-thumb { background: #c0d0d8; border-radius: 10px; }
 
-        /* ══════════════════════════════
-           PAGE TITLE
-        ══════════════════════════════ */
-        .page-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-        }
+        /* PAGE HEADER */
+        .page-header { margin-bottom: 20px; }
+        .page-header h3 { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .page-header p  { font-size: 0.8rem; color: var(--text-mid); line-height: 1.6; }
 
-        /* ══════════════════════════════
-           DESCRIPTION
-        ══════════════════════════════ */
-        .page-desc {
-            font-size: 0.9rem;
-            color: var(--text-mid);
-            text-align: center;
-            max-width: 680px;
-            margin: 0 auto 36px;
-            line-height: 1.7;
-        }
-
-        /* ══════════════════════════════
-           SUBJECT GRID
-        ══════════════════════════════ */
-        .subject-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            max-width: 760px;
-        }
-
-        /* Subject card */
-        .subject-card {
+        /* JOIN SECTION */
+        .join-section {
             background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-decoration: none;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            margin-bottom: 24px;
         }
 
-        .subject-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        }
+        .join-section-title { font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .join-section-sub   { font-size: 0.75rem; color: var(--text-mid); margin-bottom: 14px; }
 
-        /* Thumbnail area */
-        .thumb {
-            width: 100%;
-            height: 120px;
-            position: relative;
-            overflow: hidden;
-        }
+        .join-row { display: flex; gap: 10px; align-items: center; }
 
-        .thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Coming soon overlay */
-        .coming-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(220, 235, 238, 0.72);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .coming-label {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            letter-spacing: 0.5px;
-        }
-
-        /* Subject name below thumbnail */
-        .subject-name {
-            padding: 10px 14px;
-            font-size: 0.7rem;
+        .join-input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1.5px solid #d8e8ea;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
             font-weight: 600;
-            color: var(--text-mid);
+            color: var(--navy);
+            background: #f7fbfc;
             letter-spacing: 1.5px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
             text-transform: uppercase;
         }
+
+        .join-input::placeholder { font-weight: 400; letter-spacing: 0.5px; color: var(--text-light); text-transform: none; }
+        .join-input:focus { border-color: var(--teal); background: #fff; }
+
+        .btn-search {
+            padding: 10px 22px;
+            border-radius: 10px;
+            border: none;
+            background: var(--teal);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-search:hover { opacity: 0.88; }
+
+        /* Join message (error / info) */
+        .join-msg {
+            margin-top: 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .join-msg.error   { color: #c0392b; display: flex; }
+        .join-msg.info    { color: var(--text-mid); display: flex; }
+        .join-msg svg     { width: 14px; height: 14px; flex-shrink: 0; }
+
+        /* Found-class result card */
+        .found-result {
+            display: none;
+            margin-top: 14px;
+            background: #f7fbfc;
+            border: 1.5px solid #d8e8ea;
+            border-radius: 12px;
+            padding: 14px 18px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .found-result.show { display: flex; }
+
+        .found-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .found-info { flex: 1; min-width: 0; }
+        .found-info strong { display: block; font-size: 0.88rem; color: var(--text-dark); font-weight: 700; }
+        .found-info span   { font-size: 0.75rem; color: var(--text-mid); }
+
+        .btn-enroll {
+            padding: 9px 20px;
+            border-radius: 10px;
+            border: none;
+            background: var(--navy);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-enroll:hover { opacity: 0.85; }
+
+        /* ENROLLED CLASS GRID — identical to my-classes */
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            align-content: start;
+        }
+
+        .class-card {
+            height: 160px;
+            border-radius: 16px;
+            position: relative;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            background-repeat: no-repeat;
+            background-position: right bottom;
+            background-size: auto 85%;
+        }
+
+        .class-card:hover { transform: translateY(-5px); }
+
+        .bg-grey   { background-color: var(--grey-card); }
+        .bg-green  { background-color: var(--green-card); }
+        .bg-teal   { background-color: var(--teal); }
+        .bg-navy   { background-color: var(--navy); }
+        .bg-purple { background-color: #6c63ff; }
+
+        .computer-bg { background-image: url("{{ asset('images/computer-class-bgtest.png') }}"); }
+        .book-bg     { background-image: url("{{ asset('images/book-class-bgtest.png') }}"); }
+
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+        .class-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+        .class-info p  { font-size: 0.75rem; opacity: 0.9; font-weight: 500; }
+        .class-code    { font-size: 0.7rem; font-weight: 400; opacity: 0.8; }
+
     </style>
 </head>
 <body>
 
 <div class="app">
 
-    <!-- ══ SIDEBAR ══ -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <img src="{{ asset('images/learnify-logo.png') }}" alt="Learnify">
-            <span>LEARNIFY</span>
-        </div>
+    <x-student.sidebar active="learning-module" />
 
-        <ul class="nav">
-            <li>
-                <a href="{{ route('student.dashboard') }}">
-                    <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                    </svg>
-                    Dashboard
-                </a>
-            </li>
-            <li class="active">
-                <a href="#">
-                    <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                    </svg>
-                    Learning Module
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                    </svg>
-                    Quiz
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    Settings
-                </a>
-            </li>
-        </ul>
-
-        <div class="sidebar-logout">
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                </svg>
-                Logout
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-        </div>
-    </aside>
-
-    <!-- ══ MAIN ══ -->
     <div class="main">
 
-        <!-- Topbar -->
         <div class="topbar">
-            <div><!-- spacer --></div>
-            <div class="topbar-right">
-                <button class="notif-btn">
-                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                    </svg>
-                </button>
-                <div class="user-chip">
-                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'E', 0, 1)) }}
-                    </div>
-                    <span>{{ auth()->user()->name ?? 'Eden Hazard' }}</span>
+            <h2>Learning Module</h2>
+            <div class="user-chip">
+                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                    {{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}
                 </div>
+                <span>{{ auth()->user()->name ?? 'Student' }}</span>
             </div>
         </div>
 
-        <!-- Content -->
+        {{-- Flash banners --}}
+        @if (session('success'))
+        <div style="margin:0 28px 0;padding:12px 18px;background:#e6f9f0;border-radius:10px;color:#1a8a5a;font-size:0.84rem;font-weight:600;display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if (session('error'))
+        <div style="margin:0 28px 0;padding:12px 18px;background:#fdecea;border-radius:10px;color:#c0392b;font-size:0.84rem;font-weight:600;display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            {{ session('error') }}
+        </div>
+        @endif
+
         <div class="content">
 
-            <h1 class="page-title">Learning Module</h1>
+            <div class="page-header">
+                <h3>My Classes</h3>
+                <p>Your enrolled classes appear below. Use the search to join a new class.</p>
+            </div>
 
-            <p class="page-desc">
-                The Learning Module is designed as an all-in-one educational space where students can explore
-                a variety of SPM subjects in an organized and engaging way.
-            </p>
+            <!-- Join a Class -->
+            <div class="join-section">
+                <div class="join-section-title">Join a Class</div>
+                <div class="join-section-sub">Enter the class code given by your teacher.</div>
+                <div class="join-row">
+                    <input type="text" class="join-input" id="classCodeInput"
+                           placeholder="e.g. CLS-ABC123" maxlength="20"
+                           oninput="this.value = this.value.toUpperCase()">
+                    <button type="button" class="btn-search" onclick="searchClass()">Search</button>
+                </div>
 
-            <!-- Subject grid -->
-            <div class="subject-grid">
+                <div class="join-msg" id="joinMsg">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span id="joinMsgText"></span>
+                </div>
 
-                {{-- PHYSIC — available --}}
-                <a href="{{ route('student.learning.physics') }}" class="subject-card">
-                    <div class="thumb">
-                        <img src="{{ asset('images/subjects/physics.jpg') }}" alt="Physics"
-                             onerror="this.style.background='linear-gradient(135deg,#c8d8e8,#a0b8cc)';this.style.display='block';this.removeAttribute('src')">
+                <!-- Found class result -->
+                <div class="found-result" id="foundResult">
+                    <div class="found-color-dot" id="foundDot"></div>
+                    <div class="found-info">
+                        <strong id="foundName"></strong>
+                        <span id="foundTeacher"></span>
                     </div>
-                    <div class="subject-name">Physic</div>
+                    <form method="POST" action="{{ route('student.class.enroll') }}" id="enrollForm">
+                        @csrf
+                        <input type="hidden" name="code" id="enrollCode">
+                        <button type="submit" class="btn-enroll">Enroll</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Enrolled classes grid -->
+            <div class="class-grid">
+                @forelse ($enrolledClasses as $class)
+                <a href="#" class="class-card {{ $class->color_class }} {{ $class->bg }}">
+                    <div class="card-top">
+                        <div class="class-info">
+                            <h3>{{ $class->name }}</h3>
+                            <p>{{ $class->teacher->name ?? 'Unknown Teacher' }}</p>
+                        </div>
+                    </div>
+                    <div class="class-code">{{ $class->code }}</div>
                 </a>
-
-                {{-- BIOLOGY — coming soon --}}
-                <div class="subject-card" style="cursor: default;">
-                    <div class="thumb">
-                        <img src="{{ asset('images/subjects/biology.jpg') }}" alt="Biology"
-                             onerror="this.style.background='linear-gradient(135deg,#d4e8c8,#b0cca0)';this.style.display='block';this.removeAttribute('src')">
-                        <div class="coming-overlay">
-                            <span class="coming-label">Coming Soon</span>
-                        </div>
-                    </div>
-                    <div class="subject-name">Biology</div>
+                @empty
+                <div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:48px 0;font-size:0.88rem;">
+                    <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    You haven't joined any class yet.<br>
+                    <span style="font-size:0.78rem;">Enter a class code above to get started.</span>
                 </div>
-
-                {{-- CHEMISTRY — coming soon --}}
-                <div class="subject-card" style="cursor: default;">
-                    <div class="thumb">
-                        <img src="{{ asset('images/subjects/chemistry.jpg') }}" alt="Chemistry"
-                             onerror="this.style.background='linear-gradient(135deg,#e8d4c8,#ccb0a0)';this.style.display='block';this.removeAttribute('src')">
-                        <div class="coming-overlay">
-                            <span class="coming-label">Coming Soon</span>
-                        </div>
-                    </div>
-                    <div class="subject-name">Chemistry</div>
-                </div>
-
-                {{-- MATHEMATICS — coming soon --}}
-                <div class="subject-card" style="cursor: default;">
-                    <div class="thumb">
-                        <img src="{{ asset('images/subjects/mathematics.jpg') }}" alt="Mathematics"
-                             onerror="this.style.background='linear-gradient(135deg,#e8e8c8,#cccca0)';this.style.display='block';this.removeAttribute('src')">
-                        <div class="coming-overlay">
-                            <span class="coming-label">Coming Soon</span>
-                        </div>
-                    </div>
-                    <div class="subject-name">Mathematics</div>
-                </div>
-
-                {{-- HISTORY — coming soon --}}
-                <div class="subject-card" style="cursor: default;">
-                    <div class="thumb">
-                        <img src="{{ asset('images/subjects/history.jpg') }}" alt="History"
-                             onerror="this.style.background='linear-gradient(135deg,#e8d8b0,#ccba88)';this.style.display='block';this.removeAttribute('src')">
-                        <div class="coming-overlay">
-                            <span class="coming-label">Coming Soon</span>
-                        </div>
-                    </div>
-                    <div class="subject-name">History</div>
-                </div>
-
-                {{-- ENGLISH — coming soon --}}
-                <div class="subject-card" style="cursor: default;">
-                    <div class="thumb">
-                        <img src="{{ asset('images/subjects/english.jpg') }}" alt="English"
-                             onerror="this.style.background='linear-gradient(135deg,#c8d4e8,#a0b4cc)';this.style.display='block';this.removeAttribute('src')">
-                        <div class="coming-overlay">
-                            <span class="coming-label">Coming Soon</span>
-                        </div>
-                    </div>
-                    <div class="subject-name">English</div>
-                </div>
-
-            </div><!-- /subject-grid -->
+                @endforelse
+            </div>
 
         </div><!-- /content -->
     </div><!-- /main -->
 </div><!-- /app -->
+
+<script>
+    const colorMap = {
+        grey:   '#8e9499',
+        green:  '#00c853',
+        teal:   '#2e8b84',
+        navy:   '#1c3d6b',
+        purple: '#6c63ff',
+    };
+
+    function searchClass() {
+        const code = document.getElementById('classCodeInput').value.trim();
+
+        clearResult();
+
+        if (!code) { showError('Please enter a class code.'); return; }
+        if (!/^CLS-[A-Z0-9]{4,}$/i.test(code)) {
+            showError('Invalid format. Class codes look like CLS-ABC123.');
+            return;
+        }
+
+        fetch('{{ route("student.class.search") }}?code=' + encodeURIComponent(code), {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.found) {
+                showError('No class found with that code. Please check and try again.');
+                return;
+            }
+            if (data.enrolled) {
+                showInfo('You\'re already enrolled in <strong>' + escHtml(data.name) + '</strong>.');
+                return;
+            }
+            showFoundClass(data);
+        })
+        .catch(() => showError('Something went wrong. Please try again.'));
+    }
+
+    function showFoundClass(data) {
+        document.getElementById('foundName').textContent    = data.name;
+        document.getElementById('foundTeacher').textContent = 'Teacher: ' + data.teacher;
+        document.getElementById('foundDot').style.background = colorMap[data.color] || '#8e9499';
+        document.getElementById('enrollCode').value         = data.code;
+        document.getElementById('foundResult').classList.add('show');
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('joinMsg');
+        el.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
+        el.className = 'join-msg error';
+        document.getElementById('joinMsgText').textContent = msg;
+    }
+
+    function showInfo(html) {
+        const el = document.getElementById('joinMsg');
+        el.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>';
+        el.className = 'join-msg info';
+        document.getElementById('joinMsgText').innerHTML = html;
+    }
+
+    function clearResult() {
+        document.getElementById('joinMsg').className = 'join-msg';
+        document.getElementById('foundResult').classList.remove('show');
+    }
+
+    function escHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.getElementById('classCodeInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') searchClass();
+    });
+
+    // Clear result when user edits the input
+    document.getElementById('classCodeInput').addEventListener('input', clearResult);
+</script>
 
 </body>
 </html>

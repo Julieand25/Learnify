@@ -12,6 +12,9 @@ Route::get('/', function () {
 // Student routes
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [StudentDashboard::class, 'index'])->name('dashboard');
+    Route::get('/learning-module', [StudentDashboard::class, 'learningModule'])->name('learning-module');
+    Route::get('/learning-module/search-class', [StudentDashboard::class, 'searchClass'])->name('class.search');
+    Route::post('/learning-module/enroll', [StudentDashboard::class, 'enrollClass'])->name('class.enroll');
 });
 
 // Teacher routes

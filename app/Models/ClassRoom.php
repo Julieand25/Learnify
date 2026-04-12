@@ -13,6 +13,12 @@ class ClassRoom extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'enrollments', 'class_room_id', 'student_id')
+                    ->withTimestamps();
+    }
+
     // CSS class for background image — alternates by id
     public function getBgAttribute(): string
     {
