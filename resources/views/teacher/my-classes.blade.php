@@ -155,22 +155,7 @@
 <body>
 
 <div class="app">
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <img src="{{ asset('images/learnify-logo.png') }}" alt="Learnify">
-            <span>LEARNIFY</span>
-        </div>
-        <ul class="nav">
-            <li><a href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
-            <li><a href="#">Edit Quiz</a></li>
-            <li class="active"><a href="{{ route('teacher.my-classes') }}">My Classes</a></li>
-            <li><a href="{{ route('teacher.settings') }}">Settings</a></li>
-        </ul>
-        <div class="sidebar-logout">
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-        </div>
-    </aside>
+    <x-teacher.sidebar active="my-classes" />
 
     <div class="main">
         <div class="topbar">
