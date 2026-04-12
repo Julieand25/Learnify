@@ -19,6 +19,8 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/dashboard', [TeacherDashboard::class, 'index'])->name('dashboard');
     Route::get('/my-classes', [TeacherDashboard::class, 'myClasses'])->name('my-classes');
     Route::get('/my-classes/class-a', [TeacherDashboard::class, 'classStudents'])->name('class-students');
+    Route::get('/my-classes/class-a/notes-progress', [TeacherDashboard::class, 'notesProgress'])->name('notes-progress');
+    Route::get('/my-classes/class-a/quiz-progress', [TeacherDashboard::class, 'quizProgress'])->name('quiz-progress');
     Route::get('/settings', [TeacherDashboard::class, 'settings'])->name('settings');
     Route::put('/settings/profile', [TeacherDashboard::class, 'updateProfile'])->name('settings.update-profile');
     Route::put('/settings/password', [TeacherDashboard::class, 'updatePassword'])->name('settings.update-password');

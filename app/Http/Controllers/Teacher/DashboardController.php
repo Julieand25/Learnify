@@ -32,6 +32,20 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function notesProgress(Request $request): View
+    {
+        return view('teacher.notes-progress', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    public function quizProgress(Request $request): View
+    {
+        return view('teacher.quiz-progress', [
+            'user' => $request->user(),
+        ]);
+    }
+
     public function settings(Request $request): View
     {
         return view('teacher.settings', [
