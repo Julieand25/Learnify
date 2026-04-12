@@ -400,7 +400,15 @@
             <!-- Enrolled classes grid -->
             <div class="class-grid">
                 @forelse ($enrolledClasses as $class)
-                <div class="class-card {{ $class->color_class }} {{ $class->bg }}">
+                @php
+                    $subjectUrl = match($class->subject) {
+                        'physics' => route('student.physics-notes'),
+                        default   => null,
+                    };
+                @endphp
+                <div class="class-card {{ $class->color_class }} {{ $class->bg }}"
+                     onclick="cardClick(event, {{ $subjectUrl ? "'$subjectUrl'" : 'null' }})"
+                     style="{{ $subjectUrl ? '' : 'cursor:default;' }}">
                     <div class="card-top">
                         <div class="class-info">
                             <h3>{{ $class->name }}</h3>
@@ -527,6 +535,12 @@
 
     // Clear result when user edits the input
     document.getElementById('classCodeInput').addEventListener('input', clearResult);
+
+    // ── Card navigation ──
+    function cardClick(e, url) {
+        if (!url) return;
+        window.location.href = url;
+    }
 
     // ── 3-dot dropdown ──
     function toggleDropdown(e, id) {
