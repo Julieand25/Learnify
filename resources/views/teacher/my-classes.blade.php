@@ -546,7 +546,7 @@
                 <div class="card-top">
                     <div class="class-info">
                         <h3>{{ $class->name }}</h3>
-                        <p>{{ $class->code }}</p>
+                        <p>{{ $class->subject_label }}</p>
                     </div>
                     <div class="card-menu-wrap">
                         <button class="card-menu-btn"
@@ -560,7 +560,7 @@
                         </button>
                         <div class="card-dropdown" id="dropdown-{{ $class->id }}">
                             <button class="dropdown-item"
-                                    onclick="openEditModal(event, {{ $class->id }}, '{{ addslashes($class->name) }}', '{{ $class->code }}', '{{ $class->color }}')">
+                                    onclick="openEditModal(event, {{ $class->id }}, '{{ addslashes($class->name) }}', '{{ $class->code }}', '{{ $class->color }}', '{{ $class->subject }}')">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
@@ -619,6 +619,18 @@
             </div>
 
             <div class="form-group">
+                <label>Subject</label>
+                <select name="subject" id="subjectInput">
+                    <option value="physics">Physics</option>
+                    <option value="biology">Biology</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="mathematics">Mathematics</option>
+                    <option value="history">History</option>
+                    <option value="english">English</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label>Class Code</label>
                 <div class="code-preview-wrap">
                     <span class="code-preview" id="codePreview">—</span>
@@ -672,6 +684,18 @@
             <div class="form-group">
                 <label>Class Name</label>
                 <input type="text" id="editClassName" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Subject</label>
+                <select name="subject" id="editSubjectInput">
+                    <option value="physics">Physics</option>
+                    <option value="biology">Biology</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="mathematics">Mathematics</option>
+                    <option value="history">History</option>
+                    <option value="english">English</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -751,7 +775,7 @@
     }
 
     // ── Edit modal ──
-    function openEditModal(e, id, name, code, color) {
+    function openEditModal(e, id, name, code, color, subject) {
         e.stopPropagation();
         closeAllDropdowns();
         document.getElementById('editClassName').value = name;
@@ -763,6 +787,8 @@
             o.classList.toggle('selected', o.dataset.color === color);
         });
         document.getElementById('editColorInput').value = color;
+        // Pre-select the current subject
+        document.getElementById('editSubjectInput').value = subject;
         document.getElementById('editModalOverlay').classList.add('open');
     }
 

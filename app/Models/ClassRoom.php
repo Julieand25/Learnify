@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassRoom extends Model
 {
-    protected $fillable = ['teacher_id', 'name', 'code', 'color'];
+    protected $fillable = ['teacher_id', 'name', 'code', 'color', 'subject'];
+
+    public function getSubjectLabelAttribute(): string
+    {
+        return ucfirst($this->subject ?? 'physics');
+    }
 
     public function teacher()
     {

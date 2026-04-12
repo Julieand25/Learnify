@@ -18,6 +18,13 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function physicsNotes(Request $request): View
+    {
+        return view('student.physics-notes', [
+            'user' => $request->user(),
+        ]);
+    }
+
     public function learningModule(Request $request): View
     {
         $enrolledClasses = $request->user()

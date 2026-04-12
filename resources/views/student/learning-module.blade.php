@@ -447,6 +447,7 @@
                 @endforelse
             </div>
 
+
         </div><!-- /content -->
     </div><!-- /main -->
 </div><!-- /app -->

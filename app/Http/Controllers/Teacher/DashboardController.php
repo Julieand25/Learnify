@@ -35,8 +35,9 @@ class DashboardController extends Controller
     public function storeClass(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'  => ['required', 'string', 'max:100'],
-            'color' => ['required', 'string', 'in:grey,green,teal,navy,purple'],
+            'name'    => ['required', 'string', 'max:100'],
+            'color'   => ['required', 'string', 'in:grey,green,teal,navy,purple'],
+            'subject' => ['required', 'string', 'in:physics,biology,chemistry,mathematics,history,english'],
         ]);
 
         // Generate a unique code server-side (client code is just a preview)
@@ -49,6 +50,7 @@ class DashboardController extends Controller
             'name'       => $request->name,
             'code'       => $code,
             'color'      => $request->color,
+            'subject'    => $request->subject,
         ]);
 
         return redirect()->route('teacher.my-classes')->with('success', 'Class created successfully.');
@@ -59,13 +61,15 @@ class DashboardController extends Controller
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
 
         $request->validate([
-            'name'  => ['required', 'string', 'max:100'],
-            'color' => ['required', 'string', 'in:grey,green,teal,navy,purple'],
+            'name'    => ['required', 'string', 'max:100'],
+            'color'   => ['required', 'string', 'in:grey,green,teal,navy,purple'],
+            'subject' => ['required', 'string', 'in:physics,biology,chemistry,mathematics,history,english'],
         ]);
 
         $classRoom->update([
-            'name'  => $request->name,
-            'color' => $request->color,
+            'name'    => $request->name,
+            'color'   => $request->color,
+            'subject' => $request->subject,
         ]);
 
         return redirect()->route('teacher.my-classes')->with('success', 'Class updated successfully.');
