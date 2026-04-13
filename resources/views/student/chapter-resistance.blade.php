@@ -37,9 +37,6 @@
             flex-direction: column;
         }
 
-        /* ══════════════════════════════
-           CHAPTER HEADER
-        ══════════════════════════════ */
         .chapter-header {
             background: var(--teal);
             padding: 20px 28px 18px;
@@ -148,9 +145,6 @@
             white-space: nowrap;
         }
 
-        /* ══════════════════════════════
-           SCROLLABLE CONTENT
-        ══════════════════════════════ */
         .content {
             flex: 1;
             overflow-y: auto;
@@ -161,9 +155,6 @@
         .content::-webkit-scrollbar-track { background: transparent; }
         .content::-webkit-scrollbar-thumb { background: #b0ccd0; border-radius: 10px; }
 
-        /* ══════════════════════════════
-           SECTION DIVIDER
-        ══════════════════════════════ */
         .section-divider {
             display: flex;
             align-items: center;
@@ -181,9 +172,6 @@
             background: linear-gradient(to left, #c0dede, transparent);
         }
 
-        /* ══════════════════════════════
-           NOTES STYLES
-        ══════════════════════════════ */
         .intro-text {
             font-size: 0.84rem;
             color: var(--text-mid);
@@ -357,9 +345,6 @@
             line-height: 1.6;
         }
 
-        /* ══════════════════════════════
-           SIMULATION SECTION
-        ══════════════════════════════ */
         .sim-title {
             font-size: 1.3rem;
             font-weight: 800;
@@ -374,7 +359,6 @@
             margin-bottom: 20px;
         }
 
-        /* Resistance value display */
         .omega-val {
             font-size: 1.5rem;
             font-weight: 700;
@@ -384,7 +368,6 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* ── NEW: short range slider with gauge ── */
         .slider-container {
             position: relative;
             width: 220px;
@@ -411,7 +394,7 @@
             transform: translateY(-50%);
             height: 10px;
             border-radius: 5px;
-            background: #5db8a0; /* lighter than thumb, darker than track */
+            background: #5db8a0;
             pointer-events: none;
             transition: width 0.15s;
         }
@@ -453,7 +436,6 @@
 
         input[type=range].short-slider::-webkit-slider-runnable-track { background: transparent; }
         input[type=range].short-slider::-moz-range-track { background: transparent; }
-        /* ── END new slider styles ── */
 
         .slide-label {
             font-size: 0.72rem;
@@ -462,7 +444,6 @@
             margin-bottom: 8px;
         }
 
-        /* Bottom nav arrows */
         .bottom-nav {
             display: flex;
             justify-content: center;
@@ -482,14 +463,83 @@
         }
 
         .nav-btn:hover { background: var(--teal-dark); }
+
+        /* ── NEW: SVG component tooltips ── */
+        .svg-tooltip {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .svg-tooltip-inner {
+            background: #2d6b5a;
+            color: #fff;
+            border-radius: 10px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            min-width: 110px;
+        }
+
+        .svg-tooltip-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+            padding: 7px 18px;
+            background: #2d6b5a;
+        }
+
+        .svg-tooltip-tag {
+            background: #e0f5f1;
+            color: #1a6b5a;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 3px 10px 5px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── NEW: electron panel ── */
+        .electron-panel-wrap {
+            display: none;
+            margin-top: 8px;
+            align-items: center;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .electron-panel-wrap.visible { display: flex; }
+
+        .electron-hint {
+            font-size: 0.68rem;
+            color: #4a7a72;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 <body>
 
-<!-- Image hover tooltip -->
+<!-- Image hover tooltip (existing) -->
 <div class="word-tooltip" id="wordTooltip">
     <img id="tooltipImg" src="" alt="">
     <div class="tooltip-label" id="tooltipLabel"></div>
+</div>
+
+<!-- NEW: SVG component tooltip (battery / bulb) -->
+<div class="svg-tooltip" id="svgTooltip">
+    <div class="svg-tooltip-inner">
+        <div class="svg-tooltip-label" id="svgTooltipLabel">BATTERY</div>
+        <div class="svg-tooltip-tag" id="svgTooltipTag">Component</div>
+    </div>
 </div>
 
 <div class="app">
@@ -533,8 +583,6 @@
 
     <!-- ══ SCROLLABLE CONTENT ══ -->
     <div class="content">
-
-        {{-- ════════ PAGE 1: MAIN NOTES ════════ --}}
 
         <p class="intro-text">
             This section focuses on Ohm's Law, which states that V is directly proportional to I for Ohmic conductors.
@@ -654,14 +702,11 @@
 
         </div>
 
-        {{-- ════════ DIVIDER ════════ --}}
         <div class="section-divider">
             <div class="section-divider-line"></div>
-            <span style="font-size:0.78rem;font-weight:700;color:var(--teal-dark);white-space:nowrap;letter-spacing:1px;">INTERACTIVE SIMULATION</span>
+            <span style="font-size:0.78rem;font-weight:700;color:var(--teal-dark);white-space:nowrap;letter-spacing:1px;">              </span>
             <div class="section-divider-line right"></div>
         </div>
-
-        {{-- ════════ PAGE 2: INTERACTIVE SIMULATION ════════ --}}
 
         <h2 class="sim-title">Interactive Simulation</h2>
 
@@ -680,7 +725,7 @@
                     .tagtxt { font-size:13px; fill:#7a5c3a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
                 </style>
 
-                {{-- Wires --}}
+                <!-- Wires -->
                 <line class="w" x1="70"  y1="30"  x2="410" y2="30"/>
                 <line class="w" x1="70"  y1="230" x2="168" y2="230"/>
                 <line class="w" x1="292" y1="230" x2="410" y2="230"/>
@@ -689,26 +734,36 @@
                 <line class="w" x1="410" y1="30"  x2="410" y2="114"/>
                 <line class="w" x1="410" y1="146" x2="410" y2="230"/>
 
-                {{-- Plus terminal --}}
+                <!-- Plus terminal -->
                 <circle class="tm" cx="38" cy="80" r="12"/>
                 <line class="tm" x1="38" y1="73" x2="38" y2="87"/>
                 <line class="tm" x1="31" y1="80" x2="45" y2="80"/>
 
-                {{-- Battery brackets --}}
+                <!-- NEW: Battery hover target (invisible rect over battery area) -->
+                <rect id="battery-hover" x="15" y="105" width="115" height="50" rx="6"
+                      fill="transparent" stroke="none" style="cursor:pointer;"
+                      data-tip="BATTERY" data-sub="Power Source"/>
+
+                <!-- Battery brackets -->
                 <path class="bt" d="M57,113 L28,113 Q20,113 20,121 L20,139 Q20,147 28,147 L57,147"/>
                 <path class="bt" d="M83,113 L112,113 Q120,113 120,121 L120,139 Q120,147 112,147 L83,147"/>
-                {{-- Lightning bolt --}}
+                <!-- Lightning bolt -->
                 <polygon class="blt" points="72,118 62,130 69,130 65,142 81,129 73,129 79,118"/>
 
-                {{-- Minus terminal --}}
+                <!-- Minus terminal -->
                 <circle class="tm" cx="38" cy="180" r="12"/>
                 <line class="tm" x1="31" y1="180" x2="45" y2="180"/>
 
-                {{-- 12V label --}}
+                <!-- 12V label -->
                 <rect class="tag" x="124" y="120" width="44" height="20" rx="10"/>
                 <text class="tagtxt" x="146" y="130">12V</text>
 
-                {{-- Sun / bulb --}}
+                <!-- NEW: Bulb hover target (invisible rect over sun/bulb area) -->
+                <rect id="bulb-hover" x="388" y="106" width="60" height="48" rx="6"
+                      fill="transparent" stroke="none" style="cursor:pointer;"
+                      data-tip="BULB" data-sub="Light Component"/>
+
+                <!-- Sun / bulb -->
                 <circle id="sun-circle" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" cx="410" cy="130" r="16"/>
                 <line id="sun-r1" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="102" x2="410" y2="114"/>
                 <line id="sun-r2" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="146" x2="410" y2="158"/>
@@ -719,30 +774,28 @@
                 <line id="sun-r7" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="151" x2="393" y2="145"/>
                 <line id="sun-r8" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="421" y1="115" x2="427" y2="109"/>
 
-                {{-- Ampere label --}}
+                <!-- Ampere label -->
                 <rect class="tag" x="380" y="154" width="56" height="20" rx="10"/>
                 <text id="cur-label1" class="tagtxt" x="408" y="164">0.25A</text>
 
-                {{-- Resistor --}}
+                <!-- Resistor -->
                 <rect class="res" x="168" y="218" width="124" height="24" rx="3"/>
                 <text id="res-label1" class="rtxt" x="230" y="230">48.0&#937;</text>
             </svg>
 
             <div class="omega-val" id="omega-display">48.0 &#937;</div>
 
-            {{-- NEW: short gauge slider --}}
             <div class="slider-container">
                 <div class="slider-track-bg"></div>
                 <div class="slider-track-fill" id="slider-track-fill" style="width:100%;"></div>
-                {{-- min=0(left)=0.4Ω brightest, max=4(right)=48Ω darkest, default=4 --}}
                 <input type="range" class="short-slider" id="res-slider" min="0" max="4" value="4" step="1">
             </div>
             <div class="slide-label">Slide to adjust the resistor</div>
         </div>
 
         <!-- ── Circuit 2 (flow indicator) ── -->
-        <div class="circuit-wrapper">
-            <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg"
+        <div class="circuit-wrapper" id="circuit2-wrapper">
+            <svg id="circuit2-svg" viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg"
                  style="display:block;width:100%;max-width:460px;margin:0 auto 8px;">
                 <style>
                     .w3  { stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; fill:none; }
@@ -756,6 +809,11 @@
 
                 <line class="w3" x1="70"  y1="30"  x2="410" y2="30"/>
                 <line class="w3" x1="70"  y1="230" x2="168" y2="230"/>
+                <!-- Right segment of bottom wire — split so we can highlight the right portion -->
+                <!-- Left bottom: resistor right edge to corner -->
+                <!-- Right highlighted wire: corner (410,230) down to (410,146) — this is the vertical right wire segment -->
+                <!-- Actually the highlighted wire in photo 3 is the BOTTOM right horizontal: from resistor(292,230) to corner(410,230) -->
+                <!-- We keep the original wire but add a highlighted overlay on top -->
                 <line class="w3" x1="292" y1="230" x2="410" y2="230"/>
                 <line class="w3" x1="70"  y1="30"  x2="70"  y2="113"/>
                 <line class="w3" x1="70"  y1="147" x2="70"  y2="230"/>
@@ -786,11 +844,16 @@
                 <rect class="res3" x="168" y="218" width="124" height="24" rx="3"/>
                 <text class="rtxt3" x="230" y="230">&#937;</text>
 
-                {{-- Green current flow bar --}}
+                <!-- NEW: Highlighted clickable wire (bottom-right horizontal segment) -->
+                <line id="highlight-wire" x1="292" y1="230" x2="410" y2="230"
+                      stroke="#22c55e" stroke-width="6" stroke-linecap="round"
+                      style="cursor:pointer;" />
+
+                <!-- Green current flow bar (original) -->
                 <line id="flow-bar" x1="292" y1="230" x2="292" y2="230"
                       stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
 
-                {{-- Zoom icon --}}
+                <!-- Zoom icon -->
                 <g transform="translate(432,245)">
                     <circle fill="none" stroke="#1a1a1a" stroke-width="2" cx="0" cy="0" r="7"/>
                     <line stroke="#1a1a1a" stroke-width="2" x1="5"  y1="5"  x2="9"  y2="9"/>
@@ -798,19 +861,20 @@
                     <line stroke="#1a1a1a" stroke-width="2" x1="0"  y1="-3" x2="0"  y2="3"/>
                 </g>
             </svg>
-        </div>
 
-        <!-- Bottom nav -->
-        <div class="bottom-nav">
-            <button class="nav-btn">&#8249;</button>
-            <button class="nav-btn">&#8250;</button>
+            <!-- NEW: Electron panel (shown when highlighted wire is clicked) -->
+            <div class="electron-panel-wrap" id="electronPanel">
+                <canvas id="electronCanvas" width="340" height="48"
+                        style="display:block;border-radius:999px;background:#d0ddd8;cursor:pointer;max-width:340px;width:100%;"></canvas>
+                <div class="electron-hint" id="electronHint">Hover to move electrons →</div>
+            </div>
         </div>
 
     </div><!-- /content -->
 </div><!-- /app -->
 
 <script>
-    /* ── HOVER WORD IMAGE TOOLTIP ── */
+    /* ── HOVER WORD IMAGE TOOLTIP (unchanged) ── */
     const wordTooltip = document.getElementById('wordTooltip');
     const tooltipImg  = document.getElementById('tooltipImg');
     const tooltipLbl  = document.getElementById('tooltipLabel');
@@ -837,7 +901,7 @@
         wordTooltip.style.top  = y + 'px';
     }
 
-    /* ── TEXT-TO-SPEECH ── */
+    /* ── TEXT-TO-SPEECH (unchanged) ── */
     function speakText(id) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
@@ -848,8 +912,7 @@
         window.speechSynthesis.speak(u);
     }
 
-    /* ── CIRCUIT 1 SLIDER (5 fixed steps) ── */
-    // index 0 = left = 0.4Ω (brightest), index 4 = right = 48Ω (darkest/default)
+    /* ── CIRCUIT 1 SLIDER (unchanged) ── */
     const STEPS = [
         { r: '0.4',  a: '30.0', brightness: 1.00 },
         { r: '1.0',  a: '12.0', brightness: 0.80 },
@@ -858,12 +921,12 @@
         { r: '48.0', a: '0.25', brightness: 0.05 },
     ];
 
-    const resSlider   = document.getElementById('res-slider');
-    const trackFill   = document.getElementById('slider-track-fill');
+    const resSlider    = document.getElementById('res-slider');
+    const trackFill    = document.getElementById('slider-track-fill');
     const omegaDisplay = document.getElementById('omega-display');
-    const curLabel1   = document.getElementById('cur-label1');
-    const resLabel1   = document.getElementById('res-label1');
-    const flowBar     = document.getElementById('flow-bar');
+    const curLabel1    = document.getElementById('cur-label1');
+    const resLabel1    = document.getElementById('res-label1');
+    const flowBar      = document.getElementById('flow-bar');
 
     const sunEls = [
         'sun-circle','sun-r1','sun-r2','sun-r3',
@@ -875,18 +938,14 @@
         const step = STEPS[idx];
         const b    = step.brightness;
 
-        // gauge fill: index 4 (right/max resistance) = 100% fill, index 0 (left) = 0%
         trackFill.style.width = ((idx / 4) * 100) + '%';
-
         omegaDisplay.textContent = step.r + ' \u03A9';
         curLabel1.textContent    = step.a + 'A';
         resLabel1.textContent    = step.r + '\u03A9';
 
-        // flow bar: more current (lower idx) = longer bar
         const flowX = 292 + Math.round(118 * ((4 - idx) / 4));
         flowBar.setAttribute('x2', flowX);
 
-        // bulb brightness
         const sunCircle = document.getElementById('sun-circle');
         if (b <= 0.05) {
             sunCircle.setAttribute('fill', 'none');
@@ -905,6 +964,171 @@
 
     resSlider.addEventListener('input', updateUI);
     updateUI();
+
+    /* ══════════════════════════════════════════════
+       NEW: SVG COMPONENT TOOLTIPS (Battery & Bulb)
+    ══════════════════════════════════════════════ */
+    const svgTooltip      = document.getElementById('svgTooltip');
+    const svgTooltipLabel = document.getElementById('svgTooltipLabel');
+    const svgTooltipTag   = document.getElementById('svgTooltipTag');
+
+    function showSvgTooltip(e, label, sub) {
+        svgTooltipLabel.textContent = label;
+        svgTooltipTag.textContent   = sub;
+        svgTooltip.style.display    = 'block';
+        placeSvgTooltip(e);
+    }
+
+    function placeSvgTooltip(e) {
+        const tw = 130, th = 56, pad = 12;
+        let x = e.clientX + pad;
+        let y = e.clientY - th / 2;
+        if (x + tw > window.innerWidth - 10) x = e.clientX - tw - pad;
+        if (y < 10) y = 10;
+        if (y + th > window.innerHeight - 10) y = window.innerHeight - th - 10;
+        svgTooltip.style.left = x + 'px';
+        svgTooltip.style.top  = y + 'px';
+    }
+
+    ['battery-hover', 'bulb-hover'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('mouseenter', function(e) {
+            showSvgTooltip(e, this.dataset.tip, this.dataset.sub);
+        });
+        el.addEventListener('mousemove', placeSvgTooltip);
+        el.addEventListener('mouseleave', () => {
+            svgTooltip.style.display = 'none';
+        });
+    });
+
+    /* ══════════════════════════════════════════════
+       NEW: HIGHLIGHTED WIRE CLICK → ELECTRON PANEL
+    ══════════════════════════════════════════════ */
+    const highlightWire  = document.getElementById('highlight-wire');
+    const electronPanel  = document.getElementById('electronPanel');
+    const electronCanvas = document.getElementById('electronCanvas');
+    const electronHint   = document.getElementById('electronHint');
+    const ctx            = electronCanvas.getContext('2d');
+
+    let electronPanelOpen = false;
+
+    highlightWire.addEventListener('click', (e) => {
+        e.stopPropagation();
+        electronPanelOpen = !electronPanelOpen;
+        electronPanel.classList.toggle('visible', electronPanelOpen);
+        if (electronPanelOpen) drawElectrons(false);
+        else { cancelAnimationFrame(animFrame); animFrame = null; }
+    });
+
+    /* Electron drawing */
+    const NUM_ELECTRONS = 12;
+    let electronsHovered = false;
+
+    const tubeH  = 48;
+    const radius = 8;
+    const margin = 20;
+
+    const electrons = Array.from({ length: NUM_ELECTRONS }, (_, i) => ({
+        baseFrac: (i + 0.5) / NUM_ELECTRONS,
+        offsetFrac: 0,
+        y: tubeH / 2 + (Math.random() - 0.5) * (tubeH - 2 * radius - 6),
+    }));
+
+    let animFrame = null;
+    let animPhase = 0;
+
+    function drawElectrons(hovered) {
+        const dpr  = window.devicePixelRatio || 1;
+        const cw   = electronCanvas.offsetWidth  || 340;
+        const ch   = 48;
+        electronCanvas.width  = cw * dpr;
+        electronCanvas.height = ch * dpr;
+        ctx.scale(dpr, dpr);
+
+        /* Tube background — light grey pill like photo */
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.fillStyle = '#d0ddd8';
+        roundRect(ctx, 0, 0, cw, ch, ch / 2);
+        ctx.fill();
+
+        const usable = cw - margin * 2;
+
+        electrons.forEach((e, i) => {
+            let xFrac = e.baseFrac;
+            if (hovered) {
+                xFrac = e.baseFrac + 0.4 * ((animPhase + i * 0.08) % 1.0);
+                if (xFrac > 1) xFrac = xFrac - 1;
+            }
+            const x = margin + xFrac * usable;
+            const y = ch / 2;
+
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#4dd8e0';
+            ctx.fill();
+            ctx.strokeStyle = '#1a9aaa';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            /* Minus sign */
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x - 4, y);
+            ctx.lineTo(x + 4, y);
+            ctx.stroke();
+        });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
+    function animateElectrons() {
+        animPhase += 0.008;
+        drawElectrons(true);
+        animFrame = requestAnimationFrame(animateElectrons);
+    }
+
+    electronCanvas.addEventListener('mouseenter', () => {
+        if (!electronPanelOpen) return;
+        electronsHovered = true;
+        electronHint.textContent = 'Electrons moving →';
+        cancelAnimationFrame(animFrame);
+        animPhase = 0;
+        animateElectrons();
+    });
+
+    electronCanvas.addEventListener('mouseleave', () => {
+        if (!electronPanelOpen) return;
+        electronsHovered = false;
+        electronHint.textContent = 'Hover to move electrons →';
+        cancelAnimationFrame(animFrame);
+        animFrame = null;
+        drawElectrons(false);
+    });
+
+    /* Close panel when clicking anywhere except the highlight wire itself */
+    document.addEventListener('click', (e) => {
+        if (!electronPanelOpen) return;
+        if (e.target === highlightWire) return;
+        electronPanelOpen = false;
+        electronPanel.classList.remove('visible');
+        cancelAnimationFrame(animFrame);
+        animFrame = null;
+        electronsHovered = false;
+    });
 </script>
 
 </body>
