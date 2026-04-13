@@ -32,6 +32,20 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function classQuiz(Request $request): View
+    {
+        $enrolledClasses = $request->user()
+            ->enrolledClasses()
+            ->with('teacher')
+            ->orderBy('enrollments.created_at', 'asc')
+            ->get();
+
+        return view('student.class-quiz', [
+            'user'            => $request->user(),
+            'enrolledClasses' => $enrolledClasses,
+        ]);
+    }
+
     public function learningModule(Request $request): View
     {
         $enrolledClasses = $request->user()

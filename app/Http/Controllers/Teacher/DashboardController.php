@@ -105,6 +105,28 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function editQuizClass(Request $request, ClassRoom $classRoom): View
+    {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+
+        return view('teacher.quiz-editor', [
+            'user'      => $request->user(),
+            'classRoom' => $classRoom,
+        ]);
+    }
+
+    public function editQuiz(Request $request): View
+    {
+        $classes = ClassRoom::where('teacher_id', $request->user()->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('teacher.edit-quiz', [
+            'user'    => $request->user(),
+            'classes' => $classes,
+        ]);
+    }
+
     public function settings(Request $request): View
     {
         return view('teacher.settings', [
