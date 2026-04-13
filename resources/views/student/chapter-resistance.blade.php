@@ -825,11 +825,11 @@
 
         <!-- ── Circuit 1 (interactive slider) ── -->
         <div class="circuit-wrapper">
-            <svg id="circuit1" viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg"
-                 style="display:block;width:100%;max-width:460px;margin:0 auto 8px;">
+            <svg id="circuit1" viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg"
+                 style="display:block;width:100%;max-width:560px;margin:0 auto 8px;">
                 <style>
                     .w  { stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; fill:none; }
-                    .bt { fill:none; stroke:#1a1a1a; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round; }
+                    .bt { fill:none; stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
                     .tm { fill:none; stroke:#1a1a1a; stroke-width:3; stroke-linecap:round; }
                     .blt { fill:#1a1a1a; }
                     .res { fill:none; stroke:#1a1a1a; stroke-width:4; }
@@ -844,31 +844,33 @@
                 <line class="w" x1="292" y1="230" x2="410" y2="230"/>
                 <line class="w" x1="70"  y1="30"  x2="70"  y2="113"/>
                 <line class="w" x1="70"  y1="147" x2="70"  y2="230"/>
-                <line class="w" x1="410" y1="30"  x2="410" y2="114"/>
-                <line class="w" x1="410" y1="146" x2="410" y2="230"/>
+                <line class="w" x1="410" y1="30"  x2="410" y2="90"/>
+                <line class="w" x1="410" y1="170" x2="410" y2="230"/>
 
                 <!-- Plus terminal -->
-                <circle class="tm" cx="38" cy="80" r="12"/>
-                <line class="tm" x1="38" y1="73" x2="38" y2="87"/>
-                <line class="tm" x1="31" y1="80" x2="45" y2="80"/>
+                <circle class="tm" cx="50" cy="90" r="11"/>
+                <line class="tm" x1="50" y1="84" x2="50" y2="96"/>
+                <line class="tm" x1="44" y1="90" x2="56" y2="90"/>
 
                 <rect id="battery-hover" x="15" y="105" width="115" height="50" rx="6"
                       fill="transparent" stroke="none" style="cursor:pointer;"
                       data-tip="BATTERY" data-sub="Power Source"/>
 
                 <!-- Battery brackets -->
-                <path class="bt" d="M57,113 L28,113 Q20,113 20,121 L20,139 Q20,147 28,147 L57,147"/>
-                <path class="bt" d="M83,113 L112,113 Q120,113 120,121 L120,139 Q120,147 112,147 L83,147"/>
+                <!-- <path class="bt" d="M57,113 L28,113 Q20,113 20,121 L20,139 Q20,147 28,147 L57,147"/>
+                <path class="bt" d="M83,113 L112,113 Q120,113 120,121 L120,139 Q120,147 112,147 L83,147"/>-->
+                <path class="bt" d="M60,113 L48,113 Q40,113 40,121 L40,139 Q40,147 48,147 L60,147"/>
+                <path class="bt" d="M80,113 L92,113 Q100,113 100,121 L100,139 Q100,147 92,147 L80,147"/>
                 <!-- Lightning bolt -->
                 <polygon class="blt" points="72,118 62,130 69,130 65,142 81,129 73,129 79,118"/>
 
                 <!-- Minus terminal -->
-                <circle class="tm" cx="38" cy="180" r="12"/>
-                <line class="tm" x1="31" y1="180" x2="45" y2="180"/>
+                <circle class="tm" cx="50" cy="170" r="11"/>
+                <line class="tm" x1="44" y1="170" x2="56" y2="170"/>
 
                 <!-- 12V label -->
-                <rect class="tag" x="124" y="120" width="44" height="20" rx="10"/>
-                <text class="tagtxt" x="146" y="130">12V</text>
+                <rect class="tag" x="110" y="135" width="44" height="20" rx="10"/>
+                <text class="tagtxt" x="132" y="145">12V</text>
 
                 <rect id="bulb-hover" x="388" y="106" width="60" height="48" rx="6"
                       fill="transparent" stroke="none" style="cursor:pointer;"
@@ -876,18 +878,18 @@
 
                 <!-- Sun / bulb -->
                 <circle id="sun-circle" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" cx="410" cy="130" r="16"/>
-                <line id="sun-r1" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="102" x2="410" y2="114"/>
-                <line id="sun-r2" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="146" x2="410" y2="158"/>
-                <line id="sun-r3" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="382" y1="130" x2="390" y2="130"/>
-                <line id="sun-r4" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="430" y1="130" x2="438" y2="130"/>
+                <line id="sun-r1" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="98" x2="410" y2="108"/>
+                <line id="sun-r2" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="152" x2="410" y2="162"/>
+                <line id="sun-r3" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="379" y1="130" x2="388" y2="130"/>
+                <line id="sun-r4" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="432" y1="130" x2="441" y2="130"/>
                 <line id="sun-r5" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="109" x2="393" y2="115"/>
-                <line id="sun-r6" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="421" y1="145" x2="427" y2="151"/>
+                <line id="sun-r6" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="144" x2="433" y2="150"/>
                 <line id="sun-r7" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="151" x2="393" y2="145"/>
-                <line id="sun-r8" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="421" y1="115" x2="427" y2="109"/>
+                <line id="sun-r8" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="115" x2="433" y2="109"/>
 
                 <!-- Ampere label -->
-                <rect class="tag" x="380" y="154" width="56" height="20" rx="10"/>
-                <text id="cur-label1" class="tagtxt" x="408" y="164">0.25A</text>
+                <rect class="tag" x="428" y="157" width="50" height="20" rx="10"/>
+                <text id="cur-label1" class="tagtxt" x="453" y="167">0.25A</text>
 
                 <!-- Resistor -->
                 <rect class="res" x="168" y="218" width="124" height="24" rx="3"/>
