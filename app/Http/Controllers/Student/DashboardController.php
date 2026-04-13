@@ -25,6 +25,13 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function chapterResistance(Request $request): View
+    {
+        return view('student.chapter-resistance', [
+            'user' => $request->user(),
+        ]);
+    }
+
     public function learningModule(Request $request): View
     {
         $enrolledClasses = $request->user()
