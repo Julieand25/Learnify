@@ -189,8 +189,9 @@
 
             <div class="class-grid">
                 @forelse ($enrolledClasses as $class)
-                <div class="class-card {{ $class->color_class }} {{ $class->bg }}"
-                     onclick="window.location.href='#'">
+                <a class="class-card {{ $class->color_class }} {{ $class->bg }}"
+                   href="{{ route('student.quiz.take', $class->id) }}"
+                   style="text-decoration:none;">
                     <div class="card-top">
                         <div class="class-info">
                             <h3>{{ $class->name }}</h3>
@@ -198,7 +199,7 @@
                         </div>
                     </div>
                     <div class="class-code">{{ $class->code }}</div>
-                </div>
+                </a>
                 @empty
                 <div style="grid-column:1/-1;text-align:center;color:var(--text-light);padding:48px 0;font-size:0.88rem;">
                     <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4;">

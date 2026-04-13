@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
+use App\Models\Quiz;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -109,10 +111,87 @@ class DashboardController extends Controller
     {
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
 
+        $quiz = $classRoom->quiz()->with('questions.options')->first();
+
+        $existingQuestions = [];
+        if ($quiz) {
+            foreach ($quiz->questions as $idx => $q) {
+                $options = $q->type === 'objective'
+                    ? $q->options->map(fn ($o) => $o->text)->values()->toArray()
+                    : ['', '', '', ''];
+
+                $correct = '';
+                if ($q->type === 'objective') {
+                    $correctOpt = $q->options->firstWhere('is_correct', true);
+                    $correct    = $correctOpt ? $correctOpt->letter : '';
+                }
+
+                $existingQuestions[] = [
+                    'id'       => $idx + 1,
+                    'type'     => $q->type,
+                    'question' => $q->question,
+                    'options'  => $options,
+                    'correct'  => $correct,
+                    'answer'   => $q->answer ?? '',
+                    'hint'     => $q->hint ?? '',
+                    'showHint' => ! empty($q->hint),
+                    'focused'  => false,
+                ];
+            }
+        }
+
         return view('teacher.quiz-editor', [
-            'user'      => $request->user(),
-            'classRoom' => $classRoom,
+            'user'              => $request->user(),
+            'classRoom'         => $classRoom,
+            'existingQuestions' => $existingQuestions,
         ]);
+    }
+
+    public function saveQuiz(Request $request, ClassRoom $classRoom): JsonResponse
+    {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+
+        $data = $request->validate([
+            'questions'              => ['required', 'array', 'min:1', 'max:10'],
+            'questions.*.type'       => ['required', 'in:objective,subjective'],
+            'questions.*.question'   => ['required', 'string', 'max:1000'],
+            'questions.*.options'    => ['nullable', 'array'],
+            'questions.*.options.*'  => ['nullable', 'string', 'max:500'],
+            'questions.*.correct'    => ['nullable', 'string', 'max:1'],
+            'questions.*.answer'     => ['nullable', 'string', 'max:2000'],
+            'questions.*.hint'       => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $quiz = $classRoom->quiz()->firstOrCreate(['class_room_id' => $classRoom->id]);
+
+        // Replace all questions (cascade deletes options)
+        $quiz->questions()->delete();
+
+        $optLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+        foreach ($data['questions'] as $i => $qData) {
+            $question = $quiz->questions()->create([
+                'type'       => $qData['type'],
+                'question'   => $qData['question'],
+                'answer'     => $qData['type'] === 'subjective' ? ($qData['answer'] ?? null) : null,
+                'hint'       => ! empty($qData['hint']) ? $qData['hint'] : null,
+                'sort_order' => $i,
+            ]);
+
+            if ($qData['type'] === 'objective' && ! empty($qData['options'])) {
+                foreach ($qData['options'] as $oi => $optText) {
+                    if (! empty(trim((string) $optText))) {
+                        $question->options()->create([
+                            'letter'     => $optLetters[$oi],
+                            'text'       => $optText,
+                            'is_correct' => ($qData['correct'] ?? '') === $optLetters[$oi],
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Quiz saved successfully.']);
     }
 
     public function editQuiz(Request $request): View

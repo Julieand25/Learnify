@@ -24,6 +24,11 @@ class ClassRoom extends Model
                     ->withTimestamps();
     }
 
+    public function quiz()
+    {
+        return $this->hasOne(Quiz::class);
+    }
+
     // CSS class for background image — alternates by id
     public function getBgAttribute(): string
     {

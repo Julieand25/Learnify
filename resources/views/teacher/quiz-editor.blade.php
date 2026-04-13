@@ -576,7 +576,7 @@
             </div>
         </div>
 
-        <!--<div class="progress-row">
+        <div class="progress-row">
             <div class="progress-track">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
@@ -585,7 +585,7 @@
                 <button class="btn-discard" onclick="discardAll()">Discard</button>
                 <button class="btn-save"    onclick="saveQuiz()">Save</button>
             </div>
-        </div>-->
+        </div>
     </div>
 
     <!-- ══ MAIN LAYOUT ══ -->
@@ -611,11 +611,17 @@
 
 <script>
     // ══════════════════════════════════════════
+    // CONFIG (injected by Laravel)
+    // ══════════════════════════════════════════
+    const SAVE_URL  = '{{ route('teacher.edit-quiz.save', $classRoom->id) }}';
+    const CSRF      = '{{ csrf_token() }}';
+
+    // ══════════════════════════════════════════
     // STATE
     // ══════════════════════════════════════════
     let questions   = [];   // array of question objects
     let questionId  = 0;    // auto-increment ID
-    const MAX_Q     = 5;
+    const MAX_Q     = 10;
 
     // ══════════════════════════════════════════
     // RENDER
@@ -869,8 +875,7 @@
     // ══════════════════════════════════════════
     // SAVE / DISCARD
     // ══════════════════════════════════════════
-    function saveQuiz() {
-        // Validate
+    async function saveQuiz() {
         const incomplete = questions.filter(q => !q.question.trim());
         if (incomplete.length > 0) {
             alert('Please fill in all question texts before saving.');
@@ -880,26 +885,64 @@
             alert('Please add at least one question.');
             return;
         }
-        // In a real app, submit to Laravel via fetch/form
-        const payload = questions.map((q, i) => ({
-            number:   i + 1,
+
+        const payload = questions.map((q) => ({
             type:     q.type,
             question: q.question,
-            options:  q.type === 'objective' ? q.options : null,
-            correct:  q.type === 'objective' ? q.correct  : null,
-            answer:   q.type === 'subjective' ? q.answer  : null,
+            options:  q.type === 'objective' ? q.options : [],
+            correct:  q.type === 'objective' ? q.correct : null,
+            answer:   q.type === 'subjective' ? q.answer : null,
             hint:     q.hint || null,
         }));
-        console.log('Quiz payload:', JSON.stringify(payload, null, 2));
-        alert(`Quiz saved! ${questions.length} question(s) ready.`);
+
+        const saveBtn = document.querySelector('.btn-save');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving…';
+
+        try {
+            const res = await fetch(SAVE_URL, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept':       'application/json',
+                },
+                body: JSON.stringify({ questions: payload }),
+            });
+
+            const json = await res.json();
+
+            if (res.ok && json.success) {
+                showToast('Quiz saved successfully!', 'green');
+            } else {
+                const msg = json.message || (json.errors ? Object.values(json.errors).flat().join('\n') : 'Save failed.');
+                alert(msg);
+            }
+        } catch (e) {
+            alert('Network error. Please try again.');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+        }
     }
 
     function discardAll() {
-        if (questions.length === 0 || confirm('Discard all questions?')) {
+        if (questions.length === 0 || confirm('Discard all questions? This will clear the editor (does not delete saved quiz).')) {
             questions = [];
             questionId = 0;
             render();
         }
+    }
+
+    // ══════════════════════════════════════════
+    // TOAST
+    // ══════════════════════════════════════════
+    function showToast(msg, color) {
+        const t = document.getElementById('saveToast');
+        t.textContent = msg;
+        t.style.background = color === 'green' ? '#16a34a' : '#dc2626';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
     }
 
     // ══════════════════════════════════════════
@@ -911,10 +954,29 @@
     }
 
     // ══════════════════════════════════════════
-    // INIT — start with 1 question pre-loaded
+    // INIT — load existing questions or start fresh
     // ══════════════════════════════════════════
-    addQuestion();
+    const existingQuestions = @json($existingQuestions);
+
+    if (existingQuestions.length > 0) {
+        questionId = existingQuestions.length;
+        questions  = existingQuestions;
+        render();
+    } else {
+        addQuestion();
+    }
 </script>
+
+<div id="saveToast" style="
+    position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#16a34a;color:#fff;padding:10px 22px;border-radius:10px;
+    font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);opacity:0;
+    transition:opacity 0.2s,transform 0.2s;z-index:999;pointer-events:none;
+"></div>
+<style>
+    #saveToast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
 
 </body>
 </html>
