@@ -464,7 +464,6 @@
 
         .nav-btn:hover { background: var(--teal-dark); }
 
-        /* ── NEW: SVG component tooltips ── */
         .svg-tooltip {
             display: none;
             position: fixed;
@@ -505,7 +504,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ── NEW: electron panel ── */
         .electron-panel-wrap {
             display: none;
             margin-top: 8px;
@@ -524,17 +522,132 @@
             margin-top: 4px;
             font-family: 'Poppins', sans-serif;
         }
+
+        /* ── FLASH CARD SECTION ── */
+        .fc-section-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .fc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .fc-scene {
+            perspective: 900px;
+            height: 160px;
+            cursor: pointer;
+        }
+
+        .fc-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+        }
+
+        .fc-card.flipped { transform: rotateY(180deg); }
+
+        .fc-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .fc-front { background: #2a8a82; }
+        .fc-back  { background: var(--teal); transform: rotateY(180deg); }
+
+        .fc-front-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.55;
+        }
+
+        .fc-back-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 400;
+            color: #fff;
+            line-height: 1.65;
+        }
+
+        .fc-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2px;
+        }
+
+        .fc-nav {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--teal-dark);
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: background 0.18s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .fc-nav:hover { background: rgba(61,189,181,0.15); }
+        .fc-nav svg { width: 22px; height: 22px; }
+
+        .fc-test-btn {
+            background: var(--teal-light);
+            border: 1.5px solid var(--teal);
+            border-radius: 20px;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 8px 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.18s;
+        }
+
+        .fc-test-btn:hover { background: #c8eeeb; }
+
+        .fc-hint {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #5a8a88;
+            text-align: center;
+            margin-top: 14px;
+            letter-spacing: 0.2px;
+        }
     </style>
 </head>
 <body>
 
-<!-- Image hover tooltip (existing) -->
+<!-- Image hover tooltip -->
 <div class="word-tooltip" id="wordTooltip">
     <img id="tooltipImg" src="" alt="">
     <div class="tooltip-label" id="tooltipLabel"></div>
 </div>
 
-<!-- NEW: SVG component tooltip (battery / bulb) -->
+<!-- SVG component tooltip (battery / bulb) -->
 <div class="svg-tooltip" id="svgTooltip">
     <div class="svg-tooltip-inner">
         <div class="svg-tooltip-label" id="svgTooltipLabel">BATTERY</div>
@@ -739,7 +852,6 @@
                 <line class="tm" x1="38" y1="73" x2="38" y2="87"/>
                 <line class="tm" x1="31" y1="80" x2="45" y2="80"/>
 
-                <!-- NEW: Battery hover target (invisible rect over battery area) -->
                 <rect id="battery-hover" x="15" y="105" width="115" height="50" rx="6"
                       fill="transparent" stroke="none" style="cursor:pointer;"
                       data-tip="BATTERY" data-sub="Power Source"/>
@@ -758,7 +870,6 @@
                 <rect class="tag" x="124" y="120" width="44" height="20" rx="10"/>
                 <text class="tagtxt" x="146" y="130">12V</text>
 
-                <!-- NEW: Bulb hover target (invisible rect over sun/bulb area) -->
                 <rect id="bulb-hover" x="388" y="106" width="60" height="48" rx="6"
                       fill="transparent" stroke="none" style="cursor:pointer;"
                       data-tip="BULB" data-sub="Light Component"/>
@@ -809,11 +920,6 @@
 
                 <line class="w3" x1="70"  y1="30"  x2="410" y2="30"/>
                 <line class="w3" x1="70"  y1="230" x2="168" y2="230"/>
-                <!-- Right segment of bottom wire — split so we can highlight the right portion -->
-                <!-- Left bottom: resistor right edge to corner -->
-                <!-- Right highlighted wire: corner (410,230) down to (410,146) — this is the vertical right wire segment -->
-                <!-- Actually the highlighted wire in photo 3 is the BOTTOM right horizontal: from resistor(292,230) to corner(410,230) -->
-                <!-- We keep the original wire but add a highlighted overlay on top -->
                 <line class="w3" x1="292" y1="230" x2="410" y2="230"/>
                 <line class="w3" x1="70"  y1="30"  x2="70"  y2="113"/>
                 <line class="w3" x1="70"  y1="147" x2="70"  y2="230"/>
@@ -844,16 +950,13 @@
                 <rect class="res3" x="168" y="218" width="124" height="24" rx="3"/>
                 <text class="rtxt3" x="230" y="230">&#937;</text>
 
-                <!-- NEW: Highlighted clickable wire (bottom-right horizontal segment) -->
                 <line id="highlight-wire" x1="292" y1="230" x2="410" y2="230"
                       stroke="#22c55e" stroke-width="6" stroke-linecap="round"
                       style="cursor:pointer;" />
 
-                <!-- Green current flow bar (original) -->
                 <line id="flow-bar" x1="292" y1="230" x2="292" y2="230"
                       stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
 
-                <!-- Zoom icon -->
                 <g transform="translate(432,245)">
                     <circle fill="none" stroke="#1a1a1a" stroke-width="2" cx="0" cy="0" r="7"/>
                     <line stroke="#1a1a1a" stroke-width="2" x1="5"  y1="5"  x2="9"  y2="9"/>
@@ -862,7 +965,6 @@
                 </g>
             </svg>
 
-            <!-- NEW: Electron panel (shown when highlighted wire is clicked) -->
             <div class="electron-panel-wrap" id="electronPanel">
                 <canvas id="electronCanvas" width="340" height="48"
                         style="display:block;border-radius:999px;background:#d0ddd8;cursor:pointer;max-width:340px;width:100%;"></canvas>
@@ -870,11 +972,44 @@
             </div>
         </div>
 
+        <!-- ══ SECTION DIVIDER BEFORE FLASH CARDS ══ -->
+        <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <span style="font-size:0.78rem;font-weight:700;color:var(--teal-dark);white-space:nowrap;letter-spacing:1px;">              </span>
+            <div class="section-divider-line right"></div>
+        </div>
+
+        <!-- ══ REVISION FLASH CARDS ══ -->
+        <h2 class="fc-section-title">Revision Flash Card</h2>
+
+        <div class="fc-grid" id="fcGrid"></div>
+
+        <div class="fc-bar">
+            <button class="fc-nav" id="fcPrevBtn" title="Previous">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/><line x1="4" y1="6" x2="4" y2="18"/>
+                </svg>
+            </button>
+            <button class="fc-test-btn" id="fcTestBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="2" width="6" height="4" rx="1"/>
+                    <path d="M4 6h16v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/>
+                </svg>
+                Test Yourself
+            </button>
+            <button class="fc-nav" id="fcNextBtn" title="Next">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/><line x1="20" y1="6" x2="20" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="fc-hint">Click any card to reveal the answer</div>
+
     </div><!-- /content -->
 </div><!-- /app -->
 
 <script>
-    /* ── HOVER WORD IMAGE TOOLTIP (unchanged) ── */
+    /* ── HOVER WORD IMAGE TOOLTIP ── */
     const wordTooltip = document.getElementById('wordTooltip');
     const tooltipImg  = document.getElementById('tooltipImg');
     const tooltipLbl  = document.getElementById('tooltipLabel');
@@ -901,7 +1036,7 @@
         wordTooltip.style.top  = y + 'px';
     }
 
-    /* ── TEXT-TO-SPEECH (unchanged) ── */
+    /* ── TEXT-TO-SPEECH ── */
     function speakText(id) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
@@ -912,7 +1047,7 @@
         window.speechSynthesis.speak(u);
     }
 
-    /* ── CIRCUIT 1 SLIDER (unchanged) ── */
+    /* ── CIRCUIT 1 SLIDER ── */
     const STEPS = [
         { r: '0.4',  a: '30.0', brightness: 1.00 },
         { r: '1.0',  a: '12.0', brightness: 0.80 },
@@ -965,9 +1100,7 @@
     resSlider.addEventListener('input', updateUI);
     updateUI();
 
-    /* ══════════════════════════════════════════════
-       NEW: SVG COMPONENT TOOLTIPS (Battery & Bulb)
-    ══════════════════════════════════════════════ */
+    /* ── SVG COMPONENT TOOLTIPS (Battery & Bulb) ── */
     const svgTooltip      = document.getElementById('svgTooltip');
     const svgTooltipLabel = document.getElementById('svgTooltipLabel');
     const svgTooltipTag   = document.getElementById('svgTooltipTag');
@@ -1002,9 +1135,7 @@
         });
     });
 
-    /* ══════════════════════════════════════════════
-       NEW: HIGHLIGHTED WIRE CLICK → ELECTRON PANEL
-    ══════════════════════════════════════════════ */
+    /* ── HIGHLIGHTED WIRE CLICK → ELECTRON PANEL ── */
     const highlightWire  = document.getElementById('highlight-wire');
     const electronPanel  = document.getElementById('electronPanel');
     const electronCanvas = document.getElementById('electronCanvas');
@@ -1021,10 +1152,8 @@
         else { cancelAnimationFrame(animFrame); animFrame = null; }
     });
 
-    /* Electron drawing */
     const NUM_ELECTRONS = 12;
     let electronsHovered = false;
-
     const tubeH  = 48;
     const radius = 8;
     const margin = 20;
@@ -1046,7 +1175,6 @@
         electronCanvas.height = ch * dpr;
         ctx.scale(dpr, dpr);
 
-        /* Tube background — light grey pill like photo */
         ctx.clearRect(0, 0, cw, ch);
         ctx.fillStyle = '#d0ddd8';
         roundRect(ctx, 0, 0, cw, ch, ch / 2);
@@ -1071,7 +1199,6 @@
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            /* Minus sign */
             ctx.strokeStyle = '#fff';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -1119,7 +1246,6 @@
         drawElectrons(false);
     });
 
-    /* Close panel when clicking anywhere except the highlight wire itself */
     document.addEventListener('click', (e) => {
         if (!electronPanelOpen) return;
         if (e.target === highlightWire) return;
@@ -1129,6 +1255,56 @@
         animFrame = null;
         electronsHovered = false;
     });
+
+    /* ── REVISION FLASH CARDS ── */
+    const FC_PAGES = [
+        [
+            { q: "State Ohm's Law and its formula", a: "Potential difference (V) is directly proportional to current (I) if temperature is constant.\nFormula: V = IR." },
+            { q: "Describe the difference in V-I graph shapes", a: "Ohmic: Straight line passing through the origin\nNon-Ohmic: Curved graph (e.g., filament bulb)" },
+            { q: "Rules for I, V, and R in a series circuit", a: "I = I1 = I2 = I3\nV = V1 + V2 + V3\nR = R1 + R2 + R3" },
+            { q: "Rules for I, V, and R in a parallel circuit", a: "I = I1 + I2 + I3\nV = V1 = V2 = V3\n1/R = 1/R1 + 1/R2 + 1/R3" },
+            { q: "What physical factors change a wire's resistance?", a: "• Depends on material resistivity (ρ)\n• R ∝ L\n• R ∝ 1/A" },
+            { q: "What is the formula for wire resistance?", a: "R = ρL/A\nρ - Resistivity\nL - Length\nA - Cross-sectional area" },
+            { q: "Define resistivity and state its S.I. unit", a: "A measure of a conductor's ability to oppose electric current.\nUnit: Ohm-meter, Ωm" },
+            { q: "Define a superconductor", a: "A material that conducts electricity without any resistance (zero resistivity)" },
+        ]
+    ];
+
+    let fcCurrentPage = 0;
+    const fcGrid = document.getElementById('fcGrid');
+
+    function fcRenderPage() {
+        fcGrid.innerHTML = '';
+        FC_PAGES[fcCurrentPage].forEach((item, i) => {
+            const scene = document.createElement('div');
+            scene.className = 'fc-scene';
+            scene.innerHTML = `
+                <div class="fc-card" id="fc-card-${i}">
+                    <div class="fc-face fc-front"><div class="fc-front-text">${item.q}</div></div>
+                    <div class="fc-face fc-back"><div class="fc-back-text">${item.a.replace(/\n/g, '<br>')}</div></div>
+                </div>`;
+            scene.addEventListener('click', () => {
+                document.getElementById('fc-card-' + i).classList.toggle('flipped');
+            });
+            fcGrid.appendChild(scene);
+        });
+    }
+
+    document.getElementById('fcPrevBtn').addEventListener('click', () => {
+        fcCurrentPage = Math.max(0, fcCurrentPage - 1);
+        fcRenderPage();
+    });
+
+    document.getElementById('fcNextBtn').addEventListener('click', () => {
+        fcCurrentPage = Math.min(FC_PAGES.length - 1, fcCurrentPage + 1);
+        fcRenderPage();
+    });
+
+    document.getElementById('fcTestBtn').addEventListener('click', () => {
+        alert('Test Yourself feature coming soon!');
+    });
+
+    fcRenderPage();
 </script>
 
 </body>
