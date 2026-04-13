@@ -826,7 +826,7 @@
         <!-- ── Circuit 1 (interactive slider) ── -->
         <div class="circuit-wrapper">
             <svg id="circuit1" viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg"
-                 style="display:block;width:100%;max-width:560px;margin:0 auto 8px;">
+                 style="display:block;width:100%;max-width:520px;margin:0 auto 8px;">
                 <style>
                     .w  { stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; fill:none; }
                     .bt { fill:none; stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
@@ -908,11 +908,11 @@
 
         <!-- ── Circuit 2 (flow indicator) ── -->
         <div class="circuit-wrapper" id="circuit2-wrapper">
-            <svg id="circuit2-svg" viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg"
-                 style="display:block;width:100%;max-width:460px;margin:0 auto 8px;">
+            <svg id="circuit2-svg" viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg"
+                 style="display:block;width:100%;max-width:520px;margin:0 auto 8px;">
                 <style>
                     .w3  { stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; fill:none; }
-                    .bt3 { fill:none; stroke:#1a1a1a; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round; }
+                    .bt3 { fill:none; stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
                     .tm3 { fill:none; stroke:#1a1a1a; stroke-width:3; stroke-linecap:round; }
                     .blt3 { fill:#1a1a1a; }
                     .sun3 { fill:none; stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; }
@@ -925,39 +925,39 @@
                 <line class="w3" x1="292" y1="230" x2="410" y2="230"/>
                 <line class="w3" x1="70"  y1="30"  x2="70"  y2="113"/>
                 <line class="w3" x1="70"  y1="147" x2="70"  y2="230"/>
-                <line class="w3" x1="410" y1="30"  x2="410" y2="114"/>
-                <line class="w3" x1="410" y1="146" x2="410" y2="230"/>
+                <line class="w" x1="410" y1="30"  x2="410" y2="90"/>
+                <line class="w" x1="410" y1="170" x2="410" y2="230"/>
 
-                <circle class="tm3" cx="38" cy="80"  r="12"/>
-                <line   class="tm3" x1="38" y1="73"  x2="38" y2="87"/>
-                <line   class="tm3" x1="31" y1="80"  x2="45" y2="80"/>
+                <circle class="tm3" cx="50" cy="90"  r="11"/>
+                <line class="tm" x1="50" y1="84" x2="50" y2="96"/>
+                <line class="tm" x1="44" y1="90" x2="56" y2="90"/>
 
-                <path class="bt3" d="M57,113 L28,113 Q20,113 20,121 L20,139 Q20,147 28,147 L57,147"/>
-                <path class="bt3" d="M83,113 L112,113 Q120,113 120,121 L120,139 Q120,147 112,147 L83,147"/>
+                <path class="bt3" d="M60,113 L48,113 Q40,113 40,121 L40,139 Q40,147 48,147 L60,147"/>
+                <path class="bt3" d="M80,113 L92,113 Q100,113 100,121 L100,139 Q100,147 92,147 L80,147"/>
                 <polygon class="blt3" points="72,118 62,130 69,130 65,142 81,129 73,129 79,118"/>
 
-                <circle class="tm3" cx="38" cy="180" r="12"/>
-                <line   class="tm3" x1="31" y1="180" x2="45" y2="180"/>
+                <circle class="tm" cx="50" cy="170" r="11"/>
+                <line class="tm" x1="44" y1="170" x2="56" y2="170"/>
 
                 <circle class="sun3" cx="410" cy="130" r="16"/>
-                <line class="sun3" x1="410" y1="102" x2="410" y2="114"/>
-                <line class="sun3" x1="410" y1="146" x2="410" y2="158"/>
-                <line class="sun3" x1="382" y1="130" x2="390" y2="130"/>
-                <line class="sun3" x1="430" y1="130" x2="438" y2="130"/>
+                <line class="sun3" x1="410" y1="98" x2="410" y2="108"/>
+                <line class="sun3" x1="410" y1="152" x2="410" y2="162"/>
+                <line class="sun3" x1="379" y1="130" x2="388" y2="130"/>
+                <line class="sun3" x1="432" y1="130" x2="441" y2="130"/>
                 <line class="sun3" x1="387" y1="109" x2="393" y2="115"/>
-                <line class="sun3" x1="421" y1="145" x2="427" y2="151"/>
+                <line class="sun3" x1="427" y1="144" x2="433" y2="150"/>
                 <line class="sun3" x1="387" y1="151" x2="393" y2="145"/>
-                <line class="sun3" x1="421" y1="115" x2="427" y2="109"/>
+                <line class="sun3" x1="427" y1="115" x2="433" y2="109"/>
 
                 <rect class="res3" x="168" y="218" width="124" height="24" rx="3"/>
                 <text class="rtxt3" x="230" y="230">&#937;</text>
 
-                <line id="highlight-wire" x1="292" y1="230" x2="410" y2="230"
-                      stroke="#22c55e" stroke-width="6" stroke-linecap="round"
+                <line id="highlight-wire" x1="292" y1="230" x2="411" y2="230"
+                      stroke="#22c55e" stroke-width="3.5" stroke-linecap="round"
                       style="cursor:pointer;" />
 
                 <line id="flow-bar" x1="292" y1="230" x2="292" y2="230"
-                      stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+                      stroke="#22c55e" stroke-width="3.5" stroke-linecap="round"/>
 
                 <g transform="translate(432,245)">
                     <circle fill="none" stroke="#1a1a1a" stroke-width="2" cx="0" cy="0" r="7"/>
@@ -1005,7 +1005,7 @@
                 </svg>
             </button>
         </div>
-        <div class="fc-hint">Click any card to reveal the answer</div>
+        <!-- <div class="fc-hint">Click any card to reveal the answer</div> -->
 
     </div><!-- /content -->
 </div><!-- /app -->
