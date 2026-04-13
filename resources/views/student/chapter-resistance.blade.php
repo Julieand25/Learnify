@@ -176,7 +176,7 @@
             font-size: 0.84rem;
             color: var(--text-mid);
             line-height: 1.75;
-            max-width: 820px;
+            max-width: 1450px;
             margin-bottom: 28px;
         }
 
@@ -247,7 +247,7 @@
         }
 
         .hover-word {
-            background: var(--highlight);
+            /*background: var(--highlight);*/
             border-radius: 3px;
             padding: 1px 3px;
             cursor: default;
@@ -959,12 +959,12 @@
                 <line id="flow-bar" x1="292" y1="230" x2="292" y2="230"
                       stroke="#22c55e" stroke-width="3.5" stroke-linecap="round"/>
 
-                <g transform="translate(432,245)">
+                <!-- <g transform="translate(432,245)">
                     <circle fill="none" stroke="#1a1a1a" stroke-width="2" cx="0" cy="0" r="7"/>
                     <line stroke="#1a1a1a" stroke-width="2" x1="5"  y1="5"  x2="9"  y2="9"/>
                     <line stroke="#1a1a1a" stroke-width="2" x1="-3" y1="0"  x2="3"  y2="0"/>
                     <line stroke="#1a1a1a" stroke-width="2" x1="0"  y1="-3" x2="0"  y2="3"/>
-                </g>
+                </g>-->
             </svg>
 
             <div class="electron-panel-wrap" id="electronPanel">
@@ -991,7 +991,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"/><line x1="4" y1="6" x2="4" y2="18"/>
                 </svg>
-            </button>
+            </button> 
             <button class="fc-test-btn" id="fcTestBtn">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="2" width="6" height="4" rx="1"/>
