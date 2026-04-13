@@ -384,39 +384,76 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Custom draggable slider */
-        .slider-track {
+        /* ── NEW: short range slider with gauge ── */
+        .slider-container {
             position: relative;
-            height: 10px;
-            background: #b2e8de;
-            border-radius: 5px;
-            max-width: 380px;
+            width: 220px;
+            height: 28px;
+            display: flex;
+            align-items: center;
             margin: 0 auto 6px;
-            cursor: pointer;
         }
 
-        .slider-fill {
-            height: 100%;
-            background: #2bbfaa;
+        .slider-track-bg {
+            position: absolute;
+            left: 0; top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 10px;
             border-radius: 5px;
-            width: 9%;
+            background: #b2e8de;
             pointer-events: none;
         }
 
-        .slider-thumb {
+        .slider-track-fill {
             position: absolute;
-            top: 50%;
-            width: 26px;
-            height: 26px;
-            background: #1a6b5a;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            cursor: grab;
-            left: 9%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            left: 0; top: 50%;
+            transform: translateY(-50%);
+            height: 10px;
+            border-radius: 5px;
+            background: #5db8a0; /* lighter than thumb, darker than track */
+            pointer-events: none;
+            transition: width 0.15s;
         }
 
-        .slider-thumb:active { cursor: grabbing; }
+        input[type=range].short-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 220px;
+            height: 10px;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+            margin: 0;
+        }
+
+        input[type=range].short-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1a6b5a;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        input[type=range].short-slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1a6b5a;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        input[type=range].short-slider::-webkit-slider-runnable-track { background: transparent; }
+        input[type=range].short-slider::-moz-range-track { background: transparent; }
+        /* ── END new slider styles ── */
 
         .slide-label {
             font-size: 0.72rem;
@@ -638,7 +675,7 @@
                     .tm { fill:none; stroke:#1a1a1a; stroke-width:3; stroke-linecap:round; }
                     .blt { fill:#1a1a1a; }
                     .res { fill:none; stroke:#1a1a1a; stroke-width:4; }
-                    .rtxt  { font-size:16px; fill:#1a1a1a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
+                    .rtxt  { font-size:13px; fill:#1a1a1a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
                     .tag   { fill:#f5e6d3; stroke:#c8a882; stroke-width:1.5; }
                     .tagtxt { font-size:13px; fill:#7a5c3a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
                 </style>
@@ -684,18 +721,21 @@
 
                 {{-- Ampere label --}}
                 <rect class="tag" x="380" y="154" width="56" height="20" rx="10"/>
-                <text id="cur-label1" class="tagtxt" x="408" y="164">0.00A</text>
+                <text id="cur-label1" class="tagtxt" x="408" y="164">0.25A</text>
 
                 {{-- Resistor --}}
                 <rect class="res" x="168" y="218" width="124" height="24" rx="3"/>
-                <text class="rtxt" x="230" y="230">&#937;</text>
+                <text id="res-label1" class="rtxt" x="230" y="230">48.0&#937;</text>
             </svg>
 
-            <div class="omega-val" id="omega-display">10 &#937;</div>
+            <div class="omega-val" id="omega-display">48.0 &#937;</div>
 
-            <div class="slider-track" id="slider-track">
-                <div class="slider-fill"  id="slider-fill"></div>
-                <div class="slider-thumb" id="slider-thumb"></div>
+            {{-- NEW: short gauge slider --}}
+            <div class="slider-container">
+                <div class="slider-track-bg"></div>
+                <div class="slider-track-fill" id="slider-track-fill" style="width:100%;"></div>
+                {{-- min=0(left)=0.4Ω brightest, max=4(right)=48Ω darkest, default=4 --}}
+                <input type="range" class="short-slider" id="res-slider" min="0" max="4" value="4" step="1">
             </div>
             <div class="slide-label">Slide to adjust the resistor</div>
         </div>
@@ -808,72 +848,63 @@
         window.speechSynthesis.speak(u);
     }
 
-    /* ── CIRCUIT 1 SLIDER ── */
-    const VOLTAGE = 12;
-    const MIN_R   = 1;
-    const MAX_R   = 100;
-    let resistance = 10;
-    let dragging   = false;
+    /* ── CIRCUIT 1 SLIDER (5 fixed steps) ── */
+    // index 0 = left = 0.4Ω (brightest), index 4 = right = 48Ω (darkest/default)
+    const STEPS = [
+        { r: '0.4',  a: '30.0', brightness: 1.00 },
+        { r: '1.0',  a: '12.0', brightness: 0.80 },
+        { r: '4.0',  a: '3.0',  brightness: 0.50 },
+        { r: '12.0', a: '1.0',  brightness: 0.20 },
+        { r: '48.0', a: '0.25', brightness: 0.05 },
+    ];
 
+    const resSlider   = document.getElementById('res-slider');
+    const trackFill   = document.getElementById('slider-track-fill');
     const omegaDisplay = document.getElementById('omega-display');
-    const curLabel1    = document.getElementById('cur-label1');
-    const flowBar      = document.getElementById('flow-bar');
-    const sliderTrack  = document.getElementById('slider-track');
-    const sliderFill   = document.getElementById('slider-fill');
-    const sliderThumb  = document.getElementById('slider-thumb');
+    const curLabel1   = document.getElementById('cur-label1');
+    const resLabel1   = document.getElementById('res-label1');
+    const flowBar     = document.getElementById('flow-bar');
 
     const sunEls = [
         'sun-circle','sun-r1','sun-r2','sun-r3',
         'sun-r4','sun-r5','sun-r6','sun-r7','sun-r8'
     ];
 
-    function setResistance(clientX) {
-        const rect = sliderTrack.getBoundingClientRect();
-        let pct = (clientX - rect.left) / rect.width;
-        pct = Math.max(0, Math.min(1, pct));
-        resistance = Math.round(MIN_R + pct * (MAX_R - MIN_R));
-        updateUI(true);
+    function updateUI() {
+        const idx  = parseInt(resSlider.value);
+        const step = STEPS[idx];
+        const b    = step.brightness;
+
+        // gauge fill: index 4 (right/max resistance) = 100% fill, index 0 (left) = 0%
+        trackFill.style.width = ((idx / 4) * 100) + '%';
+
+        omegaDisplay.textContent = step.r + ' \u03A9';
+        curLabel1.textContent    = step.a + 'A';
+        resLabel1.textContent    = step.r + '\u03A9';
+
+        // flow bar: more current (lower idx) = longer bar
+        const flowX = 292 + Math.round(118 * ((4 - idx) / 4));
+        flowBar.setAttribute('x2', flowX);
+
+        // bulb brightness
+        const sunCircle = document.getElementById('sun-circle');
+        if (b <= 0.05) {
+            sunCircle.setAttribute('fill', 'none');
+            sunCircle.setAttribute('stroke', '#1a1a1a');
+            sunEls.filter(id => id !== 'sun-circle').forEach(id => {
+                document.getElementById(id).setAttribute('stroke', '#1a1a1a');
+            });
+        } else {
+            sunCircle.setAttribute('fill', `rgba(255,${Math.round(200 + b * 55)},${Math.round(Math.max(10, 150 - b * 140))},${b})`);
+            sunCircle.setAttribute('stroke', '#f59e0b');
+            sunEls.filter(id => id !== 'sun-circle').forEach(id => {
+                document.getElementById(id).setAttribute('stroke', '#f59e0b');
+            });
+        }
     }
 
-    function updateUI(lightOn) {
-        const pct    = (resistance - MIN_R) / (MAX_R - MIN_R);
-        const pctStr = (pct * 100).toFixed(1) + '%';
-
-        sliderFill.style.width  = pctStr;
-        sliderThumb.style.left  = pctStr;
-        omegaDisplay.textContent = resistance + ' \u03A9';
-
-        const current = lightOn ? parseFloat((VOLTAGE / resistance).toFixed(2)) : 0;
-        curLabel1.textContent = current.toFixed(2) + 'A';
-        flowBar.setAttribute('x2', lightOn ? (292 + Math.round(118 * pct)) : 292);
-
-        const sunColor = lightOn ? '#f59e0b' : '#1a1a1a';
-        sunEls.forEach(id => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if (id === 'sun-circle') {
-                el.setAttribute('fill',   lightOn ? '#fef3c7' : 'none');
-                el.setAttribute('stroke', sunColor);
-            } else {
-                el.setAttribute('stroke', sunColor);
-            }
-        });
-    }
-
-    sliderThumb.addEventListener('mousedown',  e => { dragging = true; e.preventDefault(); });
-    sliderThumb.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); }, { passive: false });
-
-    document.addEventListener('mousemove', e => { if (dragging) setResistance(e.clientX); });
-    document.addEventListener('touchmove', e => {
-        if (dragging) setResistance(e.touches[0].clientX);
-    }, { passive: false });
-
-    document.addEventListener('mouseup',  () => { if (dragging) { dragging = false; updateUI(false); } });
-    document.addEventListener('touchend', () => { if (dragging) { dragging = false; updateUI(false); } });
-
-    sliderTrack.addEventListener('click', e => { setResistance(e.clientX); updateUI(false); });
-
-    updateUI(false);
+    resSlider.addEventListener('input', updateUI);
+    updateUI();
 </script>
 
 </body>
