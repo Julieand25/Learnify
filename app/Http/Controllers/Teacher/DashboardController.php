@@ -236,7 +236,7 @@ class DashboardController extends Controller
 
         $request->user()->update($data);
 
-        return redirect()->route('teacher.settings')->with('success', 'Profile updated successfully.');
+        return redirect()->route('teacher.settings')->with('profile_success', 'Profile updated successfully.');
     }
 
     public function updatePassword(Request $request): RedirectResponse
@@ -248,6 +248,6 @@ class DashboardController extends Controller
 
         $request->user()->update(['password' => Hash::make($request->password)]);
 
-        return redirect()->route('teacher.settings')->with('success', 'Password updated successfully.');
+        return redirect()->route('teacher.settings')->with('password_success', 'Password updated successfully.');
     }
 }

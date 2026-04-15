@@ -446,16 +446,16 @@
             background: transparent;
         }
 
-        /* Error / success messages */
-        .alert {
+        /* Validation errors */
+        .alert-error {
             padding: 10px 16px;
             border-radius: 10px;
             font-size: 0.8rem;
             margin-bottom: 20px;
+            background: #fde8e8;
+            color: #9b2222;
+            border: 1px solid #f5b8b8;
         }
-
-        .alert-success { background: #d4f5ef; color: #1a6b60; border: 1px solid #9de0d4; }
-        .alert-error   { background: #fde8e8; color: #9b2222; border: 1px solid #f5b8b8; }
     </style>
 </head>
 <body>
@@ -490,14 +490,6 @@
         <div class="content">
         <div class="content-inner">
 
-            {{-- Flash messages --}}
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-error">{{ session('error') }}</div>
-            @endif
-
             <div class="settings-card">
 
                 {{-- ── PROFILE DETAILS header ── --}}
@@ -507,7 +499,15 @@
                             <div class="section-label">Profile Details</div>
                             <div class="section-desc">You can change your profile details here seamlessly.</div>
                         </div>
-                        <button class="btn-save" form="profile-form" type="submit">Save</button>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            @if (session('profile_success'))
+                                <span style="font-size:0.78rem;font-weight:600;color:#1a8a5a;display:flex;align-items:center;gap:5px;">
+                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    {{ session('profile_success') }}
+                                </span>
+                            @endif
+                            <button class="btn-save" form="profile-form" type="submit">Save</button>
+                        </div>
                     </div>
 
                     <form id="profile-form" method="POST" action="{{ route('teacher.settings.update-profile') }}" enctype="multipart/form-data">
@@ -592,7 +592,15 @@
                             <div class="section-label">Change my password</div>
                             <div class="section-desc">Update your password to keep your account secure.</div>
                         </div>
-                        <button class="btn-save" form="password-form" type="submit">Save</button>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            @if (session('password_success'))
+                                <span style="font-size:0.78rem;font-weight:600;color:#1a8a5a;display:flex;align-items:center;gap:5px;">
+                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    {{ session('password_success') }}
+                                </span>
+                            @endif
+                            <button class="btn-save" form="password-form" type="submit">Save</button>
+                        </div>
                     </div>
 
                     <form id="password-form" method="POST" action="{{ route('teacher.settings.update-password') }}">
