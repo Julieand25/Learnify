@@ -244,6 +244,22 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function retakeQuiz(Request $request, ClassRoom $classRoom): RedirectResponse
+    {
+        $enrolled = $request->user()->enrolledClasses()
+            ->where('class_room_id', $classRoom->id)->exists();
+        abort_if(! $enrolled, 403);
+
+        $quiz = $classRoom->quiz()->first();
+        if ($quiz) {
+            QuizAttempt::where('student_id', $request->user()->id)
+                ->where('quiz_id', $quiz->id)
+                ->delete();
+        }
+
+        return redirect()->route('student.quiz.take', $classRoom->id);
+    }
+
     public function unenrollClass(Request $request, ClassRoom $classRoom): RedirectResponse
     {
         $request->user()->enrolledClasses()->detach($classRoom->id);

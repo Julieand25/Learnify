@@ -510,15 +510,17 @@
             padding: 14px 14px 18px;
             box-shadow: 3px 4px 12px rgba(0,0,0,0.1);
             position: relative;
-            min-height: 120px;
+            height: 140px;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
-        .sticky-note.yellow-dark { background: #fde047; }
+        /*.sticky-note.yellow-dark { background: #fde047; }*/
+        .sticky-note.yellow-dark { background: #fef9c3; }
 
         .sticky-pin {
             position: absolute;
-            top: -8px; right: 14px;
+            top: 4px; right: 14px;
             font-size: 1.1rem;
         }
 
@@ -535,7 +537,14 @@
             color: #5a4a00;
             line-height: 1.6;
             white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 78px;
+            scrollbar-width: thin;
+            scrollbar-color: #d4b84a transparent;
         }
+
+        .sticky-content::-webkit-scrollbar { width: 3px; }
+        .sticky-content::-webkit-scrollbar-thumb { background: #d4b84a; border-radius: 10px; }
 
         .sticky-empty {
             font-size: 0.68rem;
@@ -576,11 +585,7 @@
             </div>
         </div>
 
-        <div class="progress-row">
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <span class="progress-label" id="progressLabel">0/5</span>
+        <div class="progress-row" style="justify-content:center;">
             <div class="quiz-actions">
                 <button class="btn-discard" onclick="discardAll()">Discard</button>
                 <button class="btn-save"    onclick="saveQuiz()">Save</button>

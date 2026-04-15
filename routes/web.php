@@ -18,6 +18,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/quiz', [StudentDashboard::class, 'classQuiz'])->name('quiz');
     Route::get('/quiz/{classRoom}', [StudentDashboard::class, 'takeQuiz'])->name('quiz.take');
     Route::post('/quiz/{classRoom}/answer', [StudentDashboard::class, 'answerQuestion'])->name('quiz.answer');
+    Route::post('/quiz/{classRoom}/retake', [StudentDashboard::class, 'retakeQuiz'])->name('quiz.retake');
     Route::get('/learning-module/search-class', [StudentDashboard::class, 'searchClass'])->name('class.search');
     Route::post('/learning-module/enroll', [StudentDashboard::class, 'enrollClass'])->name('class.enroll');
     Route::delete('/learning-module/{classRoom}', [StudentDashboard::class, 'unenrollClass'])->name('class.unenroll');
