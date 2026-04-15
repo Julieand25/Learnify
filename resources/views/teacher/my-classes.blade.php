@@ -105,6 +105,16 @@
 
         .topbar h2 { font-size: 1.3rem; font-weight: 700; }
 
+        .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+        .notif-btn {
+            width: 38px; height: 38px; border-radius: 50%; border: none;
+            background: var(--card-bg); display: flex; align-items: center;
+            justify-content: center; cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: box-shadow 0.2s;
+        }
+        .notif-btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+
         .user-chip {
             display: flex; align-items: center; gap: 10px; background: var(--card-bg);
             border-radius: 24px; padding: 6px 14px 6px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -510,12 +520,19 @@
 
     <div class="main">
         <div class="topbar">
-            <h2>My Class</h2>
-            <div class="user-chip">
-                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
+            <h2>My Classes</h2>
+            <div class="topbar-right">
+                <button class="notif-btn">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+                <div class="user-chip">
+                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
+                    </div>
+                    <span>{{ auth()->user()->name ?? 'Nur Elin' }}</span>
                 </div>
-                <span>{{ auth()->user()->name ?? 'Nur Elin' }}</span>
             </div>
         </div>
 

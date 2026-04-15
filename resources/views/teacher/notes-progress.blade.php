@@ -378,7 +378,7 @@
 
         <!-- Topbar -->
         <div class="topbar">
-            <div><!-- spacer --></div>
+            <h2 style="font-size:1.3rem;font-weight:700;color:var(--text-dark);">Notes Progress</h2>
             <div class="topbar-right">
                 <button class="notif-btn">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

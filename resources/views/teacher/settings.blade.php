@@ -184,7 +184,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             padding: 24px 28px;
             overflow-y: auto;
@@ -469,7 +469,7 @@
 
         <!-- Topbar -->
         <div class="topbar">
-            <h1 class="page-title" style="margin:0;">Settings</h1>
+            <h2 style="font-size:1.5rem;font-weight:640;color:var(--text-dark);">Settings</h2>
             <div class="topbar-right">
                 <button class="notif-btn">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
