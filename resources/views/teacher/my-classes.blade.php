@@ -598,7 +598,7 @@
                     </div>
                 </div>
 
-                <div class="student-count">0 students</div>
+                <div class="student-count">{{ $class->students_count }} {{ Str::plural('student', $class->students_count) }}</div>
 
                 {{-- Hidden delete form --}}
                 <form id="delete-form-{{ $class->id }}" method="POST"

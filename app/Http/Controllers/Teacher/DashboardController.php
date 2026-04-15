@@ -26,6 +26,7 @@ class DashboardController extends Controller
     public function myClasses(Request $request): View
     {
         $classes = ClassRoom::where('teacher_id', $request->user()->id)
+            ->withCount('students')
             ->orderBy('created_at', 'asc')
             ->get();
 
