@@ -262,7 +262,13 @@
                 
                 <div class="circular-progress">
                     <span class="percent-badge">32%</span>
-                    <img src="https://i.pravatar.cc/150?u=eden" alt="Eden">
+                    @if (auth()->user()?->profile_photo_path)
+                        <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar">
+                    @else
+                        <div style="width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;font-weight:700;z-index:1;">
+                            {{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}
+                        </div>
+                    @endif
                 </div>
 
                 <p class="stat-hint">Continue your learning to achieve your target</p>
