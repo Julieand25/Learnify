@@ -706,10 +706,10 @@
             @php
                 $pct = $totalQuestions > 0 ? round(($currentQuestion / $totalQuestions) * 100) : 0;
             @endphp
-            <div class="progress-track">
+            <!--<div class="progress-track">
                 <div class="progress-fill" style="width: {{ $pct }}%"></div>
             </div>
-            <span class="progress-label">{{ $currentQuestion }}/{{ $totalQuestions }}</span>
+            <span class="progress-label">{{ $currentQuestion }}/{{ $totalQuestions }}</span>-->
         </div>
     </div>
 
@@ -724,7 +724,7 @@
                 <div class="result-card">
                     <div class="result-score-ring">
                         <span class="score-num">{{ $attempt->score }}</span>
-                        <span class="score-sub">/ {{ $attempt->total }}</span>
+                        <!--<span class="score-sub">/ {{ $attempt->total }}</span>-->
                     </div>
                     <div class="result-title">Quiz Completed!</div>
                     <div class="result-sub">
@@ -1190,53 +1190,45 @@
         if (navRow) navRow.style.display = 'flex';
     }
 
-    // ── Submit validation (last question) ──
+    // ── Submit validation (last question only) ──
     @if ($question && $totalQuestions > 0 && $currentQuestion === $totalQuestions)
     (function () {
         const form         = document.getElementById('answerForm');
         const qType        = @json($question->type);
         const hasSaved     = {{ $savedAnswer ? 'true' : 'false' }};
-        const answeredInDB = {{ $answeredCount ?? 0 }};
+        const answeredInDB = {{ $answeredCount ?? 0 }};  // only non-empty answers
         const total        = {{ $totalQuestions }};
 
         if (!form) return;
 
         form.addEventListener('submit', function (e) {
-            // 1. Is the current question answered?
+            // Check if the last question itself is answered
             let currentOk = false;
 
             if (qType === 'objective') {
                 currentOk = !!form.querySelector('input[name="answer"]:checked');
 
             } else if (qType === 'circuit') {
-                const followup = document.getElementById('followupSection');
+                const followup    = document.getElementById('followupSection');
                 const circuitDone = followup && followup.style.display !== 'none';
-                const a = document.getElementById('circuit_answer_a');
-                const b = document.getElementById('circuit_answer_b');
-                const hasText = (a && a.value.trim()) || (b && b.value.trim());
-                currentOk = circuitDone && !!hasText;
+                const a           = document.getElementById('circuit_answer_a');
+                const b           = document.getElementById('circuit_answer_b');
+                currentOk = circuitDone && !!((a && a.value.trim()) || (b && b.value.trim()));
 
             } else {
-                // subjective
                 const ta = form.querySelector('textarea[name="answer_text"]');
                 currentOk = ta && ta.value.trim().length > 0;
             }
 
-            const effectiveOk = hasSaved || currentOk;
+            const effectiveCurrentOk = hasSaved || currentOk;
 
-            // answeredInDB includes current question only when hasSaved
-            const prevAnswered = hasSaved ? answeredInDB - 1 : answeredInDB;
+            // Total real answers after this submission
+            const totalWillBeAnswered = answeredInDB + (!hasSaved && currentOk ? 1 : 0);
 
-            if (!effectiveOk) {
-                e.preventDefault();
-                showQuizAlert('Please answer this question before submitting.');
-                return;
-            }
-
-            if (prevAnswered < total - 1) {
+            if (!effectiveCurrentOk || totalWillBeAnswered < total) {
                 e.preventDefault();
                 showQuizAlert(
-                    'Some earlier questions are still unanswered.\n\nPlease use the Back button to go back and complete all questions before submitting.'
+                    "You haven't completed all questions yet.\n\nPlease go back and answer every question before submitting the quiz."
                 );
             }
         });

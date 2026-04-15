@@ -161,8 +161,18 @@ class DashboardController extends Controller
             ? $pendingAttempt->answers()->where('quiz_question_id', $question->id)->first()
             : null;
 
+        // Count only answers that actually have a value (non-empty)
+        // so skipped questions (null records) don't inflate the count
         $answeredCount = $pendingAttempt
-            ? $pendingAttempt->answers()->count()
+            ? $pendingAttempt->answers()
+                ->where(function ($q) {
+                    $q->whereNotNull('selected_option')
+                      ->orWhere(function ($q2) {
+                          $q2->whereNotNull('answer_text')
+                             ->where('answer_text', '!=', '');
+                      });
+                })
+                ->count()
             : 0;
 
         return view('student.take-quiz', [
