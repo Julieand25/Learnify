@@ -249,6 +249,14 @@
             .description { max-width: 100%; }
             .quote { max-width: 100%; }
 
+            .quote-bar {
+                position: static;
+                backdrop-filter: none;
+                background: transparent;
+                padding: 24px 24px 32px;
+                order: 3;
+            }
+
             .right-panel {
                 width: 100%;
                 border-radius: 0 0 40% 40% / 0 0 50px 50px;
