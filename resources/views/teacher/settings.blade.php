@@ -179,16 +179,25 @@
             color: var(--text-dark);
         }
 
-        /* Scrollable content */
+        /* Centered content — no scroll */
         .content {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 28px;
             overflow-y: auto;
-            padding: 0 28px 40px;
         }
 
         .content::-webkit-scrollbar { width: 5px; }
         .content::-webkit-scrollbar-track { background: transparent; }
         .content::-webkit-scrollbar-thumb { background: #c0d0d8; border-radius: 10px; }
+
+        .content-inner {
+            width: 100%;
+            max-width: 860px;
+        }
 
         /* ══════════════════════════════
            PAGE TITLE
@@ -460,7 +469,7 @@
 
         <!-- Topbar -->
         <div class="topbar">
-            <div><!-- spacer --></div>
+            <h1 class="page-title" style="margin:0;">Settings</h1>
             <div class="topbar-right">
                 <button class="notif-btn">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -478,8 +487,7 @@
 
         <!-- Content -->
         <div class="content">
-
-            <h1 class="page-title">Settings</h1>
+        <div class="content-inner">
 
             {{-- Flash messages --}}
             @if (session('success'))
@@ -629,6 +637,7 @@
 
             </div><!-- /settings-card -->
 
+        </div><!-- /content-inner -->
         </div><!-- /content -->
     </div><!-- /main -->
 </div><!-- /app -->
