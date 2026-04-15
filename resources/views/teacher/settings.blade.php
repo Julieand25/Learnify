@@ -424,6 +424,7 @@
         .input-labeled:focus-within { border-color: var(--teal); }
 
         .input-prefix {
+            width: 174px;
             padding: 11px 18px;
             font-size: 0.78rem;
             font-weight: 600;
