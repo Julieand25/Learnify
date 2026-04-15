@@ -38,40 +38,33 @@
         .app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
 
         /* ════════════ MAIN CONTENT ════════════ */
-        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px 40px; }
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-        .top-header {
+        .topbar {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+            padding: 18px 28px;
+            background: var(--main-bg);
+            flex-shrink: 0;
         }
 
-        .user-profile { display: flex; align-items: center; gap: 15px; }
-        .notif-btn {
-            background: #fff;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            cursor: pointer;
-        }
+        .topbar h2 { font-size: 1.3rem; font-weight: 700; }
 
         .user-chip {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #fff;
-            padding: 5px 15px 5px 5px;
-            border-radius: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 6px 14px 6px 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .user-chip img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+        .content { flex: 1; overflow-y: auto; padding: 0 28px 28px; }
+        .content::-webkit-scrollbar { width: 5px; }
+        .content::-webkit-scrollbar-track { background: transparent; }
+        .content::-webkit-scrollbar-thumb { background: #c0d0d8; border-radius: 10px; }
 
         /* ════════════ COURSE CATEGORIES ════════════ */
         .section-label { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
@@ -191,18 +184,22 @@
 <div class="app">
     <x-student.sidebar active="dashboard" />
 
-    <main class="main">
-        <div class="top-header">
-            <h2>Good morning, Eden 👋</h2>
-            <div class="user-profile">
-                <button class="notif-btn">🔔</button>
-                <div class="user-chip">
-                    <img src="https://i.pravatar.cc/150?u=eden" alt="User">
-                    <span>Eden Hazard</span>
-                </div>
+    <div class="main">
+        <div class="topbar">
+            <h2>Good morning, {{ auth()->user()->name ?? 'Student' }} 👋</h2>
+            <div class="user-chip">
+                @if (auth()->user()?->profile_photo_path)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                @else
+                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}
+                    </div>
+                @endif
+                <span>{{ auth()->user()->name ?? 'Student' }}</span>
             </div>
         </div>
 
+        <div class="content">
         <h3 class="section-label">Course Category</h3>
         <div class="categories-grid">
             <a href="#" class="cat-card physics">
@@ -285,7 +282,8 @@
                 <p style="font-size:0.75rem; color:var(--teal); font-weight:700; margin-top:15px;">Learning Progress</p>
             </div>
         </div>
-    </main>
+        </div><!-- /content -->
+    </div><!-- /main -->
 </div>
 
 </body>
