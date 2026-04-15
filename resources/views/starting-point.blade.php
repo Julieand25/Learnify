@@ -69,7 +69,6 @@
             font-weight: 800;
             color: #1a1a2e;
             line-height: 1.2;
-            max-width: 420px;
             margin-bottom: 24px;
         }
 
