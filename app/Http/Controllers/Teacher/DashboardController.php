@@ -153,7 +153,7 @@ class DashboardController extends Controller
 
         $data = $request->validate([
             'questions'              => ['required', 'array', 'min:1', 'max:10'],
-            'questions.*.type'       => ['required', 'in:objective,subjective'],
+            'questions.*.type'       => ['required', 'in:objective,subjective,circuit'],
             'questions.*.question'   => ['required', 'string', 'max:1000'],
             'questions.*.options'    => ['nullable', 'array'],
             'questions.*.options.*'  => ['nullable', 'string', 'max:500'],
@@ -173,7 +173,7 @@ class DashboardController extends Controller
             $question = $quiz->questions()->create([
                 'type'       => $qData['type'],
                 'question'   => $qData['question'],
-                'answer'     => $qData['type'] === 'subjective' ? ($qData['answer'] ?? null) : null,
+                'answer'     => in_array($qData['type'], ['subjective', 'circuit']) ? ($qData['answer'] ?? null) : null,
                 'hint'       => ! empty($qData['hint']) ? $qData['hint'] : null,
                 'sort_order' => $i,
             ]);

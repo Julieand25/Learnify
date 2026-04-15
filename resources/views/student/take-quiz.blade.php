@@ -527,6 +527,71 @@
 
         .sticky-note:hover .sticky-placeholder { opacity: 0; }
         .sticky-note:hover .sticky-reveal      { opacity: 1; pointer-events: auto; }
+
+        /* ══════════════════════════════
+           CIRCUIT BUILDER
+        ══════════════════════════════ */
+        .circuit-svg-wrap {
+            margin: 4px 0 6px;
+            background: #f8fbfd;
+            border: 1px solid #e0ecef;
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .component-tray {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 12px 0 4px;
+        }
+
+        .component-tile {
+            background: #f0f6f8;
+            border: 2px solid #d8eaec;
+            border-radius: 10px;
+            padding: 10px 16px;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-mid);
+            text-align: center;
+            transition: border-color 0.2s, opacity 0.2s, transform 0.15s;
+            user-select: none;
+            min-width: 70px;
+            outline: none;
+        }
+
+        .component-tile:hover  { border-color: var(--teal); transform: translateY(-2px); }
+        .component-tile:active { cursor: grabbing; }
+        .component-tile:focus-visible { box-shadow: 0 0 0 2px var(--teal); }
+        .component-tile.used   { opacity: 0.22; pointer-events: none; }
+
+        .circuit-complete-msg {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--teal-dark);
+            background: var(--teal-light);
+            border-radius: 8px;
+            padding: 7px 12px;
+            margin: 10px 0 4px;
+        }
+
+        .followup-section {
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -624,6 +689,13 @@
                                             <div class="review-answer" style="color:var(--text-light);">Not answered</div>
                                         @endif
                                     </div>
+                                @elseif ($q->type === 'circuit')
+                                    <div class="review-item manual">
+                                        <div class="review-q">Q{{ $idx + 1 }}. Circuit Builder</div>
+                                        <span class="review-badge badge-manual">Circuit</span>
+                                        <div class="review-answer" style="margin-bottom:4px;font-style:italic;font-size:0.7rem;">{{ $q->question }}</div>
+                                        <div class="review-answer">Your answer: {{ $ans->answer_text ?? '—' }}</div>
+                                    </div>
                                 @else
                                     <div class="review-item manual">
                                         <div class="review-q">Q{{ $idx + 1 }}. {{ $q->question }}</div>
@@ -657,7 +729,13 @@
                         </div> -->
                     </div>
 
-                    <div class="q-input" style="pointer-events:none;">{{ $question->question }}</div>
+                    <div class="q-input" style="pointer-events:none;">
+                        @if ($question->type === 'circuit')
+                            Drag and drop the correct symbols into the empty slots to complete the series circuit diagram.
+                        @else
+                            {{ $question->question }}
+                        @endif
+                    </div>
 
                     <div class="q-divider"></div>
 
@@ -675,18 +753,165 @@
                                                {{ $selected ? 'checked' : '' }}
                                                onchange="selectOption(this)">
                                         <div class="option-label">{{ $opt->letter }}</div>
-                                        <span class="option-input">{{ $opt->body }}</span>
+                                        <span class="option-input">{{ $opt->text }}</span>
                                     </label>
                                 @endforeach
                             </div>
+
+                        @elseif ($question->type === 'circuit')
+                            {{-- ── Circuit Builder (uses the real circuit SVG) ── --}}
+
+                            <div class="circuit-svg-wrap">
+                                <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg"
+                                     style="display:block;width:100%;max-width:480px;margin:0 auto;">
+                                    <style>
+                                        .cw  { stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; fill:none; }
+                                        .cbt { fill:none; stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+                                        .ctm { fill:none; stroke:#1a1a1a; stroke-width:3; stroke-linecap:round; }
+                                        .cblt { fill:#1a1a1a; }
+                                        .cres { fill:none; stroke:#1a1a1a; stroke-width:4; }
+                                        .crtxt  { font-size:13px; fill:#1a1a1a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
+                                        .ctag   { fill:#f5e6d3; stroke:#c8a882; stroke-width:1.5; }
+                                        .ctagtxt { font-size:13px; fill:#7a5c3a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
+                                        .cslot  { fill:#eef6fb; stroke:#6baed6; stroke-width:2; stroke-dasharray:6,3; cursor:pointer; transition:fill 0.15s,stroke 0.15s; }
+                                        .cslot.drag-over { fill:#dff4f2; stroke:#2aa19a; }
+                                        .cslottxt { font-size:11px; fill:#5a9ec8; font-family:sans-serif; text-anchor:middle; dominant-baseline:central; pointer-events:none; }
+                                        .cslottxt2 { font-size:9px; fill:#94a3b8; font-family:sans-serif; text-anchor:middle; dominant-baseline:central; pointer-events:none; }
+                                    </style>
+
+                                    {{-- ─ Wires (always visible) ─ --}}
+                                    <line class="cw" x1="70"  y1="30"  x2="410" y2="30"/>
+                                    <line class="cw" x1="70"  y1="230" x2="168" y2="230"/>
+                                    <line class="cw" x1="292" y1="230" x2="410" y2="230"/>
+                                    <line class="cw" x1="70"  y1="30"  x2="70"  y2="113"/>
+                                    <line class="cw" x1="70"  y1="147" x2="70"  y2="230"/>
+                                    <line class="cw" x1="410" y1="30"  x2="410" y2="90"/>
+                                    <line class="cw" x1="410" y1="170" x2="410" y2="230"/>
+
+                                    {{-- ─ Battery slot ─ --}}
+                                    <g id="battery-slot-group">
+                                        <rect id="battery-slot-rect" class="cslot" x="15" y="100" width="115" height="60" rx="6"
+                                              ondragover="event.preventDefault();svgSlotOver(this)"
+                                              ondragleave="svgSlotLeave(this)"
+                                              ondrop="svgDrop(event,'battery')"/>
+                                        <text class="cslottxt"  x="72" y="122">BATTERY</text>
+                                        <text class="cslottxt2" x="72" y="138">drop here</text>
+                                    </g>
+
+                                    {{-- ─ Battery (hidden initially, revealed on drop) ─ --}}
+                                    <g id="battery-group" style="opacity:0;pointer-events:none;">
+                                        <circle class="ctm" cx="50" cy="90" r="11"/>
+                                        <line class="ctm" x1="50" y1="84" x2="50" y2="96"/>
+                                        <line class="ctm" x1="44" y1="90" x2="56" y2="90"/>
+                                        <path class="cbt" d="M60,113 L48,113 Q40,113 40,121 L40,139 Q40,147 48,147 L60,147"/>
+                                        <path class="cbt" d="M80,113 L92,113 Q100,113 100,121 L100,139 Q100,147 92,147 L80,147"/>
+                                        <polygon class="cblt" points="72,118 62,130 69,130 65,142 81,129 73,129 79,118"/>
+                                        <circle class="ctm" cx="50" cy="170" r="11"/>
+                                        <line class="ctm" x1="44" y1="170" x2="56" y2="170"/>
+                                        <!-- <rect class="ctag" x="110" y="135" width="44" height="20" rx="10"/>
+                                        <text class="ctagtxt" x="132" y="145">12V</text> -->
+                                    </g>
+
+                                    {{-- ─ Bulb slot ─ --}}
+                                    <g id="bulb-slot-group">
+                                        <rect id="bulb-slot-rect" class="cslot" x="382" y="100" width="74" height="60" rx="6"
+                                              ondragover="event.preventDefault();svgSlotOver(this)"
+                                              ondragleave="svgSlotLeave(this)"
+                                              ondrop="svgDrop(event,'bulb')"/>
+                                        <text class="cslottxt"  x="419" y="122">BULB</text>
+                                        <text class="cslottxt2" x="419" y="138">drop here</text>
+                                    </g>
+
+                                    {{-- ─ Bulb (hidden initially, revealed on drop) ─ --}}
+                                    <g id="bulb-group" style="opacity:0;pointer-events:none;">
+                                        <circle fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" cx="410" cy="130" r="16"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="98"  x2="410" y2="108"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="152" x2="410" y2="162"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="379" y1="130" x2="388" y2="130"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="432" y1="130" x2="441" y2="130"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="109" x2="393" y2="115"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="144" x2="433" y2="150"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="151" x2="393" y2="145"/>
+                                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="115" x2="433" y2="109"/>
+                                        <!-- rect class="ctag" x="428" y="157" width="50" height="20" rx="10"/>
+                                        <text class="ctagtxt" x="453" y="167">0.25A</text> -->
+                                    </g>
+
+                                    {{-- ─ Resistor slot ─ --}}
+                                    <g id="resistor-slot-group">
+                                        <rect id="resistor-slot-rect" class="cslot" x="160" y="212" width="140" height="36" rx="4"
+                                              ondragover="event.preventDefault();svgSlotOver(this)"
+                                              ondragleave="svgSlotLeave(this)"
+                                              ondrop="svgDrop(event,'resistor')"/>
+                                        <text class="cslottxt" x="230" y="230">RESISTOR — drop here</text>
+                                    </g>
+
+                                    {{-- ─ Resistor (hidden initially, revealed on drop) ─ --}}
+                                    <g id="resistor-group" style="opacity:0;pointer-events:none;">
+                                        <rect class="cres" x="168" y="218" width="124" height="24" rx="3"/>
+                                        <!-- <text class="crtxt" x="230" y="230">0.4&#937;</text> -->
+                                    </g>
+                                </svg>
+                            </div>
+
+                            {{-- Component tray --}}
+                            <div class="component-tray">
+                                <button type="button" class="component-tile" id="comp-battery"
+                                        draggable="true" ondragstart="dragStart(event,'battery')">
+                                    <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+                                        <rect x="8" y="14" width="28" height="20" rx="3" stroke="#4a5a6a" stroke-width="3" fill="#f0f6f8"/>
+                                        <rect x="36" y="20" width="5" height="8" rx="1.5" fill="#4a5a6a"/>
+                                        <line x1="16" y1="24" x2="28" y2="24" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="22" y1="18" x2="22" y2="30" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="26" y1="22" x2="26" y2="26" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                    </svg>
+                                    Battery
+                                </button>
+                                <button type="button" class="component-tile" id="comp-bulb"
+                                        draggable="true" ondragstart="dragStart(event,'bulb')">
+                                    <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+                                        <circle cx="24" cy="22" r="10" stroke="#4a5a6a" stroke-width="3" fill="#fefce8"/>
+                                        <line x1="24" y1="6"  x2="24" y2="10" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="24" y1="34" x2="24" y2="38" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="8"  y1="22" x2="12" y2="22" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="36" y1="22" x2="40" y2="22" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="12" y1="10" x2="15" y2="13" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="33" y1="31" x2="36" y2="34" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                    </svg>
+                                    Bulb
+                                </button>
+                                <button type="button" class="component-tile" id="comp-resistor"
+                                        draggable="true" ondragstart="dragStart(event,'resistor')">
+                                    <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+                                        <rect x="8" y="18" width="32" height="12" rx="2" stroke="#4a5a6a" stroke-width="3" fill="#f0f6f8"/>
+                                        <line x1="0" y1="24" x2="8"  y2="24" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                        <line x1="40" y1="24" x2="48" y2="24" stroke="#4a5a6a" stroke-width="2.5" stroke-linecap="round"/>
+                                    </svg>
+                                    Resistor
+                                </button>
+                            </div>
+
+                            {{-- Follow-up revealed after circuit complete (or pre-shown if already answered) --}}
+                            <div class="followup-section" id="followupSection"
+                                 style="{{ $savedAnswer ? '' : 'display:none;' }}">
+                                <!--<div class="circuit-complete-msg">
+                                    ✓ Circuit complete! Now answer the follow-up question.
+                                </div>-->
+                                <div class="q-divider"></div>
+                                <p class="answer-label" style="margin-bottom:6px;">{{ $question->question }}</p>
+                                <textarea class="answer-textarea" name="answer_text" rows="4"
+                                    placeholder="Enter your answer here...">{{ $savedAnswer->answer_text ?? '' }}</textarea>
+                            </div>
+
                         @else
-                            <p class="answer-label">Model Answer</p>
+                            <p class="answer-label">Your Answer</p>
                             <textarea class="answer-textarea" name="answer_text"
                                 placeholder="Enter your answer here..."
                                 rows="5">{{ $savedAnswer->answer_text ?? '' }}</textarea>
                         @endif
 
-                        <div class="nav-row">
+                        <div class="nav-row" id="navRow"
+                             style="{{ $question->type === 'circuit' && !$savedAnswer ? 'display:none;' : '' }}">
                             @if ($currentQuestion < $totalQuestions)
                                 <button type="submit" class="btn-next">
                                     Next
@@ -741,9 +966,77 @@
 </div><!-- /app -->
 
 <script>
+    // ── Objective: highlight selected option ──
     function selectOption(radio) {
         document.querySelectorAll('.option-row').forEach(el => el.classList.remove('selected'));
         radio.closest('.option-row').classList.add('selected');
+    }
+
+    // ── Circuit Builder: SVG drag-and-drop ──
+    const circuitState = { battery: false, bulb: false, resistor: false };
+
+    function dragStart(event, type) {
+        event.dataTransfer.setData('component', type);
+        event.dataTransfer.effectAllowed = 'move';
+    }
+
+    function svgSlotOver(rect) {
+        rect.classList.add('drag-over');
+    }
+
+    function svgSlotLeave(rect) {
+        rect.classList.remove('drag-over');
+    }
+
+    function svgDrop(event, zone) {
+        event.preventDefault();
+        const type = event.dataTransfer.getData('component');
+        const slotRect = document.getElementById(zone + '-slot-rect');
+        if (slotRect) slotRect.classList.remove('drag-over');
+
+        if (type !== zone) {
+            // Wrong component — flash the slot red briefly
+            if (slotRect) {
+                slotRect.style.stroke = '#ef4444';
+                slotRect.style.fill   = '#fee2e2';
+                setTimeout(() => {
+                    slotRect.style.stroke = '';
+                    slotRect.style.fill   = '';
+                }, 500);
+            }
+            return;
+        }
+
+        if (circuitState[zone]) return;   // already placed
+
+        // Hide the slot placeholder
+        const slotGroup = document.getElementById(zone + '-slot-group');
+        if (slotGroup) slotGroup.style.display = 'none';
+
+        // Fade in the real component
+        const compGroup = document.getElementById(zone + '-group');
+        if (compGroup) {
+            compGroup.style.transition = 'opacity 0.35s ease';
+            compGroup.style.pointerEvents = 'auto';
+            requestAnimationFrame(() => { compGroup.style.opacity = '1'; });
+        }
+
+        // Grey-out the tray tile
+        const tile = document.getElementById('comp-' + type);
+        if (tile) tile.classList.add('used');
+
+        circuitState[zone] = true;
+        checkCircuitComplete();
+    }
+
+    function checkCircuitComplete() {
+        if (!circuitState.battery || !circuitState.bulb || !circuitState.resistor) return;
+
+        const followup = document.getElementById('followupSection');
+        if (followup) followup.style.display = 'block';
+
+        const navRow = document.getElementById('navRow');
+        if (navRow) navRow.style.display = 'flex';
     }
 </script>
 

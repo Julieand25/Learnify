@@ -551,6 +551,15 @@
             color: #c0a030;
             font-style: italic;
         }
+
+        /* ── CIRCUIT: Preview box in teacher editor ── */
+        .circuit-preview-box {
+            background: #f8fbfd;
+            border: 1.5px solid #d0e8f0;
+            border-radius: 10px;
+            padding: 12px 12px 8px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -672,13 +681,15 @@
                                 onclick="setType(${q.id},'objective')">Objective</button>
                         <button class="type-btn ${q.type==='subjective'?'active':''}"
                                 onclick="setType(${q.id},'subjective')">Subjective</button>
+                        <button class="type-btn ${q.type==='circuit'?'active':''}"
+                                onclick="setType(${q.id},'circuit')">Circuit</button>
                     </div>
                     <button class="btn-del-q" onclick="deleteQuestion(${q.id})" title="Delete question">×</button>
                 </div>
             </div>
 
             <textarea class="q-input" rows="2"
-                placeholder="Type your question here..."
+                placeholder="${q.type === 'circuit' ? 'Enter the follow-up question that students answer after completing the circuit...' : 'Type your question here...'}"
                 oninput="updateField(${q.id},'question',this.value)"
             >${escHtml(q.question)}</textarea>
 
@@ -724,6 +735,67 @@
             });
             html += `</select></div>`;
 
+        } else if (q.type === 'circuit') {
+            // Circuit builder preview (static SVG) + model answer
+            html += `
+                <div class="circuit-preview-box">
+                    <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg"
+                         style="display:block;width:100%;max-width:340px;margin:0 auto 8px;">
+                        <style>
+                            .pw  { stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; fill:none; }
+                            .pbt { fill:none; stroke:#1a1a1a; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+                            .ptm { fill:none; stroke:#1a1a1a; stroke-width:3; stroke-linecap:round; }
+                            .pblt { fill:#1a1a1a; }
+                            .pres { fill:none; stroke:#1a1a1a; stroke-width:4; }
+                            .prtxt  { font-size:13px; fill:#1a1a1a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
+                            .ptag   { fill:#f5e6d3; stroke:#c8a882; stroke-width:1.5; }
+                            .ptagtxt { font-size:13px; fill:#7a5c3a; font-family:sans-serif; dominant-baseline:central; text-anchor:middle; }
+                        </style>
+                        <!-- Wires -->
+                        <line class="pw" x1="70"  y1="30"  x2="410" y2="30"/>
+                        <line class="pw" x1="70"  y1="230" x2="168" y2="230"/>
+                        <line class="pw" x1="292" y1="230" x2="410" y2="230"/>
+                        <line class="pw" x1="70"  y1="30"  x2="70"  y2="113"/>
+                        <line class="pw" x1="70"  y1="147" x2="70"  y2="230"/>
+                        <line class="pw" x1="410" y1="30"  x2="410" y2="90"/>
+                        <line class="pw" x1="410" y1="170" x2="410" y2="230"/>
+                        <!-- Battery -->
+                        <circle class="ptm" cx="50" cy="90" r="11"/>
+                        <line class="ptm" x1="50" y1="84" x2="50" y2="96"/>
+                        <line class="ptm" x1="44" y1="90" x2="56" y2="90"/>
+                        <path class="pbt" d="M60,113 L48,113 Q40,113 40,121 L40,139 Q40,147 48,147 L60,147"/>
+                        <path class="pbt" d="M80,113 L92,113 Q100,113 100,121 L100,139 Q100,147 92,147 L80,147"/>
+                        <polygon class="pblt" points="72,118 62,130 69,130 65,142 81,129 73,129 79,118"/>
+                        <circle class="ptm" cx="50" cy="170" r="11"/>
+                        <line class="ptm" x1="44" y1="170" x2="56" y2="170"/>
+                        <!-- <rect class="ptag" x="110" y="135" width="44" height="20" rx="10"/>
+                        <text class="ptagtxt" x="132" y="145">12V</text> -->
+                        <!-- Bulb -->
+                        <circle fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" cx="410" cy="130" r="16"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="98"  x2="410" y2="108"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="410" y1="152" x2="410" y2="162"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="379" y1="130" x2="388" y2="130"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="432" y1="130" x2="441" y2="130"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="109" x2="393" y2="115"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="144" x2="433" y2="150"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="151" x2="393" y2="145"/>
+                        <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="115" x2="433" y2="109"/>
+                        <!-- <rect class="ptag" x="428" y="157" width="50" height="20" rx="10"/>
+                        <text class="ptagtxt" x="453" y="167">0.25A</text> -->
+                        <!-- Resistor -->
+                        <rect class="pres" x="168" y="218" width="124" height="24" rx="3"/>
+                        <!-- <text class="prtxt" x="230" y="230">48.0&#937;</text>-->
+                    </svg>
+                    <p style="font-size:0.68rem;color:#5a6a7a;text-align:center;margin:0 0 2px;">
+                        Students drag Battery, Bulb &amp; Resistor to complete the circuit, then answer your follow-up question below.
+                    </p>
+                </div>
+                <p class="answer-label" style="margin-top:10px;">Model Answer</p>
+                <textarea class="answer-textarea"
+                    placeholder="Enter the expected answer for the follow-up question..."
+                    oninput="updateField(${q.id},'answer',this.value)"
+                >${escHtml(q.answer)}</textarea>
+            `;
         } else {
             // Subjective answer
             html += `
@@ -869,7 +941,9 @@
             q.question.trim() &&
             (q.type === 'objective'
                 ? q.options.some(o => o.trim()) && q.correct
-                : q.answer.trim())
+                : q.type === 'circuit'
+                    ? true   // circuit: question text is enough
+                    : q.answer.trim())
         ).length;
 
         const pct = (filled / MAX_Q) * 100;
@@ -896,7 +970,7 @@
             question: q.question,
             options:  q.type === 'objective' ? q.options : [],
             correct:  q.type === 'objective' ? q.correct : null,
-            answer:   q.type === 'subjective' ? q.answer : null,
+            answer:   (q.type === 'subjective' || q.type === 'circuit') ? q.answer : null,
             hint:     q.hint || null,
         }));
 
