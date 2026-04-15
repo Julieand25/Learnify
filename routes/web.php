@@ -6,8 +6,8 @@ use App\Http\Controllers\Teacher\DashboardController as TeacherDashboard;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('starting-point');
+})->name('home');
 
 // Student routes
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
