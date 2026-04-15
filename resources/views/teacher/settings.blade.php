@@ -479,9 +479,9 @@
                 </button>
                 <div class="user-chip">
                     <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'E', 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
-                    <span>{{ auth()->user()->name ?? 'Eden Hazard' }}</span>
+                    <span>{{ auth()->user()->name }}</span>
                 </div>
             </div>
         </div>
@@ -528,7 +528,7 @@
                                     <input
                                         type="text"
                                         name="name"
-                                        value="{{ old('name', auth()->user()->name ?? 'Eden Hazard') }}"
+                                        value="{{ old('name', auth()->user()->name) }}"
                                         placeholder="Enter your username"
                                         required
                                     >

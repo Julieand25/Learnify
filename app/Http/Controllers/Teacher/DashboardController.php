@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -216,10 +217,24 @@ class DashboardController extends Controller
     public function updateProfile(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name'          => ['required', 'string', 'max:255'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,svg', 'max:10240'],
         ]);
 
-        $request->user()->update(['name' => $request->name]);
+        $data = ['name' => $request->name];
+
+        if ($request->hasFile('profile_photo')) {
+            // Delete old photo if exists
+            $old = $request->user()->profile_photo_path;
+            if ($old) {
+                Storage::disk('public')->delete($old);
+            }
+
+            $data['profile_photo_path'] = $request->file('profile_photo')
+                ->store('profile-photos', 'public');
+        }
+
+        $request->user()->update($data);
 
         return redirect()->route('teacher.settings')->with('success', 'Profile updated successfully.');
     }
