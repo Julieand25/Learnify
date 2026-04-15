@@ -18,7 +18,6 @@
             --text-dark: #1a2b3c;
             --text-mid: #5a6a7a;
             --text-light: #9aaabb;
-            --sidebar-w: 160px;
             --grey-card: #8e9499;
             --green-card: #00c853;
         }
@@ -36,62 +35,6 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-        }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--sidebar-bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px 0 20px;
-            flex-shrink: 0;
-            box-shadow: 2px 0 12px rgba(0,0,0,0.06);
-            z-index: 10;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 36px;
-        }
-
-        .sidebar-logo img { width: 44px; height: auto; }
-
-        .sidebar-logo span {
-            font-size: 0.78rem;
-            font-weight: 800;
-            color: var(--navy);
-            letter-spacing: 2px;
-        }
-
-        .nav { list-style: none; width: 100%; flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 12px; }
-
-        .nav li a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-mid);
-            transition: all 0.2s;
-        }
-
-        .nav li a:hover, .nav li.active a { background: var(--teal-light); color: var(--teal); font-weight: 600; }
-        .nav li a .icon { width: 18px; height: 18px; opacity: 0.7; }
-
-        .sidebar-logout { width: calc(100% - 24px); margin: 0 12px; }
-
-        .sidebar-logout a {
-            display: flex; align-items: center; gap: 10px; padding: 11px 14px;
-            border-radius: 10px; background: var(--navy); color: #fff;
-            text-decoration: none; font-size: 0.8rem; font-weight: 600;
         }
 
         /* MAIN */
