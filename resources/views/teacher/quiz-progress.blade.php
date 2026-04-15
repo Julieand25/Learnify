@@ -291,9 +291,13 @@
                     </svg>
                 </button>
                 <div class="user-chip">
-                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
-                    </div>
+                    @if (auth()->user()?->profile_photo_path)
+                        <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                    @else
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                            {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
+                        </div>
+                    @endif
                     <span>{{ auth()->user()->name ?? 'Nur Elin' }}</span>
                 </div>
             </div>
