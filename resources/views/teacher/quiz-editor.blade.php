@@ -688,10 +688,11 @@
                 </div>
             </div>
 
+            ${q.type !== 'circuit' ? `
             <textarea class="q-input" rows="2"
-                placeholder="${q.type === 'circuit' ? 'Enter the follow-up question that students answer after completing the circuit...' : 'Type your question here...'}"
+                placeholder="Type your question here..."
                 oninput="updateField(${q.id},'question',this.value)"
-            >${escHtml(q.question)}</textarea>
+            >${escHtml(q.question)}</textarea>` : ''}
 
             <div class="q-divider"></div>
         `;
@@ -790,11 +791,32 @@
                         Students drag Battery, Bulb &amp; Resistor to complete the circuit, then answer your follow-up question below.
                     </p>
                 </div>
-                <p class="answer-label" style="margin-top:10px;">Model Answer</p>
-                <textarea class="answer-textarea"
-                    placeholder="Enter the expected answer for the follow-up question..."
-                    oninput="updateField(${q.id},'answer',this.value)"
-                >${escHtml(q.answer)}</textarea>
+
+                <p class="answer-label" style="margin-top:10px;font-size:0.75rem;color:var(--teal-dark);font-weight:700;">a) Follow-up Question</p>
+                <textarea class="answer-textarea" rows="2"
+                    placeholder="Enter question a) here..."
+                    oninput="updateField(${q.id},'questionA',this.value)"
+                >${escHtml(q.questionA || '')}</textarea>
+
+                <p class="answer-label" style="margin-top:8px;font-size:0.75rem;color:var(--teal-dark);font-weight:700;">b) Follow-up Question</p>
+                <textarea class="answer-textarea" rows="2"
+                    placeholder="Enter question b) here..."
+                    oninput="updateField(${q.id},'questionB',this.value)"
+                >${escHtml(q.questionB || '')}</textarea>
+
+                <div class="q-divider" style="margin:12px 0 10px;"></div>
+
+                <p class="answer-label">a) Model Answer</p>
+                <textarea class="answer-textarea" rows="2"
+                    placeholder="Expected answer for a)..."
+                    oninput="updateField(${q.id},'answerA',this.value)"
+                >${escHtml(q.answerA || '')}</textarea>
+
+                <p class="answer-label" style="margin-top:8px;">b) Model Answer</p>
+                <textarea class="answer-textarea" rows="2"
+                    placeholder="Expected answer for b)..."
+                    oninput="updateField(${q.id},'answerB',this.value)"
+                >${escHtml(q.answerB || '')}</textarea>
             `;
         } else {
             // Subjective answer
@@ -833,15 +855,19 @@
         if (questions.length >= MAX_Q) return;
         questionId++;
         questions.push({
-            id:       questionId,
-            type:     'objective',
-            question: '',
-            options:  ['', '', '', ''],
-            correct:  '',
-            answer:   '',
-            hint:     '',
-            showHint: false,
-            focused:  true,
+            id:        questionId,
+            type:      'objective',
+            question:  '',
+            options:   ['', '', '', ''],
+            correct:   '',
+            answer:    '',
+            hint:      '',
+            showHint:  false,
+            focused:   true,
+            questionA: '',
+            questionB: '',
+            answerA:   '',
+            answerB:   '',
         });
         // unfocus others
         questions.forEach(q => { if (q.id !== questionId) q.focused = false; });
@@ -937,14 +963,11 @@
     // PROGRESS BAR
     // ══════════════════════════════════════════
     function updateProgress() {
-        const filled = questions.filter(q =>
-            q.question.trim() &&
-            (q.type === 'objective'
-                ? q.options.some(o => o.trim()) && q.correct
-                : q.type === 'circuit'
-                    ? true   // circuit: question text is enough
-                    : q.answer.trim())
-        ).length;
+        const filled = questions.filter(q => {
+            if (q.type === 'objective')  return q.question.trim() && q.options.some(o => o.trim()) && q.correct;
+            if (q.type === 'circuit')    return (q.questionA || '').trim() || (q.questionB || '').trim();
+            return q.question.trim() && q.answer.trim();
+        }).length;
 
         const pct = (filled / MAX_Q) * 100;
         document.getElementById('progressFill').style.width = pct + '%';
@@ -955,7 +978,10 @@
     // SAVE / DISCARD
     // ══════════════════════════════════════════
     async function saveQuiz() {
-        const incomplete = questions.filter(q => !q.question.trim());
+        const incomplete = questions.filter(q => {
+            if (q.type === 'circuit') return !(q.questionA || '').trim() && !(q.questionB || '').trim();
+            return !q.question.trim();
+        });
         if (incomplete.length > 0) {
             alert('Please fill in all question texts before saving.');
             return;
@@ -967,10 +993,14 @@
 
         const payload = questions.map((q) => ({
             type:     q.type,
-            question: q.question,
+            question: q.type === 'circuit'
+                        ? JSON.stringify({ a: q.questionA || '', b: q.questionB || '' })
+                        : q.question,
             options:  q.type === 'objective' ? q.options : [],
             correct:  q.type === 'objective' ? q.correct : null,
-            answer:   (q.type === 'subjective' || q.type === 'circuit') ? q.answer : null,
+            answer:   q.type === 'subjective' ? q.answer
+                    : q.type === 'circuit'    ? JSON.stringify({ a: q.answerA || '', b: q.answerB || '' })
+                    : null,
             hint:     q.hint || null,
         }));
 
@@ -1039,7 +1069,26 @@
 
     if (existingQuestions.length > 0) {
         questionId = existingQuestions.length;
-        questions  = existingQuestions;
+        questions  = existingQuestions.map(q => {
+            // Ensure circuit fields exist on all questions
+            q.questionA = q.questionA || '';
+            q.questionB = q.questionB || '';
+            q.answerA   = q.answerA   || '';
+            q.answerB   = q.answerB   || '';
+            if (q.type === 'circuit') {
+                try {
+                    const pq = JSON.parse(q.question || '{}');
+                    const pa = JSON.parse(q.answer   || '{}');
+                    q.questionA = pq.a || '';
+                    q.questionB = pq.b || '';
+                    q.answerA   = pa.a || '';
+                    q.answerB   = pa.b || '';
+                } catch(e) {
+                    q.questionA = q.question || '';
+                }
+            }
+            return q;
+        });
         render();
     } else {
         addQuestion();

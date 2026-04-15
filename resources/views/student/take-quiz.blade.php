@@ -592,6 +592,29 @@
             from { opacity: 0; transform: translateY(10px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
+        .circuit-sub-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 10px 0 4px;
+        }
+
+        .circuit-answer-input {
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            border: 1px solid #d8eaec;
+            border-radius: 8px;
+            padding: 9px 12px;
+            outline: none;
+            background: #fafcfd;
+            transition: border-color 0.2s;
+        }
+
+        .circuit-answer-input:focus { border-color: var(--teal); background: #fff; }
+        .circuit-answer-input::placeholder { color: var(--text-light); }
     </style>
 </head>
 <body>
@@ -690,11 +713,25 @@
                                         @endif
                                     </div>
                                 @elseif ($q->type === 'circuit')
+                                    @php
+                                        $rq  = json_decode($q->question ?? '', true) ?? [];
+                                        $ra  = json_decode($ans->answer_text ?? '', true) ?? [];
+                                    @endphp
                                     <div class="review-item manual">
                                         <div class="review-q">Q{{ $idx + 1 }}. Circuit Builder</div>
                                         <span class="review-badge badge-manual">Circuit</span>
-                                        <div class="review-answer" style="margin-bottom:4px;font-style:italic;font-size:0.7rem;">{{ $q->question }}</div>
-                                        <div class="review-answer">Your answer: {{ $ans->answer_text ?? '—' }}</div>
+                                        @if (!empty($rq['a']))
+                                            <div class="review-answer" style="margin-top:4px;">
+                                                <strong>a)</strong> {{ $rq['a'] }}<br>
+                                                Your answer: {{ $ra['a'] ?? '—' }}
+                                            </div>
+                                        @endif
+                                        @if (!empty($rq['b']))
+                                            <div class="review-answer" style="margin-top:4px;">
+                                                <strong>b)</strong> {{ $rq['b'] }}<br>
+                                                Your answer: {{ $ra['b'] ?? '—' }}
+                                            </div>
+                                        @endif
                                     </div>
                                 @else
                                     <div class="review-item manual">
@@ -891,16 +928,51 @@
                                 </button>
                             </div>
 
-                            {{-- Follow-up revealed after circuit complete (or pre-shown if already answered) --}}
+                            {{-- Parse the JSON sub-questions and saved answers --}}
+                            @php
+                                $circQ = [];
+                                if ($question->question) {
+                                    $dec = json_decode($question->question, true);
+                                    $circQ = is_array($dec) ? $dec : ['a' => $question->question, 'b' => ''];
+                                }
+                                $savedCircA = '';
+                                $savedCircB = '';
+                                if ($savedAnswer && $savedAnswer->answer_text) {
+                                    $decAns = json_decode($savedAnswer->answer_text, true);
+                                    if (is_array($decAns)) {
+                                        $savedCircA = $decAns['a'] ?? '';
+                                        $savedCircB = $decAns['b'] ?? '';
+                                    }
+                                }
+                            @endphp
+
+                            {{-- Follow-up revealed after circuit complete --}}
                             <div class="followup-section" id="followupSection"
                                  style="{{ $savedAnswer ? '' : 'display:none;' }}">
-                                <!--<div class="circuit-complete-msg">
-                                    ✓ Circuit complete! Now answer the follow-up question.
-                                </div>-->
+                                <!-- <div class="circuit-complete-msg">
+                                    ✓ Circuit complete! Now answer the follow-up questions.
+                                </div> -->
                                 <div class="q-divider"></div>
-                                <p class="answer-label" style="margin-bottom:6px;">{{ $question->question }}</p>
-                                <textarea class="answer-textarea" name="answer_text" rows="4"
-                                    placeholder="Enter your answer here...">{{ $savedAnswer->answer_text ?? '' }}</textarea>
+
+                                {{-- Hidden field holds the JSON-encoded answers --}}
+                                <input type="hidden" name="answer_text" id="circuitAnswerJson"
+                                       value="{{ $savedAnswer ? $savedAnswer->answer_text : '' }}">
+
+                                @if (!empty($circQ['a']))
+                                    <p class="circuit-sub-label">a) {{ $circQ['a'] }}</p>
+                                    <input type="text" class="circuit-answer-input" id="circuit_answer_a"
+                                           placeholder="Your answer for a)..."
+                                           value="{{ $savedCircA }}"
+                                           oninput="syncCircuitJson()">
+                                @endif
+
+                                @if (!empty($circQ['b']))
+                                    <p class="circuit-sub-label">b) {{ $circQ['b'] }}</p>
+                                    <input type="text" class="circuit-answer-input" id="circuit_answer_b"
+                                           placeholder="Your answer for b)..."
+                                           value="{{ $savedCircB }}"
+                                           oninput="syncCircuitJson()">
+                                @endif
                             </div>
 
                         @else
@@ -1037,6 +1109,18 @@
 
         const navRow = document.getElementById('navRow');
         if (navRow) navRow.style.display = 'flex';
+    }
+
+    // Keeps the hidden JSON field in sync with the two text inputs
+    function syncCircuitJson() {
+        const hidden = document.getElementById('circuitAnswerJson');
+        if (!hidden) return;
+        const a = document.getElementById('circuit_answer_a');
+        const b = document.getElementById('circuit_answer_b');
+        hidden.value = JSON.stringify({
+            a: a ? a.value.trim() : '',
+            b: b ? b.value.trim() : '',
+        });
     }
 </script>
 
