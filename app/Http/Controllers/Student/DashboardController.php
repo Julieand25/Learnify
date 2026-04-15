@@ -161,6 +161,10 @@ class DashboardController extends Controller
             ? $pendingAttempt->answers()->where('quiz_question_id', $question->id)->first()
             : null;
 
+        $answeredCount = $pendingAttempt
+            ? $pendingAttempt->answers()->count()
+            : 0;
+
         return view('student.take-quiz', [
             'user'            => $request->user(),
             'classRoom'       => $classRoom,
@@ -169,6 +173,7 @@ class DashboardController extends Controller
             'currentQuestion' => $questionNumber,
             'totalQuestions'  => $total,
             'savedAnswer'     => $savedAnswer,
+            'answeredCount'   => $answeredCount,
             'attempt'         => null,
         ]);
     }

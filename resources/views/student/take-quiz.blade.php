@@ -316,10 +316,24 @@
         /* Navigation */
         .nav-row {
             display: flex;
+            align-items: center;
             justify-content: flex-end;
             gap: 8px;
             margin-top: 10px;
         }
+
+        .btn-back {
+            padding: 7px 16px; border-radius: 999px;
+            background: #f0f6f8; color: var(--text-mid);
+            border: 1.5px solid #d0e4e8;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem; font-weight: 600; cursor: pointer;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-back:hover { background: #e2eef2; color: var(--text-dark); }
 
         .btn-next {
             padding: 7px 18px; border-radius: 999px;
@@ -341,6 +355,50 @@
         }
 
         .btn-submit:hover { opacity: 0.85; }
+
+        /* ── Validation popup ── */
+        .quiz-alert-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-alert-overlay.show { display: flex; }
+
+        .quiz-alert-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 28px 24px;
+            max-width: 340px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.2s ease;
+        }
+
+        .quiz-alert-icon { font-size: 2.2rem; margin-bottom: 12px; }
+
+        .quiz-alert-msg {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .quiz-alert-ok {
+            padding: 8px 28px; border-radius: 999px;
+            background: var(--teal-dark); color: #fff;
+            border: none; font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem; font-weight: 600; cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .quiz-alert-ok:hover { opacity: 0.85; }
 
         /* ══════════════════════════════
            STATE: No quiz / empty
@@ -984,6 +1042,18 @@
 
                         <div class="nav-row" id="navRow"
                              style="{{ $question->type === 'circuit' && !$savedAnswer ? 'display:none;' : '' }}">
+
+                            {{-- Back button (shown from question 2 onwards) --}}
+                            @if ($currentQuestion > 1)
+                                <a href="{{ route('student.quiz.take', ['classRoom' => $classRoom->id, 'q' => $currentQuestion - 1]) }}"
+                                   class="btn-back">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                                    </svg>
+                                    Back
+                                </a>
+                            @endif
+
                             @if ($currentQuestion < $totalQuestions)
                                 <button type="submit" class="btn-next">
                                     Next
@@ -992,7 +1062,7 @@
                                     </svg>
                                 </button>
                             @else
-                                <button type="submit" class="btn-submit">Submit Quiz</button>
+                                <button type="submit" class="btn-submit" id="submitBtn">Submit Quiz</button>
                             @endif
                         </div>
                     </form>
@@ -1036,6 +1106,15 @@
     </div><!-- /main-layout -->
 
 </div><!-- /app -->
+
+{{-- ── Validation popup ── --}}
+<div class="quiz-alert-overlay" id="quizAlertOverlay">
+    <div class="quiz-alert-box">
+        <div class="quiz-alert-icon">⚠️</div>
+        <p class="quiz-alert-msg" id="quizAlertMsg"></p>
+        <button class="quiz-alert-ok" onclick="closeQuizAlert()">OK, Got It</button>
+    </div>
+</div>
 
 <script>
     // ── Objective: highlight selected option ──
@@ -1110,6 +1189,73 @@
         const navRow = document.getElementById('navRow');
         if (navRow) navRow.style.display = 'flex';
     }
+
+    // ── Submit validation (last question) ──
+    @if ($question && $totalQuestions > 0 && $currentQuestion === $totalQuestions)
+    (function () {
+        const form         = document.getElementById('answerForm');
+        const qType        = @json($question->type);
+        const hasSaved     = {{ $savedAnswer ? 'true' : 'false' }};
+        const answeredInDB = {{ $answeredCount ?? 0 }};
+        const total        = {{ $totalQuestions }};
+
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+            // 1. Is the current question answered?
+            let currentOk = false;
+
+            if (qType === 'objective') {
+                currentOk = !!form.querySelector('input[name="answer"]:checked');
+
+            } else if (qType === 'circuit') {
+                const followup = document.getElementById('followupSection');
+                const circuitDone = followup && followup.style.display !== 'none';
+                const a = document.getElementById('circuit_answer_a');
+                const b = document.getElementById('circuit_answer_b');
+                const hasText = (a && a.value.trim()) || (b && b.value.trim());
+                currentOk = circuitDone && !!hasText;
+
+            } else {
+                // subjective
+                const ta = form.querySelector('textarea[name="answer_text"]');
+                currentOk = ta && ta.value.trim().length > 0;
+            }
+
+            const effectiveOk = hasSaved || currentOk;
+
+            // answeredInDB includes current question only when hasSaved
+            const prevAnswered = hasSaved ? answeredInDB - 1 : answeredInDB;
+
+            if (!effectiveOk) {
+                e.preventDefault();
+                showQuizAlert('Please answer this question before submitting.');
+                return;
+            }
+
+            if (prevAnswered < total - 1) {
+                e.preventDefault();
+                showQuizAlert(
+                    'Some earlier questions are still unanswered.\n\nPlease use the Back button to go back and complete all questions before submitting.'
+                );
+            }
+        });
+    })();
+    @endif
+
+    function showQuizAlert(msg) {
+        document.getElementById('quizAlertMsg').textContent = msg;
+        document.getElementById('quizAlertOverlay').classList.add('show');
+    }
+
+    function closeQuizAlert() {
+        document.getElementById('quizAlertOverlay').classList.remove('show');
+    }
+
+    // Close popup when clicking outside the box
+    document.getElementById('quizAlertOverlay')?.addEventListener('click', function (e) {
+        if (e.target === this) closeQuizAlert();
+    });
 
     // Keeps the hidden JSON field in sync with the two text inputs
     function syncCircuitJson() {
