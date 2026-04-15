@@ -227,7 +227,8 @@ class DashboardController extends Controller
     public function updatePassword(Request $request): RedirectResponse
     {
         $request->validate([
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $request->user()->update(['password' => Hash::make($request->password)]);

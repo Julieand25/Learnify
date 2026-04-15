@@ -606,6 +606,19 @@
                                 <div class="password-fields">
 
                                     <div class="input-labeled">
+                                        <span class="input-prefix">Current Password</span>
+                                        <input
+                                            type="password"
+                                            name="current_password"
+                                            placeholder="Enter current password"
+                                            autocomplete="current-password"
+                                        >
+                                    </div>
+                                    @error('current_password')
+                                        <p style="color:#e05555;font-size:0.74rem;margin-top:-6px;">{{ $message }}</p>
+                                    @enderror
+
+                                    <div class="input-labeled">
                                         <span class="input-prefix">New Password</span>
                                         <input
                                             type="password"
