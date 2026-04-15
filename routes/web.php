@@ -22,6 +22,9 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/learning-module/search-class', [StudentDashboard::class, 'searchClass'])->name('class.search');
     Route::post('/learning-module/enroll', [StudentDashboard::class, 'enrollClass'])->name('class.enroll');
     Route::delete('/learning-module/{classRoom}', [StudentDashboard::class, 'unenrollClass'])->name('class.unenroll');
+    Route::get('/settings', [StudentDashboard::class, 'settings'])->name('settings');
+    Route::put('/settings/profile', [StudentDashboard::class, 'updateProfile'])->name('settings.update-profile');
+    Route::put('/settings/password', [StudentDashboard::class, 'updatePassword'])->name('settings.update-password');
 });
 
 // Teacher routes

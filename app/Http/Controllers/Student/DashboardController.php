@@ -8,6 +8,9 @@ use App\Models\QuizAttempt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -281,5 +284,48 @@ class DashboardController extends Controller
 
         return redirect()->route('student.learning-module')
             ->with('success', 'You have unenrolled from ' . $classRoom->name . '.');
+    }
+
+    public function settings(Request $request): View
+    {
+        return view('student.settings', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name'          => ['required', 'string', 'max:255'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,svg', 'max:10240'],
+        ]);
+
+        $data = ['name' => $request->name];
+
+        if ($request->hasFile('profile_photo')) {
+            $old = $request->user()->profile_photo_path;
+            if ($old) {
+                Storage::disk('public')->delete($old);
+            }
+
+            $data['profile_photo_path'] = $request->file('profile_photo')
+                ->store('profile-photos', 'public');
+        }
+
+        $request->user()->update($data);
+
+        return redirect()->route('student.settings')->with('profile_success', 'Profile updated successfully.');
+    }
+
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $request->user()->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->route('student.settings')->with('password_success', 'Password updated successfully.');
     }
 }

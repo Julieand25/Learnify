@@ -206,7 +206,7 @@
                 <div class="cat-info">📁 Physics</div>
                 <span>&rsaquo;</span>
             </a>
-            <a href="#" class="cat-card chemistry">
+            <!--<a href="#" class="cat-card chemistry">
                 <div class="cat-info">📁 Chemistry</div>
                 <span>&rsaquo;</span>
             </a>
@@ -217,7 +217,7 @@
             <a href="#" class="cat-card english">
                 <div class="cat-info">📁 English</div>
                 <span>&rsaquo;</span>
-            </a>
+            </a>-->
         </div>
 
         <div class="dashboard-body">
