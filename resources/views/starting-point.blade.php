@@ -78,7 +78,7 @@
             color: #555;
             line-height: 1.7;
             max-width: 420px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         /* CTA Button */
@@ -108,6 +108,19 @@
             line-height: 1.7;
             max-width: 650px;
             font-style: italic;
+            text-align: center;
+        }
+
+        .quote-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            padding: 16px 24px;
+            background: rgba(223, 244, 242, 0.85);
+            backdrop-filter: blur(4px);
         }
 
         /* ═══════════════════════
@@ -305,12 +318,6 @@
         {{-- CTA --}}
         <a href="{{ route('login') }}" class="btn-cta">Get Started for Free</a>
 
-        {{-- Quote --}}
-        <p class="quote">
-            "Learnify is designed to bridge the gap between textbook theory and real-world understanding.
-            Whether it's Physic, Mathematic, or Biology, we transform static notes into dynamic experiences."
-        </p>
-
     </div>
 
     {{-- ── RIGHT PANEL ── --}}
@@ -344,6 +351,14 @@
         </div>
     </div>
 
+</div>
+
+{{-- Quote bar fixed at bottom center --}}
+<div class="quote-bar">
+    <p class="quote">
+        "Learnify is designed to bridge the gap between textbook theory and real-world understanding.
+        Whether it's Physic, Mathematic, or Biology, we transform static notes into dynamic experiences."
+    </p>
 </div>
 
 <script>
