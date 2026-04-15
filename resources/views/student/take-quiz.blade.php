@@ -94,7 +94,13 @@
         }
 
         .user-chip {
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 6px 14px 6px 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .user-chip span {
@@ -693,12 +699,16 @@
                 <!-- <p class="chapter-subtitle">{{ $classRoom->subject_label ?? 'Quiz' }}</p> -->
             </div>
             <div class="header-right">
-                <div class="user-chip">
-                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                        {{ strtoupper(substr($user->name ?? 'S', 0, 1)) }}
-                    </div>
-                    <span>{{ $user->name ?? 'Student' }}</span>
-                </div>
+                <!--<div class="user-chip">
+                    @if (auth()->user()?->profile_photo_path)
+                        <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                    @else
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                            {{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}
+                        </div>
+                    @endif
+                    <span>{{ auth()->user()->name ?? 'Student' }}</span>
+                </div>-->
             </div>
         </div>
 
