@@ -349,7 +349,7 @@
                 @forelse ($enrolledClasses as $class)
                 @php
                     $subjectUrl = match($class->subject) {
-                        'physics' => route('student.physics-notes'),
+                        'physics' => route('student.physics-notes', ['class_id' => $class->id]),
                         default   => null,
                     };
                 @endphp

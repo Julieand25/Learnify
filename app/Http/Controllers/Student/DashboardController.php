@@ -58,9 +58,19 @@ class DashboardController extends Controller
             ->where('chapter_slug', 'resistance')
             ->value('sections_reached') ?? 0;
 
+        $classRoom = null;
+        $classId   = (int) $request->query('class_id', 0);
+        if ($classId) {
+            $classRoom = $request->user()
+                ->enrolledClasses()
+                ->where('class_room_id', $classId)
+                ->first();
+        }
+
         return view('student.chapter-resistance', [
-            'user'     => $request->user(),
-            'progress' => (int) $progress,
+            'user'      => $request->user(),
+            'progress'  => (int) $progress,
+            'classRoom' => $classRoom,
         ]);
     }
 

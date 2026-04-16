@@ -1304,7 +1304,11 @@
     });
 
     document.getElementById('fcTestBtn').addEventListener('click', () => {
-        alert('Test Yourself feature coming soon!');
+        @if (!empty($classRoom))
+            window.location.href = '{{ route("student.quiz.take", $classRoom->id) }}';
+        @else
+            window.location.href = '{{ route("student.quiz") }}';
+        @endif
     });
 
     fcRenderPage();
