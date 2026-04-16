@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
 use App\Models\Quiz;
+use App\Models\QuizAttempt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,8 +20,69 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
+        $classes = ClassRoom::where('teacher_id', $request->user()->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $classesData = $classes->map(function ($class) {
+            $students   = $class->students()->orderBy('name')->get();
+            $studentIds = $students->pluck('id');
+
+            $notesMap = ChapterProgress::where('chapter_slug', 'resistance')
+                ->whereIn('student_id', $studentIds)
+                ->pluck('sections_reached', 'student_id');
+
+            $quiz    = $class->quiz()->first();
+            $quizMap = collect();
+            if ($quiz) {
+                $quizMap = QuizAttempt::where('quiz_id', $quiz->id)
+                    ->whereIn('student_id', $studentIds)
+                    ->whereNotNull('submitted_at')
+                    ->get(['student_id', 'score', 'total'])
+                    ->keyBy('student_id');
+            }
+
+            $studentsData = $students->map(function ($s) use ($notesMap, $quizMap, $class) {
+                $notesPct = (int) round((int) ($notesMap[$s->id] ?? 0) / 3 * 100);
+
+                $attempt   = $quizMap[$s->id] ?? null;
+                $quizPct   = 0;
+                $quizLabel = '—';
+                if ($attempt) {
+                    if ($attempt->total > 0) {
+                        $quizPct   = (int) round($attempt->score / $attempt->total * 100);
+                        $quizLabel = $quizPct . '%';
+                    } else {
+                        $quizPct   = 100;
+                        $quizLabel = 'Done';
+                    }
+                }
+
+                return [
+                    'name'       => $s->name,
+                    'initial'    => strtoupper(substr($s->name, 0, 1)),
+                    'photo_url'  => $s->profile_photo_path
+                                        ? asset('storage/' . $s->profile_photo_path)
+                                        : null,
+                    'notes_pct'  => $notesPct,
+                    'quiz_pct'   => $quizPct,
+                    'quiz_label' => $quizLabel,
+                    'notes_url'  => route('teacher.my-classes.notes-progress', $class->id),
+                    'quiz_url'   => route('teacher.my-classes.quiz-progress', $class->id),
+                ];
+            });
+
+            return [
+                'id'           => $class->id,
+                'name'         => $class->name,
+                'subject'      => ucfirst($class->subject),
+                'studentsData' => $studentsData->values(),
+            ];
+        });
+
         return view('teacher.dashboard', [
-            'user' => $request->user(),
+            'user'        => $request->user(),
+            'classesData' => $classesData,
         ]);
     }
 
@@ -93,12 +155,63 @@ class DashboardController extends Controller
     {
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
 
-        $students = $classRoom->students()->orderBy('name')->get();
+        // All teacher classes for < > navigation
+        $allClasses = ClassRoom::where('teacher_id', $request->user()->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $classIds   = $allClasses->pluck('id');
+        $currentIdx = $classIds->search($classRoom->id);
+        $prevClass  = $currentIdx > 0 ? $allClasses[$currentIdx - 1] : null;
+        $nextClass  = $currentIdx < $allClasses->count() - 1 ? $allClasses[$currentIdx + 1] : null;
+
+        $students   = $classRoom->students()->orderBy('name')->get();
+        $studentIds = $students->pluck('id');
+
+        $notesMap = ChapterProgress::where('chapter_slug', 'resistance')
+            ->whereIn('student_id', $studentIds)
+            ->pluck('sections_reached', 'student_id');
+
+        $quiz    = $classRoom->quiz()->first();
+        $quizMap = collect();
+        if ($quiz) {
+            $quizMap = QuizAttempt::where('quiz_id', $quiz->id)
+                ->whereIn('student_id', $studentIds)
+                ->whereNotNull('submitted_at')
+                ->get(['student_id', 'score', 'total'])
+                ->keyBy('student_id');
+        }
+
+        $studentsData = $students->map(function ($s) use ($notesMap, $quizMap) {
+            $notesPct  = (int) round((int) ($notesMap[$s->id] ?? 0) / 3 * 100);
+
+            $attempt   = $quizMap[$s->id] ?? null;
+            $quizPct   = 0;
+            $quizLabel = '—';
+            if ($attempt) {
+                if ($attempt->total > 0) {
+                    $quizPct   = (int) round($attempt->score / $attempt->total * 100);
+                    $quizLabel = $quizPct . '%';
+                } else {
+                    $quizPct   = 100;
+                    $quizLabel = 'Done';
+                }
+            }
+
+            return [
+                'student'    => $s,
+                'notes_pct'  => $notesPct,
+                'quiz_pct'   => $quizPct,
+                'quiz_label' => $quizLabel,
+            ];
+        });
 
         return view('teacher.class-students', [
-            'user'      => $request->user(),
-            'classRoom' => $classRoom,
-            'students'  => $students,
+            'user'         => $request->user(),
+            'classRoom'    => $classRoom,
+            'prevClass'    => $prevClass,
+            'nextClass'    => $nextClass,
+            'studentsData' => $studentsData,
         ]);
     }
 

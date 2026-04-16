@@ -644,9 +644,9 @@
             <!-- Student Table -->
             <div class="table-section">
                 <div class="table-header">
-                    <button class="class-nav">&#8249;</button>
-                    <h3>Class A Student</h3>
-                    <button class="class-nav">&#8250;</button>
+                    <button class="class-nav" id="prevClassBtn" onclick="changeClass(-1)">&#8249;</button>
+                    <h3 id="classNameLabel">—</h3>
+                    <button class="class-nav" id="nextClassBtn" onclick="changeClass(1)">&#8250;</button>
                 </div>
 
                 <table>
@@ -658,36 +658,7 @@
                             <th>Detailed Progress</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @php
-                        $tableStudents = [
-                            ['initial' => 'E', 'name' => 'Eden'],
-                            ['initial' => 'A', 'name' => 'Abdullah'],
-                            ['initial' => 'N', 'name' => 'Najmi'],
-                            ['initial' => 'H', 'name' => 'Hanif'],
-                            ['initial' => 'A', 'name' => 'Alif'],
-                            ['initial' => 'M', 'name' => 'Muhammad'],
-                        ];
-                        @endphp
-                        @foreach ($tableStudents as $s)
-                        <tr>
-                            <td><div class="avatar-placeholder">{{ $s['initial'] }}</div></td>
-                            <td>{{ $s['name'] }}</td>
-                            <td>Physics</td>
-                            <td>
-                                <div class="progress-links">
-                                    <a href="{{ route('teacher.my-classes') }}" class="progress-link">
-                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                        Notes
-                                    </a>
-                                    <a href="{{ route('teacher.my-classes') }}" class="progress-link">
-                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                                        Quiz
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
+                    <tbody id="studentTableBody">
                     </tbody>
                 </table>
             </div>
@@ -697,48 +668,116 @@
 </div><!-- /app -->
 
 <script>
-    // ── BAR CHART ──
-    const students = [
-        { name: 'Eden',     blue: 20,  pink: 45 },
-        { name: 'Abdullah', blue: 38,  pink: 28 },
-        { name: 'Najmi',    blue: 72,  pink: 60 },
-        { name: 'Hanif',    blue: 48,  pink: 75 },
-        { name: 'Alif',     blue: 88,  pink: 92 },
-        { name: 'Muhammad', blue: 95,  pink: 65 },
-    ];
+    // ── REAL CLASS DATA ──
+    const classesData = @json($classesData->values());
+    let currentClassIdx = 0;
 
-    const maxVal = 100;
-    const chartHeight = 160;
-    const chart = document.getElementById('barChart');
+    const chartEl      = document.getElementById('barChart');
+    const tableBody    = document.getElementById('studentTableBody');
+    const classLabel   = document.getElementById('classNameLabel');
+    const prevBtn      = document.getElementById('prevClassBtn');
+    const nextBtn      = document.getElementById('nextClassBtn');
+    const chartHeight  = 160;
 
-    students.forEach(s => {
-        const group = document.createElement('div');
-        group.className = 'bar-group';
+    function renderBarChart(studentsData) {
+        chartEl.innerHTML = '';
+        if (studentsData.length === 0) {
+            chartEl.style.alignItems = 'center';
+            chartEl.style.justifyContent = 'center';
+            chartEl.innerHTML = '<span style="font-size:0.8rem;color:#9aaabb;">No students yet</span>';
+            return;
+        }
+        chartEl.style.alignItems = 'flex-end';
+        chartEl.style.justifyContent = '';
+        studentsData.forEach(s => {
+            const group = document.createElement('div');
+            group.className = 'bar-group';
 
-        const bars = document.createElement('div');
-        bars.className = 'bars';
+            const bars = document.createElement('div');
+            bars.className = 'bars';
 
-        const bBlue = document.createElement('div');
-        bBlue.className = 'bar blue';
-        bBlue.style.height = (s.blue / maxVal * chartHeight) + 'px';
-        bBlue.title = `Notes: ${s.blue}%`;
+            const bBlue = document.createElement('div');
+            bBlue.className = 'bar blue';
+            bBlue.style.height = (s.notes_pct / 100 * chartHeight) + 'px';
+            bBlue.title = `Notes: ${s.notes_pct}%`;
 
-        const bPink = document.createElement('div');
-        bPink.className = 'bar pink';
-        bPink.style.height = (s.pink / maxVal * chartHeight) + 'px';
-        bPink.title = `Quiz: ${s.pink}%`;
+            const bPink = document.createElement('div');
+            bPink.className = 'bar pink';
+            bPink.style.height = (s.quiz_pct / 100 * chartHeight) + 'px';
+            bPink.title = `Quiz: ${s.quiz_label}`;
 
-        bars.appendChild(bBlue);
-        bars.appendChild(bPink);
+            bars.appendChild(bBlue);
+            bars.appendChild(bPink);
 
-        const label = document.createElement('div');
-        label.className = 'bar-label';
-        label.textContent = s.name;
+            const label = document.createElement('div');
+            label.className = 'bar-label';
+            label.textContent = s.name.split(' ')[0]; // first name only
 
-        group.appendChild(bars);
-        group.appendChild(label);
-        chart.appendChild(group);
-    });
+            group.appendChild(bars);
+            group.appendChild(label);
+            chartEl.appendChild(group);
+        });
+    }
+
+    function renderTable(cls) {
+        tableBody.innerHTML = '';
+        if (cls.studentsData.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#9aaabb;">No students enrolled yet.</td></tr>';
+            return;
+        }
+        cls.studentsData.forEach(s => {
+            const avatarHtml = s.photo_url
+                ? `<img src="${s.photo_url}" alt="${s.name}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;">`
+                : `<div class="avatar-placeholder">${s.initial}</div>`;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${avatarHtml}</td>
+                <td>${s.name}</td>
+                <td>${cls.subject}</td>
+                <td>
+                    <div class="progress-links">
+                        <a href="${s.notes_url}" class="progress-link">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Notes
+                        </a>
+                        <a href="${s.quiz_url}" class="progress-link">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                            Quiz
+                        </a>
+                    </div>
+                </td>`;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function renderClass(idx) {
+        if (classesData.length === 0) {
+            classLabel.textContent = 'No Classes';
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#9aaabb;">No classes created yet.</td></tr>';
+            chartEl.innerHTML = '<span style="font-size:0.8rem;color:#9aaabb;">No data</span>';
+            return;
+        }
+        const cls = classesData[idx];
+        classLabel.textContent = cls.name + ' Students';
+        prevBtn.disabled = idx === 0;
+        nextBtn.disabled = idx === classesData.length - 1;
+        renderTable(cls);
+        renderBarChart(cls.studentsData);
+    }
+
+    function changeClass(dir) {
+        currentClassIdx = Math.max(0, Math.min(classesData.length - 1, currentClassIdx + dir));
+        renderClass(currentClassIdx);
+    }
+
+    renderClass(0);
 
     // ── CALENDAR ──
     let currentYear = 2025;
