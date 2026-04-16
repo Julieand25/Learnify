@@ -366,6 +366,76 @@
             color: var(--text-dark);
             min-width: 36px;
         }
+
+        /* Class navigator in th */
+        .class-nav-th {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .class-nav-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1.5px solid #c8dfe0;
+            background: var(--card-bg);
+            color: var(--teal);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: background 0.15s, border-color 0.15s;
+            line-height: 1;
+        }
+
+        .class-nav-arrow:hover { background: var(--teal-light); border-color: var(--teal); }
+
+        .class-nav-arrow.disabled {
+            color: var(--text-light);
+            border-color: #e2eeef;
+            pointer-events: none;
+            background: transparent;
+        }
+
+        /* Dual progress bars */
+        .dual-progress { display: flex; flex-direction: column; gap: 5px; }
+
+        .dp-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dp-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-mid);
+            width: 38px;
+            flex-shrink: 0;
+        }
+
+        .dp-bar-wrap {
+            width: 160px;
+            height: 5px;
+            background: #e0eaee;
+            border-radius: 999px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .notes-bar { height: 100%; background: var(--teal); border-radius: 999px; transition: width 0.5s ease; }
+        .quiz-bar  { height: 100%; background: var(--purple); border-radius: 999px; transition: width 0.5s ease; }
+
+        .dp-pct {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            min-width: 32px;
+        }
     </style>
 </head>
 <body>
@@ -420,17 +490,31 @@
                     <thead>
                         <tr>
                             <th>Student Name</th>
-                            <th>Class</th>
-                            <th>Progress Quiz and Learning Notes</th>
+                            <th>
+                                <div class="class-nav-th">
+                                    @if ($prevClass)
+                                        <a href="{{ route('teacher.my-classes.students', $prevClass->id) }}" class="class-nav-arrow" title="{{ $prevClass->name }}">&#8249;</a>
+                                    @else
+                                        <span class="class-nav-arrow disabled">&#8249;</span>
+                                    @endif
+                                    <span>{{ $classRoom->name }}</span>
+                                    @if ($nextClass)
+                                        <a href="{{ route('teacher.my-classes.students', $nextClass->id) }}" class="class-nav-arrow" title="{{ $nextClass->name }}">&#8250;</a>
+                                    @else
+                                        <span class="class-nav-arrow disabled">&#8250;</span>
+                                    @endif
+                                </div>
+                            </th>
+                            <th>Notes &amp; Quiz Progress</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($students as $student)
+                        @forelse ($studentsData as $row)
                         <tr>
                             <td>
                                 <div class="name-cell">
-                                    @if ($student->profile_photo_path)
-                                        <img src="{{ asset('storage/' . $student->profile_photo_path) }}" alt="{{ $student->name }}" class="avatar" style="object-fit:cover;">
+                                    @if ($row['student']->profile_photo_path)
+                                        <img src="{{ asset('storage/' . $row['student']->profile_photo_path) }}" alt="{{ $row['student']->name }}" class="avatar" style="object-fit:cover;">
                                     @else
                                         <div class="avatar">
                                             <svg fill="currentColor" viewBox="0 0 24 24">
@@ -438,18 +522,28 @@
                                             </svg>
                                         </div>
                                     @endif
-                                    <span class="student-name">{{ $student->name }}</span>
+                                    <span class="student-name">{{ $row['student']->name }}</span>
                                 </div>
                             </td>
                             <td>
                                 <span class="class-badge">{{ $classRoom->name }}</span>
                             </td>
                             <td>
-                                <div class="progress-cell">
-                                    <div class="progress-bar-wrap">
-                                        <div class="progress-bar-fill" style="width: 0%"></div>
+                                <div class="dual-progress">
+                                    <div class="dp-row">
+                                        <span class="dp-label">Notes</span>
+                                        <div class="dp-bar-wrap">
+                                            <div class="notes-bar" style="width: {{ $row['notes_pct'] }}%"></div>
+                                        </div>
+                                        <span class="dp-pct">{{ $row['notes_pct'] }}%</span>
                                     </div>
-                                    <span class="progress-pct">—</span>
+                                    <div class="dp-row">
+                                        <span class="dp-label">Quiz</span>
+                                        <div class="dp-bar-wrap">
+                                            <div class="quiz-bar" style="width: {{ $row['quiz_pct'] }}%"></div>
+                                        </div>
+                                        <span class="dp-pct">{{ $row['quiz_label'] }}</span>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
