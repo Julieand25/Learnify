@@ -426,7 +426,7 @@
             @else
                 <!-- Chart card -->
                 <div class="chart-card">
-                    <div class="chart-title">3.2 Resistance – Reading Progress</div>
+                    <div class="chart-title">Physics - Electricity</div>
 
                     <div class="chart-area">
 
