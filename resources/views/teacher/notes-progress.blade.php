@@ -252,7 +252,7 @@
         .chart-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 28px 32px 32px;
+            padding: 28px 32px 50px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             max-width: 720px;
         }
@@ -343,15 +343,18 @@
         .bar-xlabel {
             position: absolute;
             top: calc(100% + 8px);
-            left: 0;
-            right: 0;
+            left: -20px;
+            right: -20px;
             text-align: center;
             font-size: 0.7rem;
             color: var(--text-mid);
             line-height: 1.4;
-            white-space: nowrap;
+            white-space: normal;
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -508,7 +511,7 @@
             isDark ? 'dark' : 'light',
             heightPx,
             s.percent + '%',
-            s.name,
+            'Resistance',
             s.name + ': ' + s.sections_reached + '/3 sections (' + s.percent + '%)'
         );
     });
