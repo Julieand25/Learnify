@@ -267,20 +267,18 @@
         /* ── Bar chart ── */
         .chart-area {
             display: flex;
-            align-items: flex-end;
+            align-items: flex-start;
             gap: 0;
-            position: relative;
         }
 
-        /* Y-axis labels */
+        /* Y-axis labels — same height as plot-inner so labels align exactly */
         .y-axis {
             display: flex;
-            flex-direction: column-reverse;
+            flex-direction: column;
             justify-content: space-between;
             align-items: flex-end;
             padding-right: 14px;
-            padding-bottom: 52px; /* align with x-axis label height */
-            height: 340px;
+            height: 288px;
             flex-shrink: 0;
         }
 
@@ -288,6 +286,7 @@
             font-size: 0.72rem;
             color: var(--text-light);
             font-weight: 500;
+            line-height: 1;
         }
 
         /* Chart plot area */
@@ -310,23 +309,12 @@
             border-bottom: 1.5px solid #e4edf0;
         }
 
-        /* Grid lines */
-        .plot-inner::before,
-        .plot-inner::after,
-        .grid-33,
-        .grid-66 {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            border-top: 1px dashed #e4edf0;
-        }
-
         .grid-line {
             position: absolute;
             left: 0;
             right: 0;
             border-top: 1px dashed #dde8ec;
+            pointer-events: none;
         }
 
         /* Bar group */
@@ -432,12 +420,12 @@
 
                         <!-- Y-axis -->
                         <div class="y-axis">
-                            <span class="y-label">0</span>
-                            <span class="y-label">20</span>
-                            <span class="y-label">40</span>
-                            <span class="y-label">60</span>
-                            <span class="y-label">80</span>
                             <span class="y-label">100</span>
+                            <span class="y-label">80</span>
+                            <span class="y-label">60</span>
+                            <span class="y-label">40</span>
+                            <span class="y-label">20</span>
+                            <span class="y-label">0</span>
                         </div>
 
                         <!-- Plot -->
@@ -480,14 +468,50 @@
     const plot       = document.getElementById('barPlot');
     const xLabel     = document.getElementById('xLabels');
 
-    students.forEach((s, i) => {
+    function addStaticBar(label, percent) {
+        const heightPx = Math.max(4, (percent / 100) * plotHeight);
+
+        const group = document.createElement('div');
+        group.className = 'bar-group';
+        group.style.cssText = 'display:flex;flex-direction:column;align-items:center;flex:1;';
+
+        const pctLbl = document.createElement('div');
+        pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
+        pctLbl.textContent = percent + '%';
+
+        const bar = document.createElement('div');
+        bar.className = 'bar light';
+        bar.style.height = heightPx + 'px';
+        bar.style.width  = '56px';
+        bar.title        = label + ': ' + percent + '%';
+
+        group.appendChild(pctLbl);
+        group.appendChild(bar);
+        plot.appendChild(group);
+
+        const lbl = document.createElement('div');
+        lbl.className = 'x-label';
+        lbl.style.cssText = 'flex:1;text-align:center;font-size:0.7rem;color:#5a6a7a;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px;';
+        lbl.textContent   = label;
+        lbl.title         = label;
+        xLabel.appendChild(lbl);
+    }
+
+    // 1 static bar on the left
+    addStaticBar('electromotive force & internal resistance', 20);
+
+    // Dynamic bars (per student)
+    students.forEach(s => {
         const isDark   = s.sections_reached === 3;
         const heightPx = Math.max(4, (s.percent / 100) * plotHeight);
 
-        // Bar group
         const group = document.createElement('div');
-        group.className  = 'bar-group';
+        group.className = 'bar-group';
         group.style.cssText = 'display:flex;flex-direction:column;align-items:center;flex:1;';
+
+        const pctLbl = document.createElement('div');
+        pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
+        pctLbl.textContent = s.percent + '%';
 
         const bar = document.createElement('div');
         bar.className = 'bar ' + (isDark ? 'dark' : 'light');
@@ -495,16 +519,10 @@
         bar.style.width  = '56px';
         bar.title        = s.name + ': ' + s.sections_reached + '/3 sections (' + s.percent + '%)';
 
-        // Percent label above bar
-        const pctLbl = document.createElement('div');
-        pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
-        pctLbl.textContent   = s.percent + '%';
-
         group.appendChild(pctLbl);
         group.appendChild(bar);
         plot.appendChild(group);
 
-        // X-axis label (student name)
         const lbl = document.createElement('div');
         lbl.className = 'x-label';
         lbl.style.cssText = 'flex:1;text-align:center;font-size:0.7rem;color:#5a6a7a;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px;';
@@ -512,6 +530,10 @@
         lbl.title         = s.name;
         xLabel.appendChild(lbl);
     });
+
+    // 2 static bars on the right
+    addStaticBar('electromotive force & internal resistance', 20);
+    addStaticBar('electromotive force & internal resistance', 20);
     @endif
 </script>
 
