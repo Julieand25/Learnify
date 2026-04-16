@@ -17,7 +17,9 @@
       "Bash(grep -n 'hardcoded\\\\|static\\\\|dummy\\\\|TODO\\\\|quiz_attempt\\\\|score\\\\|subtopic\\\\|$data\\\\|$scores' c:/laragon/www/Learnify/resources/views/teacher/quiz-progress.blade.php)",
       "Bash(grep -n 'students\\\\[\\\\|$students\\\\|foreach\\\\|hardcoded\\\\|dummy\\\\|static data' c:/laragon/www/Learnify/resources/views/teacher/notes-progress.blade.php)",
       "Bash(grep -n 'classRoom\\\\|class_room\\\\|teacher_id\\\\|$user\\\\|$classes\\\\|$classRoom\\\\|auth\\(\\)' c:/laragon/www/Learnify/resources/views/teacher/class-students.blade.php)",
-      "Bash(grep -n '@php\\\\|$user\\\\|$classes\\\\|$enrolled\\\\|auth\\(\\)\\\\|hardcoded\\\\|static' c:/laragon/www/Learnify/resources/views/student/dashboard.blade.php)"
+      "Bash(grep -n '@php\\\\|$user\\\\|$classes\\\\|$enrolled\\\\|auth\\(\\)\\\\|hardcoded\\\\|static' c:/laragon/www/Learnify/resources/views/student/dashboard.blade.php)",
+      "Bash(grep -n 'Class A\\\\|class-a\\\\|Total Students\\\\|page-title\\\\|$classRoom' c:/laragon/www/Learnify/resources/views/teacher/class-students.blade.php)",
+      "Bash(grep -n 'Class A\\\\|$classRoom\\\\|class-a\\\\|page-title\\\\|section-title\\\\|chart-subject\\\\|Physics' c:/laragon/www/Learnify/resources/views/teacher/notes-progress.blade.php c:/laragon/www/Learnify/resources/views/teacher/quiz-progress.blade.php)"
     ]
   }
 }

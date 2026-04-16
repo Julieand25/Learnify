@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learnify - Total Students</title>
+    <title>Learnify - {{ $classRoom->name }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -411,7 +411,7 @@
                     </svg>
                     My Classes
                 </a>
-                <h1 class="page-title">Total Students</h1>
+                <h1 class="page-title">{{ $classRoom->name }}</h1>
             </div>
 
             <!-- Table Card -->
