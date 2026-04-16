@@ -18,8 +18,24 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
+        $user = $request->user();
+
+        // Get the student's most recent submitted quiz attempt across all enrolled classes
+        $attempt = QuizAttempt::where('student_id', $user->id)
+            ->whereNotNull('submitted_at')
+            ->latest('submitted_at')
+            ->first();
+
+        $quizPct = 0;
+        if ($attempt) {
+            $quizPct = $attempt->total > 0
+                ? (int) round($attempt->score / $attempt->total * 100)
+                : 100;
+        }
+
         return view('student.dashboard', [
-            'user' => $request->user(),
+            'user'    => $user,
+            'quizPct' => $quizPct,
         ]);
     }
 

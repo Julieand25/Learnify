@@ -110,6 +110,78 @@
         .average-legend { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-mid); }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #4a69bd; }
 
+        /* ── Line chart inside chart-container ── */
+        .chart-area {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        .y-axis-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-right: 10px;
+            height: 200px;
+            flex-shrink: 0;
+        }
+
+        .y-lbl {
+            font-size: 0.65rem;
+            color: #9aaabb;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .chart-plot {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .line-wrap {
+            height: 200px;
+            position: relative;
+            border-left: 1.5px solid #eef2f5;
+            border-bottom: 1.5px solid #eef2f5;
+            overflow: visible;
+        }
+
+        .hgrid {
+            position: absolute;
+            left: 0; right: 0;
+            border-top: 1px dashed #eef2f5;
+            pointer-events: none;
+        }
+
+        #studentChart {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: visible;
+        }
+
+        .x-row {
+            display: flex;
+            padding: 8px 0 0;
+        }
+
+        .x-item {
+            flex: 1;
+            text-align: center;
+            font-size: 0.62rem;
+            color: #5a6a7a;
+            line-height: 1.3;
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            padding: 0 3px;
+        }
+
         /* STATISTICS SIDEBAR */
         .stat-card {
             background: #fff;
@@ -226,32 +298,36 @@
                     <div class="chart-title">Physics - Electricity<br><small>Progress Score</small></div>
                     <div class="average-legend"><span class="dot"></span> Average grade</div>
                 </div>
-                
-                <svg viewBox="0 0 800 300" style="width:100%; height:auto; overflow:visible;">
-                    <line x1="0" y1="0" x2="800" y2="0" stroke="#f0f2f5" stroke-width="2" />
-                    <line x1="0" y1="75" x2="800" y2="75" stroke="#f0f2f5" stroke-width="2" />
-                    <line x1="0" y1="150" x2="800" y2="150" stroke="#f0f2f5" stroke-width="2" />
-                    <line x1="0" y1="225" x2="800" y2="225" stroke="#f0f2f5" stroke-width="2" />
-                    <line x1="0" y1="300" x2="800" y2="300" stroke="#333" stroke-width="1" />
 
-                    <text x="-40" y="10" font-size="14" fill="#9aaabb">100%</text>
-                    <text x="-40" y="110" font-size="14" fill="#9aaabb">66%</text>
-                    <text x="-40" y="210" font-size="14" fill="#9aaabb">33%</text>
-                    <text x="-40" y="300" font-size="14" fill="#9aaabb">0%</text>
+                <div class="chart-area">
+                    <!-- Y-axis labels -->
+                    <div class="y-axis-labels">
+                        <span class="y-lbl">100</span>
+                        <span class="y-lbl">80</span>
+                        <span class="y-lbl">60</span>
+                        <span class="y-lbl">40</span>
+                        <span class="y-lbl">20</span>
+                        <span class="y-lbl">0</span>
+                    </div>
 
-                    <path d="M 50 10 C 150 10, 250 180, 400 120 S 600 250, 750 90" 
-                          fill="none" stroke="#333" stroke-width="2" />
-                    
-                    <circle cx="50" cy="10" r="6" fill="#4a69bd" />
-                    <circle cx="400" cy="120" r="6" fill="#4a69bd" />
-                    <circle cx="550" cy="180" r="6" fill="#4a69bd" />
-                    <circle cx="750" cy="90" r="6" fill="#4a69bd" />
-
-                    <text x="50" y="340" font-size="14" fill="#1a2b3c" font-weight="600">3.1</text>
-                    <text x="400" y="340" font-size="14" fill="#1a2b3c" font-weight="600">3.2</text>
-                    <text x="550" y="340" font-size="14" fill="#1a2b3c" font-weight="600">3.3</text>
-                    <text x="750" y="340" font-size="14" fill="#1a2b3c" font-weight="600">3.4</text>
-                </svg>
+                    <!-- Plot -->
+                    <div class="chart-plot">
+                        <div class="line-wrap" id="studentChartWrap">
+                            <div class="hgrid" style="bottom:20%;"></div>
+                            <div class="hgrid" style="bottom:40%;"></div>
+                            <div class="hgrid" style="bottom:60%;"></div>
+                            <div class="hgrid" style="bottom:80%;"></div>
+                            <div class="hgrid" style="bottom:100%;"></div>
+                            <svg id="studentChart"></svg>
+                        </div>
+                        <div class="x-row">
+                            <div class="x-item">Current &amp; Potential Difference</div>
+                            <div class="x-item">Resistance</div>
+                            <div class="x-item">Electromotive Force &amp; Internal Resistance</div>
+                            <div class="x-item">Energy &amp; Electrical Power</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="stat-card">
@@ -292,5 +368,63 @@
     </div><!-- /main -->
 </div>
 
+<script>
+    const quizPct = {{ $quizPct ?? 0 }};
+    const wrap    = document.getElementById('studentChartWrap');
+    const svg     = document.getElementById('studentChart');
+    const ns      = 'http://www.w3.org/2000/svg';
+    const H       = 200;
+    const n       = 4;
+    const color   = '#4a69bd';
+
+    function el(tag, attrs) {
+        const e = document.createElementNS(ns, tag);
+        Object.entries(attrs || {}).forEach(([k, v]) => e.setAttribute(k, v));
+        return e;
+    }
+
+    function draw() {
+        const W = wrap.clientWidth;
+        function toX(i) { return ((2 * i + 1) / (2 * n)) * W; }
+        function toY(v)  { return H - (v / 100) * H; }
+
+        svg.innerHTML = '';
+
+        const vals = [0, quizPct, 0, 0];
+        const pts  = vals.map((v, i) => ({ x: toX(i), y: toY(v) }));
+
+        // Smooth bezier path
+        let d = `M ${pts[0].x} ${pts[0].y}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+            const cp1x = pts[i].x + (pts[i+1].x - pts[i].x) * 0.4;
+            const cp2x = pts[i+1].x - (pts[i+1].x - pts[i].x) * 0.4;
+            d += ` C ${cp1x} ${pts[i].y}, ${cp2x} ${pts[i+1].y}, ${pts[i+1].x} ${pts[i+1].y}`;
+        }
+
+        svg.appendChild(el('path', { d, fill: 'none', stroke: color, 'stroke-width': '2', 'stroke-linecap': 'round' }));
+
+        // Dots
+        pts.forEach(p => {
+            svg.appendChild(el('circle', { cx: p.x, cy: p.y, r: 5, fill: '#fff', stroke: color, 'stroke-width': 2 }));
+            svg.appendChild(el('circle', { cx: p.x, cy: p.y, r: 3, fill: color }));
+        });
+
+        // Score label above Resistance dot
+        if (quizPct > 0) {
+            const lbl = document.createElementNS(ns, 'text');
+            lbl.setAttribute('x', pts[1].x);
+            lbl.setAttribute('y', pts[1].y - 10);
+            lbl.setAttribute('font-family', 'Poppins, sans-serif');
+            lbl.setAttribute('font-size', '10');
+            lbl.setAttribute('fill', color);
+            lbl.setAttribute('font-weight', '600');
+            lbl.textContent = quizPct + '%';
+            svg.appendChild(lbl);
+        }
+    }
+
+    draw();
+    window.addEventListener('resize', draw);
+</script>
 </body>
 </html>
