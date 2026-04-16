@@ -242,9 +242,34 @@ class DashboardController extends Controller
     {
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
 
+        $students   = $classRoom->students()->orderBy('name')->get();
+        $studentIds = $students->pluck('id');
+
+        $quiz    = $classRoom->quiz()->first();
+        $quizMap = collect();
+        if ($quiz) {
+            $quizMap = QuizAttempt::where('quiz_id', $quiz->id)
+                ->whereIn('student_id', $studentIds)
+                ->whereNotNull('submitted_at')
+                ->get(['student_id', 'score', 'total'])
+                ->keyBy('student_id');
+        }
+
+        $studentData = $students->map(function ($s) use ($quizMap) {
+            $attempt = $quizMap[$s->id] ?? null;
+            $quizPct = 0;
+            if ($attempt) {
+                $quizPct = $attempt->total > 0
+                    ? (int) round($attempt->score / $attempt->total * 100)
+                    : 100;
+            }
+            return ['name' => $s->name, 'quiz_pct' => $quizPct];
+        });
+
         return view('teacher.quiz-progress', [
-            'user'      => $request->user(),
-            'classRoom' => $classRoom,
+            'user'        => $request->user(),
+            'classRoom'   => $classRoom,
+            'studentData' => $studentData,
         ]);
     }
 

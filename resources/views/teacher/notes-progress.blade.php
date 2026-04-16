@@ -363,7 +363,7 @@
 <div class="app">
 
     <!-- ══ SIDEBAR ══ -->
-    <x-teacher.sidebar active="my-classes" />
+    <x-teacher.sidebar active="dashboard" />
 
     <!-- ══ MAIN ══ -->
     <div class="main">
@@ -395,11 +395,11 @@
 
             <!-- Page header -->
             <div class="page-header">
-                <a href="{{ route('teacher.my-classes.students', $classRoom->id) }}" class="back-btn">
+                <a href="{{ route('teacher.dashboard') }}" class="back-btn">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                     </svg>
-                    Back
+                    Dashboard
                 </a>
                 <div class="header-text">
                     <h1 class="page-title">Notes – Progress</h1>

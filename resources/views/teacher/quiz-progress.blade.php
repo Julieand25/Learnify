@@ -18,8 +18,6 @@
             --text-dark: #1a2b3c;
             --text-mid: #5a6a7a;
             --text-light: #9aaabb;
-            --line-color: #1a3a6b;
-            --dot-color: #2f6de0;
             --sidebar-w: 160px;
         }
 
@@ -219,11 +217,7 @@
             flex-shrink: 0;
         }
 
-        .back-btn:hover {
-            background: var(--teal-light);
-            border-color: var(--teal);
-        }
-
+        .back-btn:hover { background: var(--teal-light); border-color: var(--teal); }
         .back-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
 
         .header-text { display: flex; flex-direction: column; gap: 2px; }
@@ -246,28 +240,118 @@
         .chart-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 24px 28px 20px;
+            padding: 28px 32px 50px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             max-width: 720px;
         }
 
-        .chart-subject {
-            font-size: 0.88rem;
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 28px;
+        }
+
+        /* ── Chart layout ── */
+        .chart-area {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+        }
+
+        /* Y-axis — same height as chart container */
+        .y-axis {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-right: 14px;
+            height: 288px;
+            flex-shrink: 0;
+        }
+
+        .y-label {
+            font-size: 0.72rem;
+            color: var(--text-light);
             font-weight: 500;
-            color: var(--text-mid);
-            margin-bottom: 20px;
+            line-height: 1;
         }
 
-        /* SVG chart container */
-        .svg-wrap {
-            width: 100%;
+        .plot {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Line chart container */
+        .line-chart-wrap {
+            height: 288px;
             position: relative;
+            border-left: 1.5px solid #e4edf0;
+            border-bottom: 1.5px solid #e4edf0;
+            overflow: visible;
         }
 
-        .svg-wrap svg {
+        .grid-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 1px dashed #dde8ec;
+            pointer-events: none;
+        }
+
+        /* SVG fills the container */
+        #lineChart {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: auto;
+            height: 100%;
             overflow: visible;
+        }
+
+        /* X-labels row — same width as chart, 4 equal columns */
+        .x-labels-row {
+            display: flex;
+            padding: 10px 0 0;
+        }
+
+        .x-label-item {
+            flex: 1;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-mid);
+            line-height: 1.4;
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            padding: 0 4px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: var(--text-mid);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -316,192 +400,152 @@
                 </a>
                 <div class="header-text">
                     <h1 class="page-title">Quiz – Progress</h1>
-                    <p class="page-subtitle">Student Name : {{ $student->name ?? 'Eden' }}</p>
+                    <p class="page-subtitle">Student Name: {{ $studentData->pluck('name')->implode(', ') }}</p>
                 </div>
             </div>
 
-            <!-- Chart card -->
-            <div class="chart-card">
-                <div class="chart-subject">Physics – Electricity</div>
-
-                <div class="svg-wrap">
-                    <svg id="lineChart" viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Will be rendered by JS -->
+            @if ($studentData->isEmpty())
+                <div style="background:#fff;border-radius:16px;padding:48px 32px;text-align:center;color:var(--text-mid);box-shadow:0 2px 12px rgba(0,0,0,0.06);max-width:520px;">
+                    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 16px;display:block;color:#c0d0d8;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197"/>
                     </svg>
+                    <p style="font-size:0.9rem;font-weight:600;">No students enrolled yet.</p>
+                    <p style="font-size:0.8rem;margin-top:6px;">Share the class code so students can join.</p>
                 </div>
-            </div>
+            @else
+                <!-- Chart card -->
+                <div class="chart-card">
+                    <div class="chart-title">Physics – Electricity</div>
+
+                    <div class="chart-area">
+
+                        <!-- Y-axis labels -->
+                        <div class="y-axis">
+                            <span class="y-label">100</span>
+                            <span class="y-label">80</span>
+                            <span class="y-label">60</span>
+                            <span class="y-label">40</span>
+                            <span class="y-label">20</span>
+                            <span class="y-label">0</span>
+                        </div>
+
+                        <!-- Plot -->
+                        <div class="plot">
+                            <div class="line-chart-wrap" id="lineChartWrap">
+                                <div class="grid-line" style="bottom: 20%;"></div>
+                                <div class="grid-line" style="bottom: 40%;"></div>
+                                <div class="grid-line" style="bottom: 60%;"></div>
+                                <div class="grid-line" style="bottom: 80%;"></div>
+                                <div class="grid-line" style="bottom: 100%;"></div>
+                                <svg id="lineChart"></svg>
+                            </div>
+
+                            <!-- X-labels: 4 equal columns align with SVG data points -->
+                            <div class="x-labels-row">
+                                <div class="x-label-item">Current &amp; Potential Difference</div>
+                                <div class="x-label-item">Resistance</div>
+                                <div class="x-label-item">Electromotive Force &amp; Internal Resistance</div>
+                                <div class="x-label-item">Energy &amp; Electrical Power</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Legend -->
+                    <!--<div class="legend" id="chartLegend"></div>-->
+                </div>
+            @endif
 
         </div><!-- /content -->
     </div><!-- /main -->
 </div><!-- /app -->
 
 <script>
-    // ── Data points ──
-    // x: subtopic label, y: score 0–100
-    const data = [
-        { label: '3.1', value: 100 },
-        { label: '3.2', value: 78  },
-        { label: '3.3', value: 68  },
-        { label: '3.4', value: 88  },
-    ];
+    @if ($studentData->isNotEmpty())
+    const students = @json($studentData->values());
 
-    // ── Chart dimensions (matches viewBox) ──
-    const W        = 620;
-    const H        = 300;
-    const padLeft  = 70;   // room for y-axis labels
-    const padRight = 60;   // room for "Subtopic" label
-    const padTop   = 40;   // room for legend
-    const padBot   = 50;   // room for x-axis labels
+    const colors  = ['#6c63cc','#2e8b84','#f06292','#ff9800','#00bcd4','#4caf50','#e91e63','#3f51b5'];
+    const wrap    = document.getElementById('lineChartWrap');
+    const svg     = document.getElementById('lineChart');
+    const legend  = document.getElementById('chartLegend');
+    const ns      = 'http://www.w3.org/2000/svg';
+    const H       = 288;
+    const n       = 4; // number of x-axis topics
 
-    const chartW = W - padLeft - padRight;
-    const chartH = H - padTop - padBot;
-
-    // Y ticks: 0%, 33%, 66%, 100%
-    const yTicks = [0, 33, 66, 100];
-
-    // Convert value → SVG y coordinate
-    function toY(val) {
-        return padTop + chartH - (val / 100) * chartH;
-    }
-
-    // X positions: evenly spaced
-    function toX(i) {
-        return padLeft + (i / (data.length - 1)) * chartW;
-    }
-
-    const svg = document.getElementById('lineChart');
-    const ns  = 'http://www.w3.org/2000/svg';
-
-    function el(tag, attrs = {}) {
+    function el(tag, attrs) {
         const e = document.createElementNS(ns, tag);
-        Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+        Object.entries(attrs || {}).forEach(([k, v]) => e.setAttribute(k, v));
         return e;
     }
 
-    function txt(content, attrs = {}) {
-        const e = el('text', attrs);
-        e.textContent = content;
-        return e;
+    // Data points for each student: [0, quiz_pct, 0, 0]
+    // X positions: center of each flex:1 column = (2i+1)/(2n) * W
+    // This aligns exactly with the HTML x-label item centers
+    function draw() {
+        const W = wrap.clientWidth;
+
+        function toX(i) { return ((2 * i + 1) / (2 * n)) * W; }
+        function toY(v)  { return H - (v / 100) * H; }
+
+        svg.innerHTML = '';
+
+        students.forEach((s, si) => {
+            const color = colors[si % colors.length];
+            const vals  = [0, s.quiz_pct, 0, 0];
+            const pts   = vals.map((v, i) => ({ x: toX(i), y: toY(v) }));
+
+            // Smooth cubic bezier path
+            let d = `M ${pts[0].x} ${pts[0].y}`;
+            for (let i = 0; i < pts.length - 1; i++) {
+                const cp1x = pts[i].x + (pts[i+1].x - pts[i].x) * 0.4;
+                const cp2x = pts[i+1].x - (pts[i+1].x - pts[i].x) * 0.4;
+                d += ` C ${cp1x} ${pts[i].y}, ${cp2x} ${pts[i+1].y}, ${pts[i+1].x} ${pts[i+1].y}`;
+            }
+
+            svg.appendChild(el('path', {
+                d,
+                fill: 'none',
+                stroke: color,
+                'stroke-width': '2',
+                'stroke-linecap': 'round',
+                'stroke-linejoin': 'round'
+            }));
+
+            // Dots
+            pts.forEach(p => {
+                svg.appendChild(el('circle', { cx: p.x, cy: p.y, r: 6, fill: '#fff', stroke: color, 'stroke-width': 2 }));
+                svg.appendChild(el('circle', { cx: p.x, cy: p.y, r: 3.5, fill: color }));
+            });
+
+            // Score label above the Resistance dot (index 1)
+            if (s.quiz_pct > 0) {
+                const scoreLbl = document.createElementNS(ns, 'text');
+                scoreLbl.setAttribute('x', pts[1].x);
+                scoreLbl.setAttribute('y', pts[1].y - 12);
+                scoreLbl.setAttribute('font-family', 'Poppins, sans-serif');
+                scoreLbl.setAttribute('font-size', '10');
+                scoreLbl.setAttribute('fill', color);
+                scoreLbl.setAttribute('font-weight', '600');
+                scoreLbl.textContent = s.quiz_pct + '%';
+                svg.appendChild(scoreLbl);
+            }
+        });
     }
 
-    // ── Grid lines & Y labels ──
-    yTicks.forEach(tick => {
-        const y = toY(tick);
+    draw();
 
-        // Grid line
-        svg.appendChild(el('line', {
-            x1: padLeft, y1: y,
-            x2: padLeft + chartW, y2: y,
-            stroke: '#dde8ec',
-            'stroke-width': 1,
-            'stroke-dasharray': tick === 0 ? '0' : '4 3'
-        }));
-
-        // Y label
-        svg.appendChild(txt(tick + '%', {
-            x: padLeft - 10,
-            y: y + 4,
-            'text-anchor': 'end',
-            'font-family': 'Poppins, sans-serif',
-            'font-size': '11',
-            fill: '#9aaabb'
-        }));
+    // Rebuild legend
+    students.forEach((s, si) => {
+        const color = colors[si % colors.length];
+        const item  = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `<span class="legend-dot" style="background:${color};"></span><span>${s.name}</span>`;
+        legend.appendChild(item);
     });
 
-    // Y axis label "Progress Score"
-    const yAxisLabel = txt('Progress Score', {
-        x: 12,
-        y: padTop + chartH / 2,
-        'text-anchor': 'middle',
-        'font-family': 'Poppins, sans-serif',
-        'font-size': '10',
-        fill: '#9aaabb',
-        transform: `rotate(-90, 12, ${padTop + chartH / 2})`
-    });
-    svg.appendChild(yAxisLabel);
-
-    // ── X axis labels ──
-    data.forEach((d, i) => {
-        svg.appendChild(txt(d.label, {
-            x: toX(i),
-            y: H - padBot + 22,
-            'text-anchor': 'middle',
-            'font-family': 'Poppins, sans-serif',
-            'font-size': '12',
-            fill: '#5a6a7a'
-        }));
-    });
-
-    // "Subtopic" label at the right end of x-axis
-    svg.appendChild(txt('Subtopic', {
-        x: W - 4,
-        y: H - padBot + 22,
-        'text-anchor': 'end',
-        'font-family': 'Poppins, sans-serif',
-        'font-size': '11',
-        fill: '#9aaabb'
-    }));
-
-    // ── Smooth curve using cubic bezier ──
-    // Build path using smooth cubic bezier
-    const points = data.map((d, i) => ({ x: toX(i), y: toY(d.value) }));
-
-    function smoothPath(pts) {
-        if (pts.length < 2) return '';
-        let d = `M ${pts[0].x} ${pts[0].y}`;
-        for (let i = 0; i < pts.length - 1; i++) {
-            const cp1x = pts[i].x + (pts[i+1].x - pts[i].x) * 0.4;
-            const cp1y = pts[i].y;
-            const cp2x = pts[i+1].x - (pts[i+1].x - pts[i].x) * 0.4;
-            const cp2y = pts[i+1].y;
-            d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pts[i+1].x} ${pts[i+1].y}`;
-        }
-        return d;
-    }
-
-    // Draw line
-    svg.appendChild(el('path', {
-        d: smoothPath(points),
-        fill: 'none',
-        stroke: '#1a3a6b',
-        'stroke-width': '2',
-        'stroke-linecap': 'round',
-        'stroke-linejoin': 'round'
-    }));
-
-    // ── Dots ──
-    points.forEach((p, i) => {
-        // Outer white ring
-        svg.appendChild(el('circle', {
-            cx: p.x, cy: p.y, r: 6,
-            fill: '#ffffff',
-            stroke: '#2f6de0',
-            'stroke-width': 2
-        }));
-        // Inner fill
-        svg.appendChild(el('circle', {
-            cx: p.x, cy: p.y, r: 3.5,
-            fill: '#2f6de0'
-        }));
-    });
-
-    // ── Legend: "Grade" label with dot ──
-    // Position it near top-right, just like the screenshot
-    const legendX = padLeft + chartW * 0.75;
-    const legendY = padTop - 12;
-
-    svg.appendChild(el('circle', {
-        cx: legendX, cy: legendY, r: 5,
-        fill: '#2f6de0'
-    }));
-
-    svg.appendChild(txt('Grade', {
-        x: legendX + 10,
-        y: legendY + 4,
-        'font-family': 'Poppins, sans-serif',
-        'font-size': '11',
-        fill: '#5a6a7a'
-    }));
+    // Redraw on resize
+    window.addEventListener('resize', draw);
+    @endif
 </script>
 
 </body>
