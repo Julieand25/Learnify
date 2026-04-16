@@ -411,7 +411,7 @@
                 </a>
                 <div class="header-text">
                     <h1 class="page-title">Notes – Progress</h1>
-                    <p class="page-subtitle">{{ $classRoom->name }}</p>
+                    <p class="page-subtitle">Student Name: {{ $studentProgress->pluck('name')->implode(', ') }}</p>
                 </div>
             </div>
 
@@ -432,17 +432,21 @@
 
                         <!-- Y-axis -->
                         <div class="y-axis">
-                            <span class="y-label">0%</span>
-                            <span class="y-label">33%</span>
-                            <span class="y-label">66%</span>
-                            <span class="y-label">100%</span>
+                            <span class="y-label">0</span>
+                            <span class="y-label">20</span>
+                            <span class="y-label">40</span>
+                            <span class="y-label">60</span>
+                            <span class="y-label">80</span>
+                            <span class="y-label">100</span>
                         </div>
 
                         <!-- Plot -->
                         <div class="plot">
                             <div class="plot-inner" id="barPlot">
-                                <div class="grid-line" style="bottom: 33%;"></div>
-                                <div class="grid-line" style="bottom: 66%;"></div>
+                                <div class="grid-line" style="bottom: 20%;"></div>
+                                <div class="grid-line" style="bottom: 40%;"></div>
+                                <div class="grid-line" style="bottom: 60%;"></div>
+                                <div class="grid-line" style="bottom: 80%;"></div>
                                 <div class="grid-line" style="bottom: 100%;"></div>
                             </div>
                             <div class="x-labels" id="xLabels"></div>
