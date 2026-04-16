@@ -72,7 +72,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .cat-card {
@@ -339,7 +339,7 @@
         <div class="content">
         <h3 class="section-label">Course Category</h3>
         <div class="categories-grid">
-            <a href="#" class="cat-card physics">
+            <a href="{{ route('student.learning-module') }}" class="cat-card physics">
                 <div class="cat-info">📁 Physics</div>
                 <span>&rsaquo;</span>
             </a>
