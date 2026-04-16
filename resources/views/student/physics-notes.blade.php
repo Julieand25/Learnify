@@ -335,6 +335,43 @@
         }
 
         .chapter-btn.disabled svg { color: #b0bec5 !important; }
+
+        /* ── Disabled dropdown item + inline Coming Soon badge ── */
+        .dropdown-disabled-wrap {
+            position: relative;
+            display: block;
+        }
+
+        .dropdown-disabled-wrap::after {
+            content: 'Coming soon';
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            transform: translateY(-50%);
+            background: rgba(28,28,40,0.88);
+            color: #fff;
+            font-size: 0.63rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            padding: 3px 9px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.15s;
+            pointer-events: none;
+        }
+
+        .dropdown-disabled-wrap:hover::after { opacity: 1; }
+
+        .dropdown-item.disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            pointer-events: none;
+            background: #f5f5f5;
+            color: #9aaabb;
+        }
+
+        .dropdown-item.disabled svg { color: #c0ccd4 !important; }
     </style>
 </head>
 <body>
@@ -480,22 +517,28 @@
                             </svg>
                         </button>
                         <div class="chapter-dropdown" id="ch3">
-                            <a href="#" class="dropdown-item">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Chapter 3.1: Current &amp; Potential Difference
-                            </a>
+                            <div class="dropdown-disabled-wrap">
+                                <a class="dropdown-item disabled">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Chapter 3.1: Current &amp; Potential Difference
+                                </a>
+                            </div>
                             <a href="{{ route('student.chapter.resistance') }}" class="dropdown-item">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 Chapter 3.2: Resistance
                             </a>
-                            <a href="#" class="dropdown-item">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Chapter 3.3: EMF &amp; Internal Force
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Chapter 3.4: Electrical Energy &amp; Power
-                            </a>
+                            <div class="dropdown-disabled-wrap">
+                                <a class="dropdown-item disabled">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Chapter 3.3: EMF &amp; Internal Force
+                                </a>
+                            </div>
+                            <div class="dropdown-disabled-wrap">
+                                <a class="dropdown-item disabled">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Chapter 3.4: Electrical Energy &amp; Power
+                                </a>
+                            </div>
                         </div>
                         <span class="chapter-hint">Select a chapter to learn.</span>
                     </div>
