@@ -989,9 +989,9 @@
 
         <div class="fc-bar">
             <button class="fc-nav" id="fcPrevBtn" title="Previous">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <!--<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"/><line x1="4" y1="6" x2="4" y2="18"/>
-                </svg>
+                </svg>-->
             </button> 
             <button class="fc-test-btn" id="fcTestBtn">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1001,9 +1001,9 @@
                 Test Yourself
             </button>
             <button class="fc-nav" id="fcNextBtn" title="Next">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <!--<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"/><line x1="20" y1="6" x2="20" y2="18"/>
-                </svg>
+                </svg>-->
             </button>
         </div>
         <!-- <div class="fc-hint">Click any card to reveal the answer</div> -->
