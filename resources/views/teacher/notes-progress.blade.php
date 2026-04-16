@@ -302,11 +302,12 @@
             height: 288px;
             position: relative;
             display: flex;
-            align-items: flex-end;
+            align-items: stretch;   /* all groups fill full height */
             gap: 32px;
             padding: 0 20px;
             border-left: 1.5px solid #e4edf0;
             border-bottom: 1.5px solid #e4edf0;
+            overflow: visible;      /* let x-labels overflow below */
         }
 
         .grid-line {
@@ -317,13 +318,14 @@
             pointer-events: none;
         }
 
-        /* Bar group */
+        /* Bar group — fills full chart height, bars pushed to bottom */
         .bar-group {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            justify-content: flex-end; /* bars sit at baseline */
             flex: 1;
+            position: relative;        /* anchor for x-label */
         }
 
         .bar {
@@ -331,26 +333,25 @@
             border-radius: 6px 6px 0 0;
             transition: opacity 0.2s;
             cursor: pointer;
-            position: relative;
         }
 
         .bar:hover { opacity: 0.8; }
         .bar.dark  { background: var(--bar-dark); }
         .bar.light { background: var(--bar-light); }
 
-        /* X-axis labels */
-        .x-labels {
-            display: flex;
-            gap: 32px;
-            padding: 10px 20px 0;
-        }
-
-        .x-label {
-            flex: 1;
+        /* X-label anchored below the baseline, centred over its bar */
+        .bar-xlabel {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
             text-align: center;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--text-mid);
             line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -437,7 +438,6 @@
                                 <div class="grid-line" style="bottom: 80%;"></div>
                                 <div class="grid-line" style="bottom: 100%;"></div>
                             </div>
-                            <div class="x-labels" id="xLabels"></div>
                         </div>
 
                     </div>
@@ -466,35 +466,34 @@
 
     const plotHeight = 288;
     const plot       = document.getElementById('barPlot');
-    const xLabel     = document.getElementById('xLabels');
 
-    function addStaticBar(label, percent) {
-        const heightPx = Math.max(4, (percent / 100) * plotHeight);
-
+    function makeGroup(barClass, heightPx, pctText, labelText, titleText) {
         const group = document.createElement('div');
         group.className = 'bar-group';
-        group.style.cssText = 'display:flex;flex-direction:column;align-items:center;flex:1;';
 
         const pctLbl = document.createElement('div');
         pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
-        pctLbl.textContent = percent + '%';
+        pctLbl.textContent = pctText;
 
         const bar = document.createElement('div');
-        bar.className = 'bar light';
+        bar.className = 'bar ' + barClass;
         bar.style.height = heightPx + 'px';
-        bar.style.width  = '56px';
-        bar.title        = label + ': ' + percent + '%';
+        bar.title = titleText;
+
+        const lbl = document.createElement('div');
+        lbl.className = 'bar-xlabel';
+        lbl.textContent = labelText;
+        lbl.title = labelText;
 
         group.appendChild(pctLbl);
         group.appendChild(bar);
+        group.appendChild(lbl);
         plot.appendChild(group);
+    }
 
-        const lbl = document.createElement('div');
-        lbl.className = 'x-label';
-        lbl.style.cssText = 'flex:1;text-align:center;font-size:0.7rem;color:#5a6a7a;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px;';
-        lbl.textContent   = label;
-        lbl.title         = label;
-        xLabel.appendChild(lbl);
+    function addStaticBar(label, percent) {
+        const heightPx = Math.max(4, (percent / 100) * plotHeight);
+        makeGroup('light', heightPx, percent + '%', label, label + ': ' + percent + '%');
     }
 
     // 1 static bar on the left
@@ -504,31 +503,13 @@
     students.forEach(s => {
         const isDark   = s.sections_reached === 3;
         const heightPx = Math.max(4, (s.percent / 100) * plotHeight);
-
-        const group = document.createElement('div');
-        group.className = 'bar-group';
-        group.style.cssText = 'display:flex;flex-direction:column;align-items:center;flex:1;';
-
-        const pctLbl = document.createElement('div');
-        pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
-        pctLbl.textContent = s.percent + '%';
-
-        const bar = document.createElement('div');
-        bar.className = 'bar ' + (isDark ? 'dark' : 'light');
-        bar.style.height = heightPx + 'px';
-        bar.style.width  = '56px';
-        bar.title        = s.name + ': ' + s.sections_reached + '/3 sections (' + s.percent + '%)';
-
-        group.appendChild(pctLbl);
-        group.appendChild(bar);
-        plot.appendChild(group);
-
-        const lbl = document.createElement('div');
-        lbl.className = 'x-label';
-        lbl.style.cssText = 'flex:1;text-align:center;font-size:0.7rem;color:#5a6a7a;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px;';
-        lbl.textContent   = s.name;
-        lbl.title         = s.name;
-        xLabel.appendChild(lbl);
+        makeGroup(
+            isDark ? 'dark' : 'light',
+            heightPx,
+            s.percent + '%',
+            s.name,
+            s.name + ': ' + s.sections_reached + '/3 sections (' + s.percent + '%)'
+        );
     });
 
     // 2 static bars on the right
