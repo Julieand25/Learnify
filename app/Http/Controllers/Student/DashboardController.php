@@ -33,9 +33,15 @@ class DashboardController extends Controller
                 : 100;
         }
 
+        $sectionsReached = ChapterProgress::where('student_id', $user->id)
+            ->where('chapter_slug', 'resistance')
+            ->value('sections_reached') ?? 0;
+        $notesPct = (int) round($sectionsReached / 3 * 100);
+
         return view('student.dashboard', [
-            'user'    => $user,
-            'quizPct' => $quizPct,
+            'user'     => $user,
+            'quizPct'  => $quizPct,
+            'notesPct' => $notesPct,
         ]);
     }
 

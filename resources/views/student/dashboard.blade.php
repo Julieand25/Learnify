@@ -237,17 +237,82 @@
 
         .stat-hint { font-size: 0.75rem; color: var(--text-light); margin-bottom: 30px; }
 
-        /* MINI BAR CHART */
-        .mini-bars {
+        /* MINI BAR CHART (notes progress) */
+        .mini-chart-area {
             display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            height: 80px;
-            margin-bottom: 10px;
+            align-items: flex-start;
+            gap: 0;
+            margin-bottom: 6px;
         }
 
-        .m-bar { width: 15px; background: #7467ef; border-radius: 4px; }
-        .bar-label { font-size: 0.65rem; color: var(--text-light); margin-top: 8px; }
+        .mini-y-axis {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-right: 5px;
+            height: 110px;
+            flex-shrink: 0;
+        }
+
+        .mini-y-lbl {
+            font-size: 0.52rem;
+            color: #9aaabb;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .mini-plot { flex: 1; display: flex; flex-direction: column; }
+
+        .mini-plot-inner {
+            height: 110px;
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            padding: 0 6px;
+            border-left: 1px solid #e4edf0;
+            border-bottom: 1px solid #e4edf0;
+            overflow: visible;
+        }
+
+        .mini-grid-line {
+            position: absolute;
+            left: 0; right: 0;
+            border-top: 1px dashed #eef2f5;
+            pointer-events: none;
+        }
+
+        .mini-bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            position: relative;
+        }
+
+        .mini-bar {
+            width: 100%;
+            max-width: 26px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .mini-bar.dark  { background: #6c63cc; }
+        .mini-bar.light { background: #b3aee8; }
+
+        .mini-x-row {
+            display: flex;
+            padding: 4px 6px 0;
+        }
+
+        .mini-x-item {
+            flex: 1;
+            text-align: center;
+            font-size: 0.58rem;
+            color: var(--text-mid);
+            line-height: 1.2;
+        }
 
     </style>
 </head>
@@ -333,7 +398,7 @@
             <div class="stat-card">
                 <div class="stat-header">
                     <span style="font-weight:700">Statistic</span>
-                    <span>⋮</span>
+                    <!--<span>⋮</span>-->
                 </div>
                 
                 <div class="circular-progress">
@@ -349,19 +414,32 @@
 
                 <p class="stat-hint">Continue your learning to achieve your target</p>
 
-                <div class="mini-bars">
-                    <div class="m-bar" style="height: 70%;"></div>
-                    <div class="m-bar" style="height: 40%;"></div>
-                    <div class="m-bar" style="height: 60%;"></div>
-                    <div class="m-bar" style="height: 90%;"></div>
+                <div class="mini-chart-area">
+                    <div class="mini-y-axis">
+                        <span class="mini-y-lbl">100</span>
+                        <span class="mini-y-lbl">80</span>
+                        <span class="mini-y-lbl">60</span>
+                        <span class="mini-y-lbl">40</span>
+                        <span class="mini-y-lbl">20</span>
+                        <span class="mini-y-lbl">0</span>
+                    </div>
+                    <div class="mini-plot">
+                        <div class="mini-plot-inner" id="miniBarPlot">
+                            <div class="mini-grid-line" style="bottom:20%;"></div>
+                            <div class="mini-grid-line" style="bottom:40%;"></div>
+                            <div class="mini-grid-line" style="bottom:60%;"></div>
+                            <div class="mini-grid-line" style="bottom:80%;"></div>
+                            <div class="mini-grid-line" style="bottom:100%;"></div>
+                        </div>
+                        <div class="mini-x-row">
+                            <span class="mini-x-item">3.1</span>
+                            <span class="mini-x-item">3.2</span>
+                            <span class="mini-x-item">3.3</span>
+                            <span class="mini-x-item">3.4</span>
+                        </div>
+                    </div>
                 </div>
-                <div style="display:flex; justify-content:space-around">
-                    <span class="bar-label">3.1</span>
-                    <span class="bar-label">3.2</span>
-                    <span class="bar-label">3.3</span>
-                    <span class="bar-label">3.4</span>
-                </div>
-                <p style="font-size:0.75rem; color:var(--teal); font-weight:700; margin-top:15px;">Learning Progress</p>
+                <p style="font-size:0.75rem; color:var(--teal); font-weight:700; margin-top:10px;">Learning Progress</p>
             </div>
         </div>
         </div><!-- /content -->
@@ -425,6 +503,22 @@
 
     draw();
     window.addEventListener('resize', draw);
+
+    // ── Mini notes-progress bar chart ──
+    const notesPct  = {{ $notesPct ?? 0 }};
+    const miniPlot  = document.getElementById('miniBarPlot');
+    const miniH     = 110;
+
+    [0, notesPct, 0, 0].forEach(function(pct) {
+        const group = document.createElement('div');
+        group.className = 'mini-bar-group';
+        const bar = document.createElement('div');
+        const heightPx = Math.max(2, (pct / 100) * miniH);
+        bar.className = 'mini-bar ' + (pct === 100 ? 'dark' : 'light');
+        bar.style.height = heightPx + 'px';
+        group.appendChild(bar);
+        miniPlot.appendChild(group);
+    });
 </script>
 </body>
 </html>
