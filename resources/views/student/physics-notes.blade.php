@@ -283,6 +283,58 @@
         }
 
         .dropdown-item:hover svg { color: var(--teal); }
+
+        /* ── Disabled chapter wrapper + Coming Soon tooltip ── */
+        .chapter-disabled-wrap {
+            position: relative;
+            display: block;
+        }
+
+        .chapter-disabled-wrap::after {
+            content: 'Coming soon';
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(28,28,40,0.88);
+            color: #fff;
+            font-size: 0.68rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            padding: 5px 11px;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .chapter-disabled-wrap::before {
+            content: '';
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 3px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(28,28,40,0.88);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .chapter-disabled-wrap:hover::after,
+        .chapter-disabled-wrap:hover::before { display: block; }
+
+        .chapter-btn.disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            background: #f0f0f0;
+            border-color: #dde0e3;
+            color: #9aaabb;
+            pointer-events: none;
+        }
+
+        .chapter-btn.disabled svg { color: #b0bec5 !important; }
     </style>
 </head>
 <body>
@@ -356,7 +408,8 @@
                     <!-- Chapter 1: Force & Motion II -->
                     <div class="chapter-col">
                         <div class="chapter-number">1. Force &amp; Motion II</div>
-                        <button class="chapter-btn" onclick="toggleDropdown('ch1')">
+                        <div class="chapter-disabled-wrap">
+                        <button class="chapter-btn disabled">
                             <svg class="book-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
@@ -365,6 +418,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
+                        </div>
                         <div class="chapter-dropdown" id="ch1">
                             <a href="#" class="dropdown-item">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -385,7 +439,8 @@
                     <!-- Chapter 2: Pressure -->
                     <div class="chapter-col">
                         <div class="chapter-number">2. Pressure</div>
-                        <button class="chapter-btn" onclick="toggleDropdown('ch2')">
+                        <div class="chapter-disabled-wrap">
+                        <button class="chapter-btn disabled">
                             <svg class="book-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
@@ -394,6 +449,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
+                        </div>
                         <div class="chapter-dropdown" id="ch2">
                             <a href="#" class="dropdown-item">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -447,7 +503,8 @@
                     <!-- Chapter 4: Electromagnetism -->
                     <div class="chapter-col">
                         <div class="chapter-number">4. Electromagnetism</div>
-                        <button class="chapter-btn" onclick="toggleDropdown('ch4')">
+                        <div class="chapter-disabled-wrap">
+                        <button class="chapter-btn disabled">
                             <svg class="book-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
@@ -456,6 +513,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
+                        </div>
                         <div class="chapter-dropdown" id="ch4">
                             <a href="#" class="dropdown-item">
                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
