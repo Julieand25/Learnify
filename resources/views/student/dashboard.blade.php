@@ -123,7 +123,7 @@
             justify-content: space-between;
             align-items: flex-end;
             padding-right: 10px;
-            height: 200px;
+            height: 280px;
             flex-shrink: 0;
         }
 
@@ -142,7 +142,7 @@
         }
 
         .line-wrap {
-            height: 200px;
+            height: 280px;
             position: relative;
             border-left: 1.5px solid #eef2f5;
             border-bottom: 1.5px solid #eef2f5;
@@ -373,7 +373,7 @@
     const wrap    = document.getElementById('studentChartWrap');
     const svg     = document.getElementById('studentChart');
     const ns      = 'http://www.w3.org/2000/svg';
-    const H       = 200;
+    const H       = 280;
     const n       = 4;
     const color   = '#4a69bd';
 
