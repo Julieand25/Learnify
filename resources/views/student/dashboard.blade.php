@@ -398,7 +398,7 @@
             <div class="stat-card">
                 <div class="stat-header">
                     <span style="font-weight:700">Statistic</span>
-                    <!--<span>⋮</span>-->
+                    <!--<span>⋮</span>-->  
                 </div>
                 
                 <div class="circular-progress">
