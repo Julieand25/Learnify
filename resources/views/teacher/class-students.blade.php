@@ -345,7 +345,7 @@
         }
 
         .progress-bar-wrap {
-            width: 120px;
+            width: 190px;
             height: 6px;
             background: #e0eaee;
             border-radius: 999px;
