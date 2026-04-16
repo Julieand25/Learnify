@@ -561,7 +561,7 @@
 
             @forelse ($classes as $class)
             <div class="class-card {{ $class->color_class }} {{ $class->bg }}"
-                 onclick="cardClick(event, {{ $class->id }}, '{{ route('teacher.class-students') }}')"
+                 onclick="cardClick(event, {{ $class->id }}, '{{ route('teacher.my-classes.students', $class->id) }}')"
                  data-id="{{ $class->id }}">
 
                 <div class="card-top">

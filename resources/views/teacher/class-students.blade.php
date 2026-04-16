@@ -425,43 +425,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                        $students = [
-                            ['name' => 'Eden',                    'class' => 'Class A', 'progress' => 90],
-                            ['name' => 'Abdullah',                'class' => 'Class A', 'progress' => 85],
-                            ['name' => 'Najmi',                   'class' => 'Class A', 'progress' => 70],
-                            ['name' => 'Ravindran a/l Muthusamy', 'class' => 'Class A', 'progress' => 70],
-                            ['name' => 'Jason Lee Kai Shen',      'class' => 'Class A', 'progress' => 60],
-                            ['name' => 'Siti Aminah binti Yusuf', 'class' => 'Class A', 'progress' => 60],
-                            ['name' => 'Lim Jian Hao',            'class' => 'Class A', 'progress' => 45],
-                        ];
-                        @endphp
-
-                        @foreach ($students as $student)
+                        @forelse ($students as $student)
                         <tr>
                             <td>
                                 <div class="name-cell">
-                                    <div class="avatar">
-                                        <svg fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                                        </svg>
-                                    </div>
-                                    <span class="student-name">{{ $student['name'] }}</span>
+                                    @if ($student->profile_photo_path)
+                                        <img src="{{ asset('storage/' . $student->profile_photo_path) }}" alt="{{ $student->name }}" class="avatar" style="object-fit:cover;">
+                                    @else
+                                        <div class="avatar">
+                                            <svg fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                    <span class="student-name">{{ $student->name }}</span>
                                 </div>
                             </td>
                             <td>
-                                <span class="class-badge">{{ $student['class'] }}</span>
+                                <span class="class-badge">{{ $classRoom->name }}</span>
                             </td>
                             <td>
                                 <div class="progress-cell">
                                     <div class="progress-bar-wrap">
-                                        <div class="progress-bar-fill" style="width: {{ $student['progress'] }}%"></div>
+                                        <div class="progress-bar-fill" style="width: 0%"></div>
                                     </div>
-                                    <span class="progress-pct">{{ $student['progress'] }}%</span>
+                                    <span class="progress-pct">—</span>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="3" style="text-align:center;padding:24px;color:var(--text-light);">No students enrolled yet.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

@@ -88,24 +88,36 @@ class DashboardController extends Controller
         return redirect()->route('teacher.my-classes')->with('success', 'Class deleted.');
     }
 
-    public function classStudents(Request $request): View
+    public function classStudents(Request $request, ClassRoom $classRoom): View
     {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+
+        $students = $classRoom->students()->orderBy('name')->get();
+
         return view('teacher.class-students', [
-            'user' => $request->user(),
+            'user'      => $request->user(),
+            'classRoom' => $classRoom,
+            'students'  => $students,
         ]);
     }
 
-    public function notesProgress(Request $request): View
+    public function notesProgress(Request $request, ClassRoom $classRoom): View
     {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+
         return view('teacher.notes-progress', [
-            'user' => $request->user(),
+            'user'      => $request->user(),
+            'classRoom' => $classRoom,
         ]);
     }
 
-    public function quizProgress(Request $request): View
+    public function quizProgress(Request $request, ClassRoom $classRoom): View
     {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+
         return view('teacher.quiz-progress', [
-            'user' => $request->user(),
+            'user'      => $request->user(),
+            'classRoom' => $classRoom,
         ]);
     }
 

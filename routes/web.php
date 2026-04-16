@@ -33,14 +33,11 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/my-classes', [TeacherDashboard::class, 'myClasses'])->name('my-classes');
     Route::post('/my-classes', [TeacherDashboard::class, 'storeClass'])->name('my-classes.store');
 
-    // ✅ Specific static-ish segments BEFORE wildcards
-    Route::get('/my-classes/{classRoom}/students', [TeacherDashboard::class, 'classStudents'])->name('class-students');
-    Route::get('/my-classes/{classRoom}/notes-progress', [TeacherDashboard::class, 'notesProgress'])->name('notes-progress');
-    Route::get('/my-classes/{classRoom}/quiz-progress', [TeacherDashboard::class, 'quizProgress'])->name('quiz-progress');
-
-    // Wildcard PUT/DELETE AFTER the GET routes above
     Route::put('/my-classes/{classRoom}', [TeacherDashboard::class, 'updateClass'])->name('my-classes.update');
     Route::delete('/my-classes/{classRoom}', [TeacherDashboard::class, 'destroyClass'])->name('my-classes.destroy');
+    Route::get('/my-classes/{classRoom}/students', [TeacherDashboard::class, 'classStudents'])->name('my-classes.students');
+    Route::get('/my-classes/{classRoom}/notes-progress', [TeacherDashboard::class, 'notesProgress'])->name('my-classes.notes-progress');
+    Route::get('/my-classes/{classRoom}/quiz-progress', [TeacherDashboard::class, 'quizProgress'])->name('my-classes.quiz-progress');
 
     Route::get('/edit-quiz', [TeacherDashboard::class, 'editQuiz'])->name('edit-quiz');
     Route::get('/edit-quiz/{classRoom}', [TeacherDashboard::class, 'editQuizClass'])->name('edit-quiz.class');
