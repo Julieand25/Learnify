@@ -396,13 +396,14 @@
             </div>
 
             <div class="stat-card">
+                @php $circPct = (int) round($notesPct / 4); @endphp
                 <div class="stat-header">
                     <span style="font-weight:700">Statistic</span>
-                    <!--<span>⋮</span>-->  
+                    <!--<span>⋮</span>-->
                 </div>
-                
-                <div class="circular-progress">
-                    <span class="percent-badge">32%</span>
+
+                <div class="circular-progress" style="background: conic-gradient(#7467ef {{ $circPct }}%, #f0f2f5 0);">
+                    <span class="percent-badge">{{ $circPct }}%</span>
                     @if (auth()->user()?->profile_photo_path)
                         <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar">
                     @else
