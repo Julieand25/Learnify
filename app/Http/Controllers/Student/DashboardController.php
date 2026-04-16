@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
 use App\Models\QuizAttempt;
 use Illuminate\Http\JsonResponse;
@@ -31,9 +32,31 @@ class DashboardController extends Controller
 
     public function chapterResistance(Request $request): View
     {
+        $progress = ChapterProgress::where('student_id', $request->user()->id)
+            ->where('chapter_slug', 'resistance')
+            ->value('sections_reached') ?? 0;
+
         return view('student.chapter-resistance', [
-            'user' => $request->user(),
+            'user'     => $request->user(),
+            'progress' => (int) $progress,
         ]);
+    }
+
+    public function saveChapterProgress(Request $request): JsonResponse
+    {
+        $request->validate(['sections_reached' => ['required', 'integer', 'min:1', 'max:3']]);
+
+        $record = ChapterProgress::firstOrNew([
+            'student_id'   => $request->user()->id,
+            'chapter_slug' => 'resistance',
+        ]);
+
+        if ($request->sections_reached > ($record->sections_reached ?? 0)) {
+            $record->sections_reached = $request->sections_reached;
+            $record->save();
+        }
+
+        return response()->json(['ok' => true, 'sections_reached' => $record->sections_reached]);
     }
 
     public function classQuiz(Request $request): View

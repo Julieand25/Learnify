@@ -403,90 +403,112 @@
 
             <!-- Page header -->
             <div class="page-header">
-                <a href="{{ route('teacher.dashboard') }}" class="back-btn">
+                <a href="{{ route('teacher.my-classes.students', $classRoom->id) }}" class="back-btn">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                     </svg>
-                    Dashboard
+                    Back
                 </a>
                 <div class="header-text">
                     <h1 class="page-title">Notes – Progress</h1>
-                    <p class="page-subtitle">Student Name : {{ $student->name ?? 'Eden' }}</p>
+                    <p class="page-subtitle">{{ $classRoom->name }}</p>
                 </div>
             </div>
 
-            <!-- Chart card -->
-            <div class="chart-card">
-                <div class="chart-title">Physics – Electricity</div>
-
-                <div class="chart-area">
-
-                    <!-- Y-axis -->
-                    <div class="y-axis">
-                        <span class="y-label">0%</span>
-                        <span class="y-label">33%</span>
-                        <span class="y-label">66%</span>
-                        <span class="y-label">100%</span>
-                    </div>
-
-                    <!-- Plot -->
-                    <div class="plot">
-                        <div class="plot-inner" id="barPlot">
-                            <!-- Grid lines -->
-                            <div class="grid-line" style="bottom: 33%;"></div>
-                            <div class="grid-line" style="bottom: 66%;"></div>
-                            <div class="grid-line" style="bottom: 100%;"></div>
-                            <!-- Bars rendered by JS -->
-                        </div>
-                        <div class="x-labels" id="xLabels">
-                            <!-- Labels rendered by JS -->
-                        </div>
-                    </div>
-
+            @if ($studentProgress->isEmpty())
+                <div style="background:#fff;border-radius:16px;padding:48px 32px;text-align:center;color:var(--text-mid);box-shadow:0 2px 12px rgba(0,0,0,0.06);max-width:520px;">
+                    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 16px;display:block;color:#c0d0d8;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197"/>
+                    </svg>
+                    <p style="font-size:0.9rem;font-weight:600;">No students enrolled yet.</p>
+                    <p style="font-size:0.8rem;margin-top:6px;">Share the class code so students can join.</p>
                 </div>
-            </div>
+            @else
+                <!-- Chart card -->
+                <div class="chart-card">
+                    <div class="chart-title">3.2 Resistance – Reading Progress</div>
+
+                    <div class="chart-area">
+
+                        <!-- Y-axis -->
+                        <div class="y-axis">
+                            <span class="y-label">0%</span>
+                            <span class="y-label">33%</span>
+                            <span class="y-label">66%</span>
+                            <span class="y-label">100%</span>
+                        </div>
+
+                        <!-- Plot -->
+                        <div class="plot">
+                            <div class="plot-inner" id="barPlot">
+                                <div class="grid-line" style="bottom: 33%;"></div>
+                                <div class="grid-line" style="bottom: 66%;"></div>
+                                <div class="grid-line" style="bottom: 100%;"></div>
+                            </div>
+                            <div class="x-labels" id="xLabels"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div style="display:flex;gap:20px;margin-top:16px;font-size:0.75rem;color:var(--text-mid);">
+                    <span style="display:flex;align-items:center;gap:6px;">
+                        <span style="width:12px;height:12px;border-radius:3px;background:var(--bar-dark);display:inline-block;"></span>
+                        Completed (3/3)
+                    </span>
+                    <span style="display:flex;align-items:center;gap:6px;">
+                        <span style="width:12px;height:12px;border-radius:3px;background:var(--bar-light);display:inline-block;"></span>
+                        In progress
+                    </span>
+                </div>
+            @endif
 
         </div><!-- /content -->
     </div><!-- /main -->
 </div><!-- /app -->
 
 <script>
-    const topics = [
-        { label: 'Current and\nPotential\nDifference', value: 68, dark: true  },
-        { label: 'Resistance',                          value: 30, dark: false },
-        { label: 'Electromotive\nForce\n&\nInternal\nResistance', value: 52, dark: true  },
-        { label: 'Energy\n&\nElectrical\nPower',        value: 105, dark: false }, // >100 = over the top line
-    ];
+    @if ($studentProgress->isNotEmpty())
+    const students = @json($studentProgress->values());
 
-    const plotHeight = 288; // px — matches CSS height of .plot-inner
-    const maxVal     = 100;
+    const plotHeight = 288;
+    const plot       = document.getElementById('barPlot');
+    const xLabel     = document.getElementById('xLabels');
 
-    const plot   = document.getElementById('barPlot');
-    const xLabel = document.getElementById('xLabels');
+    students.forEach((s, i) => {
+        const isDark   = s.sections_reached === 3;
+        const heightPx = Math.max(4, (s.percent / 100) * plotHeight);
 
-    topics.forEach(t => {
-        // Bar
+        // Bar group
         const group = document.createElement('div');
-        group.className = 'bar-group';
+        group.className  = 'bar-group';
         group.style.cssText = 'display:flex;flex-direction:column;align-items:center;flex:1;';
 
         const bar = document.createElement('div');
-        bar.className = 'bar ' + (t.dark ? 'dark' : 'light');
-        const heightPx = Math.min(t.value, 108) / 100 * plotHeight;
+        bar.className = 'bar ' + (isDark ? 'dark' : 'light');
         bar.style.height = heightPx + 'px';
         bar.style.width  = '56px';
-        bar.title        = t.value + '%';
+        bar.title        = s.name + ': ' + s.sections_reached + '/3 sections (' + s.percent + '%)';
 
+        // Percent label above bar
+        const pctLbl = document.createElement('div');
+        pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
+        pctLbl.textContent   = s.percent + '%';
+
+        group.appendChild(pctLbl);
         group.appendChild(bar);
         plot.appendChild(group);
 
-        // X label
+        // X-axis label (student name)
         const lbl = document.createElement('div');
         lbl.className = 'x-label';
-        lbl.style.cssText = 'flex:1;text-align:center;font-size:0.72rem;color:#5a6a7a;line-height:1.4;white-space:pre-line;';
-        lbl.textContent = t.label;
+        lbl.style.cssText = 'flex:1;text-align:center;font-size:0.7rem;color:#5a6a7a;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80px;';
+        lbl.textContent   = s.name;
+        lbl.title         = s.name;
         xLabel.appendChild(lbl);
     });
+    @endif
 </script>
 
 </body>

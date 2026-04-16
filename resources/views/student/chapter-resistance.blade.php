@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Learnify - Chapter 3.2 Resistance</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -687,9 +688,9 @@
             <span class="chapter-subtitle">3.2 Resistance</span>
             <div class="progress-wrap">
                 <div class="progress-track">
-                    <div class="progress-fill"></div>
+                    <div class="progress-fill" id="progress-fill" style="width:{{ ($progress / 3 * 100) }}%;"></div>
                 </div>
-                <span class="progress-label">1/3</span>
+                <span class="progress-label" id="progress-label">{{ $progress }}/3</span>
             </div>
         </div>
     </div>
@@ -821,7 +822,7 @@
             <div class="section-divider-line right"></div>
         </div>
 
-        <h2 class="sim-title">Interactive Simulation</h2>
+        <h2 class="sim-title" data-section="2">Interactive Simulation</h2>
 
         <!-- ── Circuit 1 (interactive slider) ── -->
         <div class="circuit-wrapper">
@@ -982,7 +983,7 @@
         </div>
 
         <!-- ══ REVISION FLASH CARDS ══ -->
-        <h2 class="fc-section-title">Revision Flash Card</h2>
+        <h2 class="fc-section-title" data-section="3">Revision Flash Card</h2>
 
         <div class="fc-grid" id="fcGrid"></div>
 
@@ -1307,6 +1308,49 @@
     });
 
     fcRenderPage();
+
+    /* ── CHAPTER PROGRESS TRACKING ── */
+    const TOTAL_SECTIONS   = 3;
+    let currentSection     = {{ $progress }};
+    const progressFill     = document.getElementById('progress-fill');
+    const progressLabel    = document.getElementById('progress-label');
+    const progressSaveUrl  = '{{ route('student.chapter.resistance.progress') }}';
+    const csrfToken        = document.querySelector('meta[name="csrf-token"]').content;
+
+    function updateProgressBar(section) {
+        progressFill.style.width  = ((section / TOTAL_SECTIONS) * 100) + '%';
+        progressLabel.textContent = section + '/' + TOTAL_SECTIONS;
+    }
+
+    function saveProgress(section) {
+        if (section <= currentSection) return;
+        currentSection = section;
+        updateProgressBar(section);
+
+        fetch(progressSaveUrl, {
+            method:  'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: JSON.stringify({ sections_reached: section }),
+        });
+    }
+
+    // Section 1 is always visible on page load — save if not already recorded
+    updateProgressBar(currentSection || 1);
+    if (currentSection < 1) saveProgress(1);
+
+    // Watch sections 2 (Simulation) and 3 (Flash Cards) via IntersectionObserver
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                saveProgress(parseInt(entry.target.dataset.section, 10));
+            }
+        });
+    }, { root: document.querySelector('.content'), threshold: 0.15 });
+
+    document.querySelectorAll('[data-section]').forEach(el => sectionObserver.observe(el));
 </script>
 
 </body>

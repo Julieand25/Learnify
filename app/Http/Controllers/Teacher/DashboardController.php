@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
 use App\Models\Quiz;
 use Illuminate\Http\JsonResponse;
@@ -105,9 +106,22 @@ class DashboardController extends Controller
     {
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
 
+        $students = $classRoom->students()->orderBy('name')->get();
+
+        $progressMap = ChapterProgress::where('chapter_slug', 'resistance')
+            ->whereIn('student_id', $students->pluck('id'))
+            ->pluck('sections_reached', 'student_id');
+
+        $studentProgress = $students->map(fn ($s) => [
+            'name'             => $s->name,
+            'sections_reached' => (int) ($progressMap[$s->id] ?? 0),
+            'percent'          => (int) round((($progressMap[$s->id] ?? 0) / 3) * 100),
+        ]);
+
         return view('teacher.notes-progress', [
-            'user'      => $request->user(),
-            'classRoom' => $classRoom,
+            'user'            => $request->user(),
+            'classRoom'       => $classRoom,
+            'studentProgress' => $studentProgress,
         ]);
     }
 
