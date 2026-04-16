@@ -12,7 +12,12 @@
       "Bash(cmd //c \"icacls C:\\\\laragon\\\\www\\\\Learnify\\\\storage /grant Everyone:\\(OI\\)\\(CI\\)F /T\")",
       "Bash(cmd //c \"icacls C:\\\\laragon\\\\www\\\\Learnify\\\\bootstrap\\\\cache /grant Everyone:\\(OI\\)\\(CI\\)F /T\")",
       "Bash(find app/Http/Middleware -name \"*.php\")",
-      "Bash(find app:*)"
+      "Bash(find app:*)",
+      "Bash(grep -n '$tableStudents\\\\|@php\\\\|hardcoded\\\\|TODO\\\\|static data\\\\|dummy' c:/laragon/www/Learnify/resources/views/teacher/dashboard.blade.php)",
+      "Bash(grep -n 'hardcoded\\\\|static\\\\|dummy\\\\|TODO\\\\|quiz_attempt\\\\|score\\\\|subtopic\\\\|$data\\\\|$scores' c:/laragon/www/Learnify/resources/views/teacher/quiz-progress.blade.php)",
+      "Bash(grep -n 'students\\\\[\\\\|$students\\\\|foreach\\\\|hardcoded\\\\|dummy\\\\|static data' c:/laragon/www/Learnify/resources/views/teacher/notes-progress.blade.php)",
+      "Bash(grep -n 'classRoom\\\\|class_room\\\\|teacher_id\\\\|$user\\\\|$classes\\\\|$classRoom\\\\|auth\\(\\)' c:/laragon/www/Learnify/resources/views/teacher/class-students.blade.php)",
+      "Bash(grep -n '@php\\\\|$user\\\\|$classes\\\\|$enrolled\\\\|auth\\(\\)\\\\|hardcoded\\\\|static' c:/laragon/www/Learnify/resources/views/student/dashboard.blade.php)"
     ]
   }
 }
