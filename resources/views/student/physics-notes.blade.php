@@ -102,7 +102,7 @@
             display: flex;
             align-items: flex-start;
             gap: 40px;
-            padding: 32px 36px 28px;
+            padding: 18px 36px 12px;
             border-bottom: 1px solid #d4eae8;
         }
 
@@ -484,6 +484,7 @@
     function toggleDropdown(id) {
         const dropdown = document.getElementById(id);
         const btn = dropdown.previousElementSibling;
+        const content = document.querySelector('.content');
 
         // Close all other open dropdowns
         document.querySelectorAll('.chapter-dropdown.show').forEach(d => {
@@ -497,15 +498,29 @@
         const isOpen = dropdown.classList.contains('show');
         dropdown.classList.toggle('show', !isOpen);
         btn.classList.toggle('open', !isOpen);
+
+        if (!isOpen) {
+            // Opening — scroll so the dropdown is visible
+            setTimeout(() => {
+                dropdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        } else {
+            // Closing — scroll back to top
+            content.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.chapter-col')) {
+            const hadOpen = document.querySelector('.chapter-dropdown.show');
             document.querySelectorAll('.chapter-dropdown.show').forEach(d => {
                 d.classList.remove('show');
                 d.previousElementSibling.classList.remove('open');
             });
+            if (hadOpen) {
+                document.querySelector('.content').scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
     });
 </script>
