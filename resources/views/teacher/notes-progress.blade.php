@@ -471,8 +471,9 @@
         const group = document.createElement('div');
         group.className = 'bar-group';
 
+        // Absolute — floats above the bar top, never affects bar height
         const pctLbl = document.createElement('div');
-        pctLbl.style.cssText = 'font-size:0.68rem;font-weight:600;color:var(--text-mid);margin-bottom:4px;';
+        pctLbl.style.cssText = 'position:absolute;bottom:' + (heightPx + 4) + 'px;left:0;right:0;text-align:center;font-size:0.68rem;font-weight:600;color:var(--text-mid);';
         pctLbl.textContent = pctText;
 
         const bar = document.createElement('div');
@@ -497,7 +498,7 @@
     }
 
     // 1 static bar on the left
-    addStaticBar('electromotive force & internal resistance', 20);
+    addStaticBar('Current & Potential Difference', 0);
 
     // Dynamic bars (per student)
     students.forEach(s => {
@@ -513,8 +514,8 @@
     });
 
     // 2 static bars on the right
-    addStaticBar('electromotive force & internal resistance', 20);
-    addStaticBar('electromotive force & internal resistance', 20);
+    addStaticBar('Electromotive Force & Internal Resistance', 0);
+    addStaticBar('Energy & Electrical Power', 0);
     @endif
 </script>
 
