@@ -661,15 +661,12 @@
     <!-- ══ CHAPTER HEADER ══ -->
     <div class="chapter-header">
         <div class="header-top">
-            <div style="display:flex;align-items:center;gap:16px;">
-                <a href="{{ route('student.physics-notes') }}" class="back-btn">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                    Back
-                </a>
-                <h1 class="chapter-title">Chapter 3: Electricity</h1>
-            </div>
+            <a href="{{ route('student.physics-notes') }}" class="back-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back
+            </a>
             <div class="header-right">
                 <button class="notif-btn">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -678,12 +675,13 @@
                 </button>
                 <div class="user-chip">
                     <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'E', 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
-                    <span>{{ auth()->user()->name ?? 'Eden Hazard' }}</span>
+                    <span>{{ auth()->user()->name }}</span>
                 </div>
             </div>
         </div>
+        <h1 class="chapter-title">Chapter 3: Electricity</h1>
         <div class="chapter-sub-row">
             <span class="chapter-subtitle">3.2 Resistance</span>
             <div class="progress-wrap">

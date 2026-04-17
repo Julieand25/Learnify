@@ -42,16 +42,16 @@
            CHAPTER HEADER
         ══════════════════════════════ */
         .chapter-header {
-            background: var(--main-bg);
+            background: var(--teal);
             padding: 20px 28px 0;
             flex-shrink: 0;
         }
 
         .header-top {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            margin-bottom: 4px;
+            margin-bottom: 10px;
         }
 
         .back-btn {
@@ -59,31 +59,33 @@
             align-items: center;
             gap: 6px;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--text-mid);
-            background: none;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
             border: none;
             cursor: pointer;
-            padding: 0;
-            margin-bottom: 10px;
-            text-decoration: none;
-            transition: color 0.2s;
+            transition: background 0.2s;
         }
 
-        .back-btn:hover { color: var(--teal-dark); }
-        .back-btn svg { flex-shrink: 0; }
+        .back-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
+        .back-btn svg { width: 15px; height: 15px; }
+
+        .header-title { margin-bottom: 10px; }
 
         .chapter-title {
             font-size: 1.9rem;
             font-weight: 800;
-            color: var(--text-dark);
+            color: #fff;
         }
 
         .chapter-subtitle {
             font-size: 1rem;
             font-weight: 700;
-            color: var(--text-dark);
+            color: #fff;
             margin-bottom: 10px;
         }
 
@@ -96,15 +98,11 @@
         .user-chip {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 6px 14px 6px 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            gap: 8px;
         }
 
         .user-chip span {
-            font-size: 0.82rem; font-weight: 600; color: var(--text-dark);
+            font-size: 0.82rem; font-weight: 600; color: #fff;
         }
 
         /* Progress row */
@@ -113,7 +111,7 @@
             align-items: center;
             gap: 10px;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
         .progress-track {
@@ -687,40 +685,32 @@
 
     <!-- ══ HEADER ══ -->
     <div class="chapter-header">
-        <a href="{{ route('student.quiz') }}" class="back-btn">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Back to Classes
-        </a>
         <div class="header-top">
-            <div>
-                <h1 class="chapter-title">{{ $classRoom->name }}</h1>
-                <!-- <p class="chapter-subtitle">{{ $classRoom->subject_label ?? 'Quiz' }}</p> -->
-            </div>
+            <a href="{{ route('student.quiz') }}" class="back-btn">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back to Classes
+            </a>
             <div class="header-right">
-                <!--<div class="user-chip">
+                <div class="user-chip">
                     @if (auth()->user()?->profile_photo_path)
                         <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
                     @else
-                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}
+                        <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
                     @endif
-                    <span>{{ auth()->user()->name ?? 'Student' }}</span>
-                </div>-->
+                    <span>{{ auth()->user()->name }}</span>
+                </div>
             </div>
         </div>
 
-        <div class="progress-row">
-            @php
-                $pct = $totalQuestions > 0 ? round(($currentQuestion / $totalQuestions) * 100) : 0;
-            @endphp
-            <!--<div class="progress-track">
-                <div class="progress-fill" style="width: {{ $pct }}%"></div>
-            </div>
-            <span class="progress-label">{{ $currentQuestion }}/{{ $totalQuestions }}</span>-->
+        <div class="header-title">
+            <h1 class="chapter-title">{{ $classRoom->name }}</h1>
         </div>
+
+        <div class="progress-row"></div>
     </div>
 
     <!-- ══ MAIN LAYOUT ══ -->
@@ -734,7 +724,6 @@
                 <div class="result-card">
                     <div class="result-score-ring">
                         <span class="score-num">{{ $attempt->score }}</span>
-                        <!--<span class="score-sub">/ {{ $attempt->total }}</span>-->
                     </div>
                     <div class="result-title">Quiz Completed!</div>
                     <div class="result-sub">
@@ -828,10 +817,6 @@
                 <div class="q-card active">
                     <div class="q-card-top">
                         <span class="q-number">Question {{ $currentQuestion }}</span>
-                        <!-- <div class="type-toggle">
-                            <button class="type-btn {{ $question->type === 'objective'  ? 'active' : '' }}">Objective</button>
-                            <button class="type-btn {{ $question->type === 'subjective' ? 'active' : '' }}">Subjective</button>
-                        </div> -->
                     </div>
 
                     <div class="q-input" style="pointer-events:none;">
@@ -913,8 +898,6 @@
                                         <polygon class="cblt" points="72,118 62,130 69,130 65,142 81,129 73,129 79,118"/>
                                         <circle class="ctm" cx="50" cy="170" r="11"/>
                                         <line class="ctm" x1="44" y1="170" x2="56" y2="170"/>
-                                        <!-- <rect class="ctag" x="110" y="135" width="44" height="20" rx="10"/>
-                                        <text class="ctagtxt" x="132" y="145">12V</text> -->
                                     </g>
 
                                     {{-- ─ Bulb slot ─ --}}
@@ -938,8 +921,6 @@
                                         <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="144" x2="433" y2="150"/>
                                         <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="387" y1="151" x2="393" y2="145"/>
                                         <line stroke="#1a1a1a" stroke-width="4" stroke-linecap="round" x1="427" y1="115" x2="433" y2="109"/>
-                                        <!-- rect class="ctag" x="428" y="157" width="50" height="20" rx="10"/>
-                                        <text class="ctagtxt" x="453" y="167">0.25A</text> -->
                                     </g>
 
                                     {{-- ─ Resistor slot ─ --}}
@@ -954,7 +935,6 @@
                                     {{-- ─ Resistor (hidden initially, revealed on drop) ─ --}}
                                     <g id="resistor-group" style="opacity:0;pointer-events:none;">
                                         <rect class="cres" x="168" y="218" width="124" height="24" rx="3"/>
-                                        <!-- <text class="crtxt" x="230" y="230">0.4&#937;</text> -->
                                     </g>
                                 </svg>
                             </div>
@@ -1017,9 +997,6 @@
                             {{-- Follow-up revealed after circuit complete --}}
                             <div class="followup-section" id="followupSection"
                                  style="{{ $savedAnswer ? '' : 'display:none;' }}">
-                                <!-- <div class="circuit-complete-msg">
-                                    ✓ Circuit complete! Now answer the follow-up questions.
-                                </div> -->
                                 <div class="q-divider"></div>
 
                                 {{-- Hidden field holds the JSON-encoded answers --}}
