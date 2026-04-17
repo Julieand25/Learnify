@@ -639,6 +639,48 @@
             margin-top: 14px;
             letter-spacing: 0.2px;
         }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .notes-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+            .notes-layout .notepad-card {
+                grid-column: 1 / -1;
+            }
+            .fc-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .chapter-header { padding: 14px 20px 12px; }
+            .chapter-title  { font-size: 1.4rem; }
+            .content        { padding: 20px 20px 48px; }
+            .notes-layout   { grid-template-columns: 1fr; }
+            .notes-bottom   { grid-template-columns: 1fr; }
+            .chapter-sub-row { flex-wrap: wrap; gap: 10px; }
+            .progress-wrap  { min-width: 180px; }
+        }
+
+        @media (max-width: 640px) {
+            html, body { overflow: auto; }
+            .app { height: auto; min-height: 100vh; overflow: visible; }
+            .content { flex: unset; overflow-y: visible; padding: 16px 16px 40px; }
+            .chapter-header { padding: 12px 16px 10px; }
+            .chapter-title  { font-size: 1.2rem; }
+            .chapter-subtitle { font-size: 0.9rem; }
+            .user-chip span { display: none; }
+            .user-chip { padding: 5px !important; border-radius: 50% !important; }
+            .fc-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .fc-scene { height: 140px; }
+            .circuit-wrapper { padding: 14px 12px; }
+        }
+
+        @media (max-width: 400px) {
+            .fc-grid { grid-template-columns: 1fr; }
+            .fc-scene { height: 130px; }
+            .chapter-title { font-size: 1rem; }
+        }
+
     </style>
 </head>
 <body>
