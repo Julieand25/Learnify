@@ -482,6 +482,205 @@
 
         .btn-reminder:hover { opacity: 0.88; }
 
+        /* ── Calendar reminder panels ── */
+        .cal-day { position: relative; }
+
+        .cal-dot {
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--teal);
+            pointer-events: none;
+        }
+
+        .cal-day.today .cal-dot { background: rgba(255,255,255,0.85); }
+        .cal-day.has-reminder { font-weight: 600; }
+
+        .cal-back-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .cal-back-btn {
+            background: none;
+            border: none;
+            color: var(--teal);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cal-back-btn:hover { text-decoration: underline; }
+
+        .cal-panel-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .cal-date-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .cal-date-pill {
+            background: var(--teal-light);
+            color: var(--teal);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
+        .cal-field { margin-bottom: 10px; }
+
+        .cal-field label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--text-mid);
+            margin-bottom: 4px;
+        }
+
+        .cal-field input,
+        .cal-field textarea {
+            width: 100%;
+            padding: 8px 11px;
+            border: 1.5px solid #e0eaee;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.79rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s;
+            background: #f7fbfc;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        .cal-field input:focus,
+        .cal-field textarea:focus { border-color: var(--teal); background: #fff; }
+        .cal-field textarea { height: 72px; }
+
+        .cal-form-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .cal-btn-save {
+            flex: 1;
+            padding: 9px;
+            background: var(--teal);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.79rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .cal-btn-save:hover { opacity: 0.88; }
+
+        .cal-btn-cancel {
+            flex: 1;
+            padding: 9px;
+            background: #f0f6f8;
+            color: var(--text-mid);
+            border: 1.5px solid #d0e4e8;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.79rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .cal-btn-cancel:hover { background: #e4eff3; }
+
+        .cal-btn-delete {
+            flex: 1;
+            padding: 9px;
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.79rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .cal-btn-delete:hover { background: #fecaca; }
+
+        .cal-detail-section {
+            background: #f7fbfc;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+
+        .cal-detail-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cal-detail-value {
+            font-size: 0.81rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .cal-pencil-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--teal);
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .cal-pencil-btn:hover { color: var(--navy); }
+
+        .cal-detail-input,
+        .cal-detail-textarea {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1.5px solid var(--teal);
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.79rem;
+            color: var(--text-dark);
+            outline: none;
+            background: #fff;
+            resize: none;
+            box-sizing: border-box;
+            margin-top: 4px;
+        }
+
+        .cal-detail-textarea { height: 66px; }
+
         /* ══════════════════════════════
            STUDENT TABLE
         ══════════════════════════════ */
@@ -774,23 +973,56 @@
 
                 <!-- Calendar Card -->
                 <div class="calendar-card">
-                    <div class="cal-header">
-                        <div>
-                            <div class="cal-title">Calendar</div>
-                            <div class="cal-month" id="calMonthLabel">December 2025</div>
+
+                    {{-- Panel 1: Calendar --}}
+                    <div id="cal-panel">
+                        <div class="cal-header">
+                            <div>
+                                <div class="cal-title">Calendar</div>
+                                <div class="cal-month" id="calMonthLabel"></div>
+                            </div>
+                            <div class="cal-nav">
+                                <button onclick="changeMonth(-1)">&#8249;</button>
+                                <button onclick="changeMonth(1)">&#8250;</button>
+                            </div>
                         </div>
-                        <div class="cal-nav">
-                            <button onclick="changeMonth(-1)">&#8249;</button>
-                            <button onclick="changeMonth(1)">&#8250;</button>
+                        <div class="cal-grid" id="calGrid"></div>
+                        <p class="cal-hint">*Click a date to select; click a marked date to view its reminder</p>
+                        <button class="btn-reminder" id="btnSetReminder" onclick="showFormPanel()" style="display:none;">Set Reminder</button>
+                    </div>
+
+                    {{-- Panel 2: Set reminder form --}}
+                    <div id="reminder-form-panel" style="display:none;">
+                        <div class="cal-back-header">
+                            <!--<button class="cal-back-btn" onclick="showCalendarPanel()">&#8592; Back</button>-->
+                            <span class="cal-panel-title">Set Reminder</span>
+                        </div>
+                        <div id="formDatePills" class="cal-date-pills"></div>
+                        <div class="cal-field">
+                            <label for="calEventName">Event Name</label>
+                            <input type="text" id="calEventName" placeholder="Enter event name">
+                        </div>
+                        <div class="cal-field">
+                            <label for="calEventDetails">Details</label>
+                            <textarea id="calEventDetails" placeholder="Enter event details (optional)"></textarea>
+                        </div>
+                        <div class="cal-form-btns">
+                            <button class="cal-btn-cancel" onclick="showCalendarPanel()">Cancel</button>
+                            <button class="cal-btn-save" onclick="saveReminder()">Save</button>
                         </div>
                     </div>
 
-                    <div class="cal-grid" id="calGrid">
-                        <!-- Generated by JS -->
+                    {{-- Panel 3: Event detail --}}
+                    <div id="reminder-detail-panel" style="display:none;">
+                        <div class="cal-back-header">
+                            <!--<button class="cal-back-btn" onclick="showCalendarPanel()">&#8592;Back</button>-->
+                            <span class="cal-panel-title" id="detailDateLabel"></span>
+                        </div>
+                        <div class="cal-detail-section" id="detailNameSection"></div>
+                        <div class="cal-detail-section" id="detailDetailsSection"></div>
+                        <div class="cal-form-btns" id="detailBtns"></div>
                     </div>
 
-                    <p class="cal-hint">*You can choose multiple date</p>
-                    <button class="btn-reminder">Set Reminder</button>
                 </div>
 
             </div>
@@ -939,22 +1171,209 @@
     renderClass(0);
 
     // ── CALENDAR ──
-    let currentYear = 2025;
-    let currentMonth = 11; // December (0-indexed)
+    const _now = new Date();
+    let currentYear  = _now.getFullYear();
+    let currentMonth = _now.getMonth(); // 0-indexed
     const selectedDates = new Set();
     const today = new Date();
 
-    const dayNames = ['S','M','T','W','T','F','S'];
+    // remindersMap: { 'YYYY-MM-DD': { id, event_name, event_details } }
+    const remindersMap = @json($remindersForJs);
+
+    let calState    = 'calendar'; // 'calendar' | 'form' | 'detail'
+    let detailDate  = null;
+    let editingName = false;
+    let editingDets = false;
+
+    const dayNames   = ['S','M','T','W','T','F','S'];
     const monthNames = ['January','February','March','April','May','June',
                         'July','August','September','October','November','December'];
 
+    function toIso(y, m, d) {
+        return `${y}-${String(m + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+
+    function fmtIso(iso) {
+        const [y, m, d] = iso.split('-');
+        return `${monthNames[parseInt(m) - 1]} ${parseInt(d)}, ${y}`;
+    }
+
+    function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Panel switching ──
+    function showCalendarPanel() {
+        editingName = false;
+        editingDets = false;
+        document.getElementById('cal-panel').style.display              = '';
+        document.getElementById('reminder-form-panel').style.display    = 'none';
+        document.getElementById('reminder-detail-panel').style.display  = 'none';
+        renderCalendar();
+    }
+
+    function showFormPanel() {
+        if (selectedDates.size === 0) return;
+        document.getElementById('cal-panel').style.display              = 'none';
+        document.getElementById('reminder-form-panel').style.display    = '';
+        document.getElementById('reminder-detail-panel').style.display  = 'none';
+
+        // Populate date pills
+        const pillsEl = document.getElementById('formDatePills');
+        pillsEl.innerHTML = '';
+        [...selectedDates].sort().forEach(iso => {
+            const pill = document.createElement('span');
+            pill.className   = 'cal-date-pill';
+            pill.textContent = fmtIso(iso);
+            pillsEl.appendChild(pill);
+        });
+
+        document.getElementById('calEventName').value    = '';
+        document.getElementById('calEventDetails').value = '';
+        setTimeout(() => document.getElementById('calEventName').focus(), 50);
+    }
+
+    function showDetailPanel(iso) {
+        detailDate  = iso;
+        editingName = false;
+        editingDets = false;
+        document.getElementById('cal-panel').style.display              = 'none';
+        document.getElementById('reminder-form-panel').style.display    = 'none';
+        document.getElementById('reminder-detail-panel').style.display  = '';
+        document.getElementById('detailDateLabel').textContent = fmtIso(iso);
+        renderDetailContent();
+    }
+
+    // ── Detail panel rendering ──
+    const pencilSvg = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>`;
+
+    function renderDetailSection(sectionId, label, value, field, isEditing, inputType) {
+        const section = document.getElementById(sectionId);
+        if (isEditing) {
+            const inputId = field === 'name' ? 'editName' : 'editDets';
+            section.innerHTML = `
+                <div class="cal-detail-label">${label}</div>
+                ${inputType === 'input'
+                    ? `<input type="text" class="cal-detail-input" id="${inputId}" value="${esc(value === '—' ? '' : (value || ''))}">`
+                    : `<textarea class="cal-detail-textarea" id="${inputId}">${esc(value === '—' ? '' : (value || ''))}</textarea>`
+                }`;
+            setTimeout(() => { const el = document.getElementById(inputId); if (el) el.focus(); }, 30);
+        } else {
+            section.innerHTML = `
+                <div class="cal-detail-label">
+                    ${label}
+                    <button class="cal-pencil-btn" onclick="startEdit('${field}')" title="Edit">${pencilSvg}</button>
+                </div>
+                <div class="cal-detail-value">${(value === null || value === '') ? '—' : esc(value)}</div>`;
+        }
+    }
+
+    function renderDetailContent() {
+        const r = remindersMap[detailDate];
+        renderDetailSection('detailNameSection',    'Event Name', r.event_name,    'name', editingName, 'input');
+        renderDetailSection('detailDetailsSection', 'Details',    r.event_details, 'dets', editingDets, 'textarea');
+
+        const btns = document.getElementById('detailBtns');
+        if (editingName || editingDets) {
+            btns.innerHTML = `
+                <button class="cal-btn-cancel" onclick="cancelEdit()">Cancel</button>
+                <button class="cal-btn-save"   onclick="updateReminder()">Save</button>`;
+        } else {
+            btns.innerHTML = `
+                <button class="cal-btn-cancel"  onclick="showCalendarPanel()">Back</button>
+                <button class="cal-btn-delete"  onclick="deleteReminder()">Delete</button>`;
+        }
+    }
+
+    function startEdit(field) {
+        if (field === 'name') editingName = true;
+        else                  editingDets = true;
+        renderDetailContent();
+    }
+
+    function cancelEdit() {
+        editingName = false;
+        editingDets = false;
+        renderDetailContent();
+    }
+
+    // ── AJAX: save new reminder ──
+    async function saveReminder() {
+        const name    = document.getElementById('calEventName').value.trim();
+        const details = document.getElementById('calEventDetails').value.trim();
+        if (!name) { document.getElementById('calEventName').focus(); return; }
+
+        try {
+            const res  = await fetch('{{ route("teacher.reminders.store") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ dates: [...selectedDates].sort(), event_name: name, event_details: details || null }),
+            });
+            const data = await res.json();
+            Object.entries(data).forEach(([date, r]) => { remindersMap[date] = r; });
+            selectedDates.clear();
+            showCalendarPanel();
+        } catch (e) { console.error(e); }
+    }
+
+    // ── AJAX: update existing reminder ──
+    async function updateReminder() {
+        const r       = remindersMap[detailDate];
+        const name    = editingName ? (document.getElementById('editName')?.value ?? '').trim() : r.event_name;
+        const details = editingDets ? (document.getElementById('editDets')?.value ?? '').trim() : r.event_details;
+        if (!name) { if (editingName) document.getElementById('editName')?.focus(); return; }
+
+        try {
+            const res     = await fetch(`/teacher/reminders/${r.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ event_name: name, event_details: details || null }),
+            });
+            const updated = await res.json();
+            remindersMap[detailDate] = updated;
+            editingName = false;
+            editingDets = false;
+            renderDetailContent();
+        } catch (e) { console.error(e); }
+    }
+
+    // ── AJAX: delete reminder ──
+    async function deleteReminder() {
+        const r = remindersMap[detailDate];
+        try {
+            await fetch(`/teacher/reminders/${r.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+            });
+            delete remindersMap[detailDate];
+            detailDate = null;
+            showCalendarPanel();
+        } catch (e) { console.error(e); }
+    }
+
+    // ── Render calendar ──
+    function updateReminderBtn() {
+        document.getElementById('btnSetReminder').style.display = selectedDates.size > 0 ? 'block' : 'none';
+    }
+
     function renderCalendar() {
-        const grid = document.getElementById('calGrid');
+        const grid  = document.getElementById('calGrid');
         const label = document.getElementById('calMonthLabel');
         grid.innerHTML = '';
         label.textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
-        // Day name headers
         dayNames.forEach(d => {
             const el = document.createElement('div');
             el.className = 'cal-day-name';
@@ -962,11 +1381,10 @@
             grid.appendChild(el);
         });
 
-        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const firstDay    = new Date(currentYear, currentMonth, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-        const prevDays = new Date(currentYear, currentMonth, 0).getDate();
+        const prevDays    = new Date(currentYear, currentMonth, 0).getDate();
 
-        // Previous month fillers
         for (let i = firstDay - 1; i >= 0; i--) {
             const el = document.createElement('div');
             el.className = 'cal-day other-month';
@@ -974,30 +1392,40 @@
             grid.appendChild(el);
         }
 
-        // Current month days
         for (let d = 1; d <= daysInMonth; d++) {
-            const el = document.createElement('div');
-            el.className = 'cal-day';
+            const el      = document.createElement('div');
+            el.className  = 'cal-day';
             el.textContent = d;
 
-            const key = `${currentYear}-${currentMonth}-${d}`;
+            const iso     = toIso(currentYear, currentMonth, d);
             const isToday = d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
 
-            if (isToday) el.classList.add('today');
-            if (selectedDates.has(key)) el.classList.add('selected');
+            if (isToday)               el.classList.add('today');
+            if (selectedDates.has(iso)) el.classList.add('selected');
+
+            if (remindersMap[iso]) {
+                el.classList.add('has-reminder');
+                const dot = document.createElement('span');
+                dot.className = 'cal-dot';
+                el.appendChild(dot);
+            }
 
             el.addEventListener('click', () => {
-                if (isToday) return;
-                if (selectedDates.has(key)) selectedDates.delete(key);
-                else selectedDates.add(key);
-                renderCalendar();
+                if (remindersMap[iso]) {
+                    showDetailPanel(iso);
+                } else {
+                    if (isToday) return;
+                    if (selectedDates.has(iso)) selectedDates.delete(iso);
+                    else selectedDates.add(iso);
+                    renderCalendar();
+                    updateReminderBtn();
+                }
             });
 
             grid.appendChild(el);
         }
 
-        // Next month fillers
-        const total = firstDay + daysInMonth;
+        const total     = firstDay + daysInMonth;
         const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
         for (let d = 1; d <= remaining; d++) {
             const el = document.createElement('div');
@@ -1005,6 +1433,8 @@
             el.textContent = d;
             grid.appendChild(el);
         }
+
+        updateReminderBtn();
     }
 
     function changeMonth(dir) {

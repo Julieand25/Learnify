@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\CalendarReminder;
 use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
 use App\Models\Quiz;
@@ -80,9 +81,20 @@ class DashboardController extends Controller
             ];
         });
 
+        $remindersForJs = CalendarReminder::where('user_id', $request->user()->id)
+            ->get(['id', 'date', 'event_name', 'event_details'])
+            ->mapWithKeys(fn ($r) => [
+                $r->date->format('Y-m-d') => [
+                    'id'            => $r->id,
+                    'event_name'    => $r->event_name,
+                    'event_details' => $r->event_details,
+                ],
+            ]);
+
         return view('teacher.dashboard', [
-            'user'        => $request->user(),
-            'classesData' => $classesData,
+            'user'          => $request->user(),
+            'classesData'   => $classesData,
+            'remindersForJs' => $remindersForJs,
         ]);
     }
 
@@ -415,5 +427,60 @@ class DashboardController extends Controller
         $request->user()->update(['password' => Hash::make($request->password)]);
 
         return redirect()->route('teacher.settings')->with('password_success', 'Password updated successfully.');
+    }
+
+    public function storeReminder(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'dates'         => ['required', 'array', 'min:1'],
+            'dates.*'       => ['required', 'date_format:Y-m-d'],
+            'event_name'    => ['required', 'string', 'max:255'],
+            'event_details' => ['nullable', 'string'],
+        ]);
+
+        $userId  = $request->user()->id;
+        $results = [];
+
+        foreach ($data['dates'] as $date) {
+            $reminder       = CalendarReminder::updateOrCreate(
+                ['user_id' => $userId, 'date' => $date],
+                ['event_name' => $data['event_name'], 'event_details' => $data['event_details'] ?? null]
+            );
+            $results[$date] = [
+                'id'            => $reminder->id,
+                'event_name'    => $reminder->event_name,
+                'event_details' => $reminder->event_details,
+            ];
+        }
+
+        return response()->json($results);
+    }
+
+    public function updateReminder(Request $request, CalendarReminder $reminder): JsonResponse
+    {
+        abort_if($reminder->user_id !== $request->user()->id, 403);
+
+        $data = $request->validate([
+            'event_name'    => ['required', 'string', 'max:255'],
+            'event_details' => ['nullable', 'string'],
+        ]);
+
+        $reminder->update($data);
+
+        return response()->json([
+            'id'            => $reminder->id,
+            'event_name'    => $reminder->event_name,
+            'event_details' => $reminder->event_details,
+        ]);
+    }
+
+    public function destroyReminder(Request $request, CalendarReminder $reminder): JsonResponse
+    {
+        abort_if($reminder->user_id !== $request->user()->id, 403);
+
+        $date = $reminder->date->format('Y-m-d');
+        $reminder->delete();
+
+        return response()->json(['deleted' => $date]);
     }
 }

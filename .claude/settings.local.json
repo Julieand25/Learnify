@@ -21,7 +21,12 @@
       "Bash(grep -n 'Class A\\\\|class-a\\\\|Total Students\\\\|page-title\\\\|$classRoom' c:/laragon/www/Learnify/resources/views/teacher/class-students.blade.php)",
       "Bash(grep -n 'Class A\\\\|$classRoom\\\\|class-a\\\\|page-title\\\\|section-title\\\\|chart-subject\\\\|Physics' c:/laragon/www/Learnify/resources/views/teacher/notes-progress.blade.php c:/laragon/www/Learnify/resources/views/teacher/quiz-progress.blade.php)",
       "Bash(/c/laragon/bin/php/php8.3.14/php artisan *)",
-      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php artisan *)"
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php artisan *)",
+      "Bash(where php *)",
+      "Bash(/c/laragon/bin/php/php8.3.14/php.exe artisan *)",
+      "Read(//c/laragon/bin/php//**)",
+      "Read(//c/laragon/bin/php/**)",
+      "Bash(\"/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe\" artisan *)"
     ]
   }
 }

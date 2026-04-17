@@ -46,6 +46,10 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/settings', [TeacherDashboard::class, 'settings'])->name('settings');
     Route::put('/settings/profile', [TeacherDashboard::class, 'updateProfile'])->name('settings.update-profile');
     Route::put('/settings/password', [TeacherDashboard::class, 'updatePassword'])->name('settings.update-password');
+
+    Route::post('/reminders', [TeacherDashboard::class, 'storeReminder'])->name('reminders.store');
+    Route::put('/reminders/{reminder}', [TeacherDashboard::class, 'updateReminder'])->name('reminders.update');
+    Route::delete('/reminders/{reminder}', [TeacherDashboard::class, 'destroyReminder'])->name('reminders.destroy');
 });
 
 Route::middleware('auth')->group(function () {
