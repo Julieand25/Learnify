@@ -1061,8 +1061,8 @@
 
         </div><!-- /question-area -->
 
-        <!-- ── RIGHT: Hint sticky notes (hidden when quiz is completed) ── -->
-        @if (! $attempt)
+        <!-- ── RIGHT: Hint sticky notes (hidden when quiz is completed or unavailable) ── -->
+        @if (! $attempt && $quiz && $quiz->questions->isNotEmpty())
         <div class="hint-panel">
             @if ($quiz && $question)
                 @if ($question->hint)
