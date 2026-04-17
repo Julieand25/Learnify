@@ -320,6 +320,141 @@
             line-height: 1.2;
         }
 
+        /* ══════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════ */
+
+        /* Large tablet — 2-col categories */
+        @media (max-width: 1100px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Tablet — stack dashboard body */
+        @media (max-width: 900px) {
+            .dashboard-body {
+                grid-template-columns: 1fr;
+            }
+            .stat-card {
+                max-width: 520px;
+            }
+        }
+
+        /* Small tablet — tighten padding */
+        @media (max-width: 768px) {
+            .topbar  { padding: 14px 20px; }
+            .content { padding: 0 20px 20px; }
+            .chart-container { padding: 20px; }
+        }
+
+        /* Mobile — sidebar becomes bottom nav bar */
+        @media (max-width: 640px) {
+            html, body { overflow: auto; }
+
+            .app {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            /* push sidebar to bottom */
+            .sidebar {
+                order: 2;
+                width: 100% !important;
+                flex-direction: row !important;
+                height: 56px !important;
+                padding: 0 !important;
+                border-top: 1px solid #eef2f5;
+                box-shadow: 0 -2px 8px rgba(0,0,0,0.06) !important;
+                justify-content: space-around;
+                align-items: stretch;
+            }
+
+            .sidebar-logo { display: none !important; }
+
+            .nav {
+                flex-direction: row !important;
+                gap: 0 !important;
+                padding: 0 !important;
+                flex: 1 !important;
+                justify-content: space-around;
+            }
+
+            .nav li { flex: 1; display: flex; }
+
+            .nav li a {
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 6px 4px !important;
+                gap: 2px !important;
+                font-size: 0.56rem !important;
+                white-space: normal !important;
+                text-align: center !important;
+                flex: 1 !important;
+                border-radius: 0 !important;
+            }
+
+            .nav li a .icon { width: 20px !important; height: 20px !important; }
+
+            .sidebar-logout {
+                width: auto !important;
+                margin: 0 !important;
+                display: flex;
+                align-items: stretch;
+            }
+
+            .sidebar-logout a {
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 6px 14px !important;
+                border-radius: 0 !important;
+                gap: 2px !important;
+                font-size: 0.56rem !important;
+                white-space: normal !important;
+                min-width: 56px;
+            }
+
+            /* main content above the nav bar */
+            .main {
+                order: 1;
+                overflow-y: auto;
+            }
+
+            .content {
+                overflow: visible;
+                padding: 0 14px 14px;
+            }
+
+            .topbar {
+                padding: 12px 14px;
+            }
+
+            .topbar h2 {
+                font-size: 0.95rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 200px;
+            }
+
+            /* avatar-only chip on mobile */
+            .user-chip span { display: none; }
+            .user-chip { padding: 5px !important; border-radius: 50% !important; }
+
+            .categories-grid { gap: 12px; }
+            .chart-container { padding: 16px; }
+            .stat-card { padding: 20px; max-width: 100%; }
+        }
+
+        /* Small mobile — 1-col categories */
+        @media (max-width: 400px) {
+            .categories-grid { grid-template-columns: 1fr; }
+            .topbar h2 { font-size: 0.88rem; }
+        }
+
     </style>
 </head>
 <body>
