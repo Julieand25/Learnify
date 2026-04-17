@@ -411,11 +411,13 @@
 
                 <button type="submit" class="btn-login">login</button>
 
-                <p class="or">or</p>
-                <p class="signup-row">
-                    Don't have an account?
-                    <a href="{{ route('register') }}">Sign Up</a>
-                </p>
+                <div id="signup-section">
+                    <p class="or">or</p>
+                    <p class="signup-row">
+                        Don't have an account?
+                        <a href="{{ route('register') }}">Sign Up</a>
+                    </p>
+                </div>
 
             </form>
 
@@ -428,16 +430,22 @@
     // Role toggle
     const btnStudent = document.getElementById('btn-student');
     const btnTeacher = document.getElementById('btn-teacher');
+    const signupSection = document.getElementById('signup-section');
 
-    btnStudent.addEventListener('click', () => {
-        btnStudent.classList.add('active');
-        btnTeacher.classList.remove('active');
-    });
+    function setRole(role) {
+        if (role === 'student') {
+            btnStudent.classList.add('active');
+            btnTeacher.classList.remove('active');
+            signupSection.style.display = '';
+        } else {
+            btnTeacher.classList.add('active');
+            btnStudent.classList.remove('active');
+            signupSection.style.display = 'none';
+        }
+    }
 
-    btnTeacher.addEventListener('click', () => {
-        btnTeacher.classList.add('active');
-        btnStudent.classList.remove('active');
-    });
+    btnStudent.addEventListener('click', () => setRole('student'));
+    btnTeacher.addEventListener('click', () => setRole('teacher'));
 
     // Apply overflow:hidden on desktop (> 1024px), allow scroll on smaller screens
     function handleOverflow() {
