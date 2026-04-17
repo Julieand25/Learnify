@@ -205,30 +205,19 @@
         .back-btn {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1.5px solid #d0e4e2;
-            background: var(--card-bg);
-            color: var(--teal);
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
+            gap: 5px;
+            color: var(--text-mid);
+            font-size: 0.78rem;
+            font-weight: 500;
             text-decoration: none;
-            transition: background 0.2s, border-color 0.2s;
-            white-space: nowrap;
-            flex-shrink: 0;
+            transition: color 0.2s;
         }
 
-        .back-btn:hover {
-            background: var(--teal-light);
-            border-color: var(--teal);
-        }
+        .back-btn:hover { color: var(--teal); }
 
         .back-btn svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             flex-shrink: 0;
         }
 
@@ -370,23 +359,21 @@
 
         <!-- Topbar -->
         <div class="topbar">
-            <h2 style="font-size:1.3rem;font-weight:700;color:var(--text-dark);">Notes Progress</h2>
-            <div class="topbar-right">
-                <button class="notif-btn">
-                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                    </svg>
-                </button>
-                <div class="user-chip">
-                    @if (auth()->user()?->profile_photo_path)
-                        <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-                    @else
-                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
-                        </div>
-                    @endif
-                    <span>{{ auth()->user()->name ?? 'Nur Elin' }}</span>
-                </div>
+            <a href="{{ route('teacher.dashboard') }}" class="back-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Dashboard
+            </a>
+            <div class="user-chip">
+                @if (auth()->user()?->profile_photo_path)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                @else
+                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+                @endif
+                <span>{{ auth()->user()->name }}</span>
             </div>
         </div>
 
@@ -395,12 +382,6 @@
 
             <!-- Page header -->
             <div class="page-header">
-                <a href="{{ route('teacher.dashboard') }}" class="back-btn">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                    Dashboard
-                </a>
                 <div class="header-text">
                     <h1 class="page-title">Notes – Progress</h1>
                     <p class="page-subtitle">Student Name: {{ $studentProgress->pluck('name')->implode(', ') }}</p>
