@@ -260,7 +260,7 @@
                     </div>
                 </div>
 
-                <div class="student-count">0 students</div>
+                <div class="student-count">{{ $class->students_count }} {{ Str::plural('student', $class->students_count) }}</div>
 
                 <div class="select-badge">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
