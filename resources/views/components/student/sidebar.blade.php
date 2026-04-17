@@ -123,7 +123,7 @@
     </ul>
 
     <div class="sidebar-logout">
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-modal').style.display='flex';">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
             </svg>
@@ -132,3 +132,26 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
     </div>
 </aside>
+
+{{-- Logout confirmation modal --}}
+<div id="logout-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:32px 28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.2);">
+        <div style="width:48px;height:48px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ef4444" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+        </div>
+        <p style="font-size:1rem;font-weight:700;color:#1a2b3c;margin-bottom:8px;">Log out?</p>
+        <p style="font-size:0.82rem;color:#5a6a7a;margin-bottom:24px;">Are you sure you want to log out of your account?</p>
+        <div style="display:flex;gap:10px;">
+            <button onclick="document.getElementById('logout-modal').style.display='none';"
+                style="flex:1;padding:9px;border-radius:999px;border:1.5px solid #d0e4e8;background:#f0f6f8;color:#5a6a7a;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">
+                Cancel
+            </button>
+            <button onclick="document.getElementById('logout-form').submit();"
+                style="flex:1;padding:9px;border-radius:999px;border:none;background:#ef4444;color:#fff;font-family:'Poppins',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">
+                Log out
+            </button>
+        </div>
+    </div>
+</div>
