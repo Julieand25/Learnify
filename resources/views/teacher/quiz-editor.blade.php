@@ -559,6 +559,58 @@
             padding: 12px 12px 8px;
             margin-bottom: 10px;
         }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .chapter-header { padding: 16px 20px 0; }
+            .main-layout { padding: 12px 20px 20px; gap: 16px; }
+        }
+
+        @media (max-width: 640px) {
+            html, body { overflow: auto; }
+
+            .app { height: auto; min-height: 100vh; overflow: visible; }
+
+            .chapter-header { padding: 14px 16px 0; }
+
+            .main-layout {
+                flex-direction: column;
+                overflow: visible;
+                padding: 12px 16px 20px;
+                gap: 14px;
+            }
+
+            .question-area { overflow-y: visible; }
+
+            .hint-panel {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .sticky-note {
+                height: auto;
+                min-height: 100px;
+                flex: 1;
+                min-width: 140px;
+            }
+
+            .user-chip span { display: none; }
+            .user-chip { padding: 5px !important; border-radius: 50% !important; }
+        }
+
+        @media (max-width: 480px) {
+            /* Type toggle (Objective / Subjective / Circuit) — shrink on narrow screens */
+            .type-btn { padding: 5px 8px; font-size: 0.65rem; }
+
+            /* Allow card-top row to wrap so toggle doesn't overflow */
+            .q-card-top { flex-wrap: wrap; gap: 6px; }
+        }
+
+        @media (max-width: 400px) {
+            .chapter-title { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
