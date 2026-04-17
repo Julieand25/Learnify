@@ -525,6 +525,100 @@
         .class-info p { font-size: 0.75rem; opacity: 0.9; font-weight: 500; }
         .student-count { font-size: 0.7rem; font-weight: 400; opacity: 0.8; }
 
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1100px) {
+            .content { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .topbar { padding: 14px 20px; }
+            .content { padding: 0 20px 20px; }
+            .modal { padding: 24px 20px; }
+        }
+
+        @media (max-width: 640px) {
+            html, body { overflow: auto; }
+
+            .app { flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
+
+            .sidebar {
+                order: 2;
+                width: 100% !important;
+                flex-direction: row !important;
+                height: 56px !important;
+                padding: 0 !important;
+                border-top: 1px solid #eef2f5;
+                box-shadow: 0 -2px 8px rgba(0,0,0,0.06) !important;
+            }
+
+            .sidebar-logo { display: none !important; }
+
+            .nav {
+                flex-direction: row !important;
+                gap: 0 !important;
+                padding: 0 !important;
+                flex: 1 !important;
+                justify-content: space-around;
+            }
+
+            .nav li { flex: 1; display: flex; }
+
+            .nav li a {
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 6px 4px !important;
+                gap: 2px !important;
+                font-size: 0.56rem !important;
+                border-radius: 0 !important;
+                width: 100%;
+                white-space: normal !important;
+                text-align: center;
+            }
+
+            .nav li a .icon { width: 20px !important; height: 20px !important; opacity: 1 !important; }
+
+            .sidebar-logout {
+                width: auto !important;
+                margin: 0 !important;
+                flex-shrink: 0;
+            }
+
+            .sidebar-logout a {
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 6px 10px !important;
+                gap: 2px !important;
+                font-size: 0.56rem !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+                color: var(--text-mid) !important;
+                white-space: normal !important;
+                text-align: center;
+            }
+
+            .sidebar-logout a .icon { width: 20px !important; height: 20px !important; }
+
+            .main { order: 1; overflow-y: auto; flex: 1; }
+
+            .user-chip span { display: none; }
+            .user-chip { padding: 5px !important; border-radius: 50% !important; }
+
+            .content { grid-template-columns: 1fr; }
+
+            .modal {
+                max-width: calc(100vw - 32px);
+                margin: 16px;
+                padding: 20px 16px;
+                border-radius: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .topbar h2 { font-size: 0.95rem; }
+        }
+
     </style>
 </head>
 <body>
