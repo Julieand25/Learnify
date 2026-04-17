@@ -363,7 +363,7 @@
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                 </svg>
-                Dashboard
+                Back
             </a>
             <div class="user-chip">
                 @if (auth()->user()?->profile_photo_path)
