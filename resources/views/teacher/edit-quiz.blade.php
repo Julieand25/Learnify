@@ -120,6 +120,20 @@
             border-radius: 24px; padding: 6px 14px 6px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
+        .user-chip img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ccc;
+        }
+
+        .user-chip span {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
         .section-label {
             padding: 0 28px 14px;
             font-size: 0.82rem;
@@ -226,7 +240,7 @@
                             {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
                         </div>
                     @endif
-                    <span>{{ auth()->user()->name ?? 'Teacher' }}</span>
+                    <span>{{ auth()->user()->name ?? 'Nur Elin' }}</span>
                 </div>
             </div>
         </div>

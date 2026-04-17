@@ -120,6 +120,20 @@
             border-radius: 24px; padding: 6px 14px 6px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
+        .user-chip img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ccc;
+        }
+
+        .user-chip span {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
         /* GRID LAYOUT FOR CLASSES */
         .content {
             flex: 1; overflow-y: auto; padding: 0 28px 28px;
