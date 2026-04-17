@@ -367,6 +367,8 @@
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
+                {{-- Submitted with the form so the backend knows which role was selected --}}
+                <input type="hidden" name="role" id="role-input" value="{{ old('role', 'student') }}">
 
                 {{-- Email --}}
                 <div class="field">
@@ -428,11 +430,13 @@
 
 <script>
     // Role toggle
-    const btnStudent = document.getElementById('btn-student');
-    const btnTeacher = document.getElementById('btn-teacher');
+    const btnStudent    = document.getElementById('btn-student');
+    const btnTeacher    = document.getElementById('btn-teacher');
     const signupSection = document.getElementById('signup-section');
+    const roleInput     = document.getElementById('role-input');
 
     function setRole(role) {
+        roleInput.value = role;
         if (role === 'student') {
             btnStudent.classList.add('active');
             btnTeacher.classList.remove('active');
@@ -446,6 +450,9 @@
 
     btnStudent.addEventListener('click', () => setRole('student'));
     btnTeacher.addEventListener('click', () => setRole('teacher'));
+
+    // Restore the selected role after a failed login (old input)
+    setRole(roleInput.value);
 
     // Apply overflow:hidden on desktop (> 1024px), allow scroll on smaller screens
     function handleOverflow() {
