@@ -49,9 +49,9 @@
 
         .header-top {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            margin-bottom: 4px;
+            margin-bottom: 10px;
         }
 
         .back-btn {
@@ -66,13 +66,14 @@
             border: none;
             cursor: pointer;
             padding: 0;
-            margin-bottom: 10px;
             text-decoration: none;
             transition: color 0.2s;
         }
 
-        .back-btn:hover { color: var(--teal-dark); }
-        .back-btn svg { flex-shrink: 0; }
+        .back-btn:hover { color: var(--teal); }
+        .back-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+        .header-title { margin-bottom: 10px; }
 
         .chapter-title {
             font-size: 1.9rem;
@@ -84,7 +85,6 @@
             font-size: 1rem;
             font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 10px;
         }
 
         .header-right {
@@ -93,21 +93,20 @@
             gap: 14px;
         }
 
-        .notif-btn {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,0,0,0.06);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--text-mid);
-        }
-
         .user-chip {
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 6px 14px 6px 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .user-chip span {
-            font-size: 0.82rem; font-weight: 600; color: var(--text-dark);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
         /* Progress row */
@@ -568,34 +567,30 @@
 
     <!-- ══ HEADER ══ -->
     <div class="chapter-header">
-        <a href="{{ route('teacher.edit-quiz') }}" class="back-btn">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Back to Classes
-        </a>
         <div class="header-top">
-            <div>
-                <h1 class="chapter-title">{{ $classRoom->name }}</h1>
-                <p class="chapter-subtitle">{{ $classRoom->subject_label }} — Quiz Editor</p>
-            </div>
+            <a href="{{ route('teacher.edit-quiz') }}" class="back-btn">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back to Classes
+            </a>
             <div class="header-right">
-                <button class="notif-btn">
-                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                    </svg>
-                </button>
                 <div class="user-chip">
                     @if (auth()->user()?->profile_photo_path)
                         <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
                     @else
-                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;overflow:hidden;">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'N', 0, 1)) }}
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
                     @endif
-                    <span>{{ auth()->user()->name ?? 'Nur Elin' }}</span>
+                    <span>{{ auth()->user()->name }}</span>
                 </div>
             </div>
+        </div>
+
+        <div class="header-title">
+            <h1 class="chapter-title">{{ $classRoom->name }}</h1>
+            <p class="chapter-subtitle">{{ $classRoom->subject_label }} — Quiz Editor</p>
         </div>
 
         <div class="progress-row" style="justify-content:center;">
