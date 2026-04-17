@@ -467,21 +467,7 @@
                     <thead>
                         <tr>
                             <th>Student Name</th>
-                            <th>
-                                <div class="class-nav-th">
-                                    @if ($prevClass)
-                                        <a href="{{ route('teacher.my-classes.students', $prevClass->id) }}" class="class-nav-arrow" title="{{ $prevClass->name }}">&#8249;</a>
-                                    @else
-                                        <span class="class-nav-arrow disabled">&#8249;</span>
-                                    @endif
-                                    <span>{{ $classRoom->name }}</span>
-                                    @if ($nextClass)
-                                        <a href="{{ route('teacher.my-classes.students', $nextClass->id) }}" class="class-nav-arrow" title="{{ $nextClass->name }}">&#8250;</a>
-                                    @else
-                                        <span class="class-nav-arrow disabled">&#8250;</span>
-                                    @endif
-                                </div>
-                            </th>
+                            <th>Class</th>
                             <th>Notes &amp; Quiz Progress</th>
                         </tr>
                     </thead>
