@@ -42,7 +42,7 @@
            CHAPTER HEADER
         ══════════════════════════════ */
         .chapter-header {
-            background: var(--teal);
+            background-color: #61D4D2;
             padding: 20px 28px 0;
             flex-shrink: 0;
         }
@@ -51,7 +51,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
         }
 
         .back-btn {
@@ -59,33 +58,31 @@
             align-items: center;
             gap: 6px;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            color: rgba(255,255,255,0.85);
+            color: var(--text-mid);
             text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.15);
             border: none;
+            background: none;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: color 0.2s;
         }
 
-        .back-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
-        .back-btn svg { width: 15px; height: 15px; }
+        .back-btn:hover { color: var(--teal); }
+        .back-btn svg { width: 14px; height: 14px; }
 
         .header-title { margin-bottom: 10px; }
 
         .chapter-title {
             font-size: 1.9rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--text-dark);
         }
 
         .chapter-subtitle {
             font-size: 1rem;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-dark);
             margin-bottom: 10px;
         }
 
@@ -98,11 +95,17 @@
         .user-chip {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 6px 14px 6px 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .user-chip span {
-            font-size: 0.82rem; font-weight: 600; color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
         /* Progress row */
@@ -111,7 +114,7 @@
             align-items: center;
             gap: 10px;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid #d4eae8;
         }
 
         .progress-track {
@@ -697,7 +700,7 @@
                     @if (auth()->user()?->profile_photo_path)
                         <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
                     @else
-                        <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2e8b84,#1c3d6b);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
                     @endif
