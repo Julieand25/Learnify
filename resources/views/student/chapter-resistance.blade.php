@@ -39,7 +39,7 @@
         }
 
         .chapter-header {
-            background: var(--main-bg);
+            background-color: #61D4D2;
             padding: 20px 28px 18px;
             flex-shrink: 0;
         }
@@ -48,7 +48,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
         }
 
         .back-btn {
@@ -667,14 +666,14 @@
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                 </svg>
-                Back
+                Back to Physics Notes
             </a>
             <div class="header-right">
-                <button class="notif-btn">
+                <!--<button class="notif-btn">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                     </svg>
-                </button>
+                </button>-->
                 <div class="user-chip">
                     @if (auth()->user()?->profile_photo_path)
                         <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
