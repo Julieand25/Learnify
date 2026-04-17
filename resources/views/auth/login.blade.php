@@ -221,6 +221,39 @@
         }
 
         /* ═══════════════════════
+           ROLE TOGGLE
+        ═══════════════════════ */
+        .role-toggle {
+            display: flex;
+            background: #f0f2f4;
+            border-radius: 999px;
+            padding: 5px;
+            margin-bottom: 28px;
+            gap: 0;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 999px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #7a8a9a;
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, font-weight 0.1s;
+        }
+
+        .role-btn.active {
+            background: #fff;
+            color: #2e8b84;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* ═══════════════════════
            TABLET (≤ 1024px)
         ═══════════════════════ */
         @media (max-width: 1024px) {
@@ -324,6 +357,11 @@
                 <div class="status-msg">{{ session('status') }}</div>
             @endif
 
+            <div class="role-toggle">
+                <button type="button" class="role-btn active" id="btn-student">Student</button>
+                <button type="button" class="role-btn" id="btn-teacher">Teacher</button>
+            </div>
+
             <p class="welcome">Welcome back!</p>
             <p class="sub">Enter your Credentials to access your account</p>
 
@@ -387,6 +425,20 @@
 </div>
 
 <script>
+    // Role toggle
+    const btnStudent = document.getElementById('btn-student');
+    const btnTeacher = document.getElementById('btn-teacher');
+
+    btnStudent.addEventListener('click', () => {
+        btnStudent.classList.add('active');
+        btnTeacher.classList.remove('active');
+    });
+
+    btnTeacher.addEventListener('click', () => {
+        btnTeacher.classList.add('active');
+        btnStudent.classList.remove('active');
+    });
+
     // Apply overflow:hidden on desktop (> 1024px), allow scroll on smaller screens
     function handleOverflow() {
         if (window.innerWidth > 1024) {
