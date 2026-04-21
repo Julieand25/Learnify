@@ -317,7 +317,8 @@
             padding: 14px;
             box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
             position: relative;
-            min-height: 140px;
+            display: flex;
+            flex-direction: column;
         }
 
         .notepad-pin {
@@ -336,6 +337,7 @@
 
         .notepad-input {
             width: 100%;
+            flex: 1;
             background: transparent;
             border: none;
             outline: none;
@@ -343,7 +345,6 @@
             font-size: 0.75rem;
             color: #5a4a00;
             resize: none;
-            min-height: 80px;
             line-height: 1.6;
         }
 
@@ -631,12 +632,11 @@
         .fc-test-btn:hover { background: #c8eeeb; }
 
         .notepad-actions {
-            display: none;
+            display: flex;
             gap: 6px;
             margin-top: 8px;
+            flex-shrink: 0;
         }
-
-        .notepad-actions.visible { display: flex; }
 
         .notepad-save-btn, .notepad-discard-btn {
             flex: 1;
@@ -651,7 +651,8 @@
         }
 
         .notepad-save-btn    { background: #22c55e; color: #fff; }
-        .notepad-discard-btn { background: #ef4444; color: #fff; }
+        .notepad-discard-btn { background: #ef4444; color: #fff; display: none; }
+        .notepad-discard-btn.visible { display: block; }
         .notepad-save-btn:hover    { opacity: 0.85; }
         .notepad-discard-btn:hover { opacity: 0.85; }
 
@@ -729,7 +730,7 @@
     <!-- ══ CHAPTER HEADER ══ -->
     <div class="chapter-header">
         <div class="header-top">
-            <a href="{{ route('student.physics-notes') }}" class="back-btn">
+            <a href="{{ route('student.physics-notes', $classRoom ? ['class_id' => $classRoom->id] : []) }}" class="back-btn">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -1450,7 +1451,7 @@
     let notepadOriginal  = notepadInput.value;
 
     notepadInput.addEventListener('input', () => {
-        notepadActions.classList.toggle('visible', notepadInput.value !== notepadOriginal);
+        notepadDiscard.classList.toggle('visible', notepadInput.value !== notepadOriginal);
     });
 
     notepadSave.addEventListener('click', () => {
@@ -1461,14 +1462,14 @@
         }).then(r => {
             if (r.ok) {
                 notepadOriginal = notepadInput.value;
-                notepadActions.classList.remove('visible');
+                notepadDiscard.classList.remove('visible');
             }
         });
     });
 
     notepadDiscard.addEventListener('click', () => {
         notepadInput.value = notepadOriginal;
-        notepadActions.classList.remove('visible');
+        notepadDiscard.classList.remove('visible');
     });
     @endif
 </script>
