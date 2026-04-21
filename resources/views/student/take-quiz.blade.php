@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learnify - Quiz</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.desmos.com/api/v1.9/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -521,11 +522,50 @@
            RIGHT: STICKY NOTE / HINT
         ══════════════════════════════ */
         .hint-panel {
-            width: 160px;
+            width: 300px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        .calc-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .calc-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--teal-dark);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.4px;
+        }
+
+        .calc-toggle svg { transition: transform 0.25s; }
+        .calc-toggle.open svg { transform: rotate(180deg); }
+
+        .calc-body {
+            display: none;
+            height: 365px;
+        }
+
+        .calc-body.open { display: block; }
+
+        #desmos-calc {
+            width: 100%;
+            height: 100%;
         }
 
         .sticky-note {
@@ -1090,6 +1130,17 @@
                     <div class="sticky-empty">Hints appear here during the quiz.</div>
                 </div>
             @endif
+            <div class="calc-card">
+                <button class="calc-toggle" id="calcToggle" onclick="toggleCalc()">
+                    <span>Calculator</span>
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="calc-body" id="calcBody">
+                    <div id="desmos-calc"></div>
+                </div>
+            </div>
         </div>
         @endif
 
@@ -1252,5 +1303,22 @@
     }
 </script>
 
+<script>
+    let desmosCalc = null;
+
+    function toggleCalc() {
+        const btn  = document.getElementById('calcToggle');
+        const body = document.getElementById('calcBody');
+        const open = body.classList.toggle('open');
+        btn.classList.toggle('open', open);
+
+        if (open && !desmosCalc) {
+            desmosCalc = Desmos.ScientificCalculator(
+                document.getElementById('desmos-calc'),
+                { keypad: true, expressions: false, settingsMenu: false, zoomButtons: false }
+            );
+        }
+    }
+</script>
 </body>
 </html>
