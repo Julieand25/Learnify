@@ -7,6 +7,7 @@ use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
 use App\Models\Enrollment;
 use App\Models\NotepadNote;
+use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -22,8 +23,12 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        // Get the student's most recent submitted quiz attempt across all enrolled classes
+        $enrolledClassIds = $user->enrolledClasses()->pluck('class_rooms.id');
+
+        $quizIds = Quiz::whereIn('class_room_id', $enrolledClassIds)->pluck('id');
+
         $attempt = QuizAttempt::where('student_id', $user->id)
+            ->whereIn('quiz_id', $quizIds)
             ->whereNotNull('submitted_at')
             ->latest('submitted_at')
             ->first();
@@ -37,7 +42,8 @@ class DashboardController extends Controller
 
         $sectionsReached = ChapterProgress::where('student_id', $user->id)
             ->where('chapter_slug', 'resistance')
-            ->value('sections_reached') ?? 0;
+            ->whereIn('class_room_id', $enrolledClassIds)
+            ->max('sections_reached') ?? 0;
         $notesPct = (int) round($sectionsReached / 3 * 100);
 
         return view('student.dashboard', [
@@ -56,13 +62,17 @@ class DashboardController extends Controller
 
     public function chapterResistance(Request $request): View
     {
-        $progress = ChapterProgress::where('student_id', $request->user()->id)
-            ->where('chapter_slug', 'resistance')
-            ->value('sections_reached') ?? 0;
+        $classId  = (int) $request->query('class_id', 0);
+        $progress = 0;
+        if ($classId) {
+            $progress = ChapterProgress::where('student_id', $request->user()->id)
+                ->where('class_room_id', $classId)
+                ->where('chapter_slug', 'resistance')
+                ->value('sections_reached') ?? 0;
+        }
 
         $classRoom = null;
         $notepadContent = '';
-        $classId   = (int) $request->query('class_id', 0);
         if ($classId) {
             $classRoom = $request->user()
                 ->enrolledClasses()
@@ -114,11 +124,22 @@ class DashboardController extends Controller
 
     public function saveChapterProgress(Request $request): JsonResponse
     {
-        $request->validate(['sections_reached' => ['required', 'integer', 'min:1', 'max:3']]);
+        $request->validate([
+            'sections_reached' => ['required', 'integer', 'min:1', 'max:3'],
+            'class_id'         => ['required', 'integer', 'min:1'],
+        ]);
+
+        $classRoom = $request->user()
+            ->enrolledClasses()
+            ->where('class_room_id', $request->class_id)
+            ->first();
+
+        abort_if(! $classRoom, 403);
 
         $record = ChapterProgress::firstOrNew([
-            'student_id'   => $request->user()->id,
-            'chapter_slug' => 'resistance',
+            'student_id'    => $request->user()->id,
+            'class_room_id' => $classRoom->id,
+            'chapter_slug'  => 'resistance',
         ]);
 
         if ($request->sections_reached > ($record->sections_reached ?? 0)) {

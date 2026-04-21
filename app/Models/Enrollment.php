@@ -14,6 +14,17 @@ class Enrollment extends Model
             NotepadNote::where('student_id', $enrollment->student_id)
                 ->where('class_room_id', $enrollment->class_room_id)
                 ->delete();
+
+            ChapterProgress::where('student_id', $enrollment->student_id)
+                ->where('class_room_id', $enrollment->class_room_id)
+                ->delete();
+
+            $quizIds = Quiz::where('class_room_id', $enrollment->class_room_id)
+                ->pluck('id');
+
+            QuizAttempt::where('student_id', $enrollment->student_id)
+                ->whereIn('quiz_id', $quizIds)
+                ->delete();
         });
     }
 

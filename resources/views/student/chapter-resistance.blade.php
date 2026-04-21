@@ -1437,13 +1437,15 @@
         currentSection = section;
         updateProgressBar(section);
 
+        @if (!$classRoom) return; @endif
+
         fetch(progressSaveUrl, {
             method:  'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
             },
-            body: JSON.stringify({ sections_reached: section }),
+            body: JSON.stringify({ sections_reached: section, class_id: {{ $classRoom?->id ?? 0 }} }),
         });
     }
 

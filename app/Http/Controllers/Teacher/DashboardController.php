@@ -30,6 +30,7 @@ class DashboardController extends Controller
             $studentIds = $students->pluck('id');
 
             $notesMap = ChapterProgress::where('chapter_slug', 'resistance')
+                ->where('class_room_id', $class->id)
                 ->whereIn('student_id', $studentIds)
                 ->pluck('sections_reached', 'student_id');
 
@@ -181,6 +182,7 @@ class DashboardController extends Controller
         $studentIds = $students->pluck('id');
 
         $notesMap = ChapterProgress::where('chapter_slug', 'resistance')
+            ->where('class_room_id', $classRoom->id)
             ->whereIn('student_id', $studentIds)
             ->pluck('sections_reached', 'student_id');
 
@@ -234,6 +236,7 @@ class DashboardController extends Controller
         $students = $classRoom->students()->orderBy('name')->get();
 
         $progressMap = ChapterProgress::where('chapter_slug', 'resistance')
+            ->where('class_room_id', $classRoom->id)
             ->whereIn('student_id', $students->pluck('id'))
             ->pluck('sections_reached', 'student_id');
 

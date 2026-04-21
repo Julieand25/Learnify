@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ChapterProgress extends Model
 {
-    protected $fillable = ['student_id', 'chapter_slug', 'sections_reached'];
+    protected $fillable = ['student_id', 'class_room_id', 'chapter_slug', 'sections_reached'];
 
     public function student(): BelongsTo
     {
