@@ -1125,14 +1125,35 @@
     }
 
     /* ── TEXT-TO-SPEECH ── */
+    let speakingId = null;
+
     function speakText(id) {
         if (!window.speechSynthesis) return;
+
+        if (speakingId === id && window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            setSpeakBtnActive(id, false);
+            speakingId = null;
+            return;
+        }
+
+        if (speakingId) setSpeakBtnActive(speakingId, false);
         window.speechSynthesis.cancel();
+
         const el = document.getElementById(id);
         if (!el) return;
+
         const u = new SpeechSynthesisUtterance(el.innerText || el.textContent);
         u.lang = 'en-US'; u.rate = 0.92;
+        speakingId = id;
+        setSpeakBtnActive(id, true);
+        u.onend = u.onerror = () => { setSpeakBtnActive(id, false); speakingId = null; };
         window.speechSynthesis.speak(u);
+    }
+
+    function setSpeakBtnActive(id, active) {
+        const btn = document.querySelector(`[onclick="speakText('${id}')"]`);
+        if (btn) btn.style.color = active ? 'var(--teal-dark)' : '';
     }
 
     /* ── CIRCUIT 1 SLIDER ── */
