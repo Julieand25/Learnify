@@ -632,11 +632,12 @@
         .fc-test-btn:hover { background: #c8eeeb; }
 
         .notepad-actions {
-            display: flex;
+            display: none;
             gap: 6px;
             margin-top: 8px;
             flex-shrink: 0;
         }
+        .notepad-actions.visible { display: flex; }
 
         .notepad-save-btn, .notepad-discard-btn {
             flex: 1;
@@ -651,8 +652,7 @@
         }
 
         .notepad-save-btn    { background: #22c55e; color: #fff; }
-        .notepad-discard-btn { background: #ef4444; color: #fff; display: none; }
-        .notepad-discard-btn.visible { display: block; }
+        .notepad-discard-btn { background: #ef4444; color: #fff; }
         .notepad-save-btn:hover    { opacity: 0.85; }
         .notepad-discard-btn:hover { opacity: 0.85; }
 
@@ -1451,7 +1451,7 @@
     let notepadOriginal  = notepadInput.value;
 
     notepadInput.addEventListener('input', () => {
-        notepadDiscard.classList.toggle('visible', notepadInput.value !== notepadOriginal);
+        notepadActions.classList.toggle('visible', notepadInput.value !== notepadOriginal);
     });
 
     notepadSave.addEventListener('click', () => {
@@ -1462,14 +1462,14 @@
         }).then(r => {
             if (r.ok) {
                 notepadOriginal = notepadInput.value;
-                notepadDiscard.classList.remove('visible');
+                notepadActions.classList.remove('visible');
             }
         });
     });
 
     notepadDiscard.addEventListener('click', () => {
         notepadInput.value = notepadOriginal;
-        notepadDiscard.classList.remove('visible');
+        notepadActions.classList.remove('visible');
     });
     @endif
 </script>
