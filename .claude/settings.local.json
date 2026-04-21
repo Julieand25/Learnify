@@ -28,7 +28,8 @@
       "Read(//c/laragon/bin/php/**)",
       "Bash(\"/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe\" artisan *)",
       "PowerShell(php artisan make:migration add_class_room_id_to_chapter_progress_table --table=chapter_progress 2>&1)",
-      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" \"C:\\\\laragon\\\\www\\\\Learnify\\\\artisan\" migrate 2>&1)"
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" \"C:\\\\laragon\\\\www\\\\Learnify\\\\artisan\" migrate 2>&1)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" \"C:\\\\laragon\\\\www\\\\Learnify\\\\cleanup_quiz.php\" 2>&1)"
     ]
   }
 }
