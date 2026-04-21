@@ -109,6 +109,37 @@ User ──< CalendarReminder
 - `MAIL_MAILER=log` by default — emails go to `storage/logs/laravel.log`.
 - Logo: `public/images/learnify-logo.png`.
 
+## Deployment
+
+**Decided option: Raw DigitalOcean Droplet ($6/mo)** — no Forge needed for a single app.
+
+### Stack on the Droplet
+- Ubuntu 22.04, Nginx + PHP 8.3-FPM, MySQL 8, Certbot (free SSL), Supervisor (queue worker)
+
+### Key env vars to set on server
+```env
+APP_ENV=production
+APP_KEY=          # php artisan key:generate --show
+APP_URL=          # https://yourdomain.com
+DB_CONNECTION=mysql
+QUEUE_CONNECTION=database
+```
+
+### One-time setup steps (SSH into droplet)
+1. Install: `apt install nginx php8.3 php8.3-fpm mysql-server composer nodejs`
+2. Clone repo, run `composer install --no-dev`, `npm run build`
+3. Configure Nginx server block pointing to `/public`
+4. `php artisan migrate --force && php artisan storage:link`
+5. Set up Supervisor for queue worker (`php artisan queue:listen`)
+6. SSL via Certbot: `certbot --nginx`
+
+### Deploys (manual)
+```bash
+git pull && composer install --no-dev && npm run build && php artisan migrate --force && php artisan config:cache && php artisan route:cache
+```
+
+> Storage disk is local — profile photos persist on the droplet. If you later need CDN/multi-server, swap to S3/Cloudflare R2.
+
 ### Physics notes (student)
 - The only content module is "Resistance" (`student.chapter.resistance`). Students read it section-by-section; progress is saved via `POST /student/learning-module/physics/resistance/progress` which upserts a `ChapterProgress` record (`sections_reached` max 3).
 - `ChapterProgress` drives the notes-progress percentage shown on the teacher dashboard and class-students view.
