@@ -16,6 +16,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/learning-module/physics', [StudentDashboard::class, 'physicsNotes'])->name('physics-notes');
     Route::get('/learning-module/physics/resistance', [StudentDashboard::class, 'chapterResistance'])->name('chapter.resistance');
     Route::post('/learning-module/physics/resistance/progress', [StudentDashboard::class, 'saveChapterProgress'])->name('chapter.resistance.progress');
+    Route::post('/learning-module/physics/resistance/notepad', [StudentDashboard::class, 'saveNotepad'])->name('chapter.resistance.notepad');
     Route::get('/quiz', [StudentDashboard::class, 'classQuiz'])->name('quiz');
     Route::get('/quiz/{classRoom}', [StudentDashboard::class, 'takeQuiz'])->name('quiz.take');
     Route::post('/quiz/{classRoom}/answer', [StudentDashboard::class, 'answerQuestion'])->name('quiz.answer');

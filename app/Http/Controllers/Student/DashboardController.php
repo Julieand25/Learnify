@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
+use App\Models\NotepadNote;
 use App\Models\QuizAttempt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -59,19 +60,46 @@ class DashboardController extends Controller
             ->value('sections_reached') ?? 0;
 
         $classRoom = null;
+        $notepadContent = '';
         $classId   = (int) $request->query('class_id', 0);
         if ($classId) {
             $classRoom = $request->user()
                 ->enrolledClasses()
                 ->where('class_room_id', $classId)
                 ->first();
+
+            if ($classRoom) {
+                $notepadContent = NotepadNote::where('student_id', $request->user()->id)
+                    ->where('class_room_id', $classRoom->id)
+                    ->where('chapter_slug', 'resistance')
+                    ->value('content') ?? '';
+            }
         }
 
         return view('student.chapter-resistance', [
-            'user'      => $request->user(),
-            'progress'  => (int) $progress,
-            'classRoom' => $classRoom,
+            'user'           => $request->user(),
+            'progress'       => (int) $progress,
+            'classRoom'      => $classRoom,
+            'notepadContent' => $notepadContent,
         ]);
+    }
+
+    public function saveNotepad(Request $request): JsonResponse
+    {
+        $classId = (int) $request->input('class_id', 0);
+        abort_if(! $classId, 422);
+
+        $classRoom = $request->user()->enrolledClasses()
+            ->where('class_room_id', $classId)
+            ->first();
+        abort_if(! $classRoom, 403);
+
+        NotepadNote::updateOrCreate(
+            ['student_id' => $request->user()->id, 'class_room_id' => $classId, 'chapter_slug' => 'resistance'],
+            ['content' => $request->input('content', '')]
+        );
+
+        return response()->json(['ok' => true]);
     }
 
     public function saveChapterProgress(Request $request): JsonResponse
@@ -336,6 +364,10 @@ class DashboardController extends Controller
     public function unenrollClass(Request $request, ClassRoom $classRoom): RedirectResponse
     {
         $request->user()->enrolledClasses()->detach($classRoom->id);
+
+        NotepadNote::where('student_id', $request->user()->id)
+            ->where('class_room_id', $classRoom->id)
+            ->delete();
 
         return redirect()->route('student.learning-module')
             ->with('success', 'You have unenrolled from ' . $classRoom->name . '.');

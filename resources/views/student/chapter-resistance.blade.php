@@ -630,6 +630,31 @@
 
         .fc-test-btn:hover { background: #c8eeeb; }
 
+        .notepad-actions {
+            display: none;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .notepad-actions.visible { display: flex; }
+
+        .notepad-save-btn, .notepad-discard-btn {
+            flex: 1;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .notepad-save-btn    { background: #22c55e; color: #fff; }
+        .notepad-discard-btn { background: #ef4444; color: #fff; }
+        .notepad-save-btn:hover    { opacity: 0.85; }
+        .notepad-discard-btn:hover { opacity: 0.85; }
+
         .fc-hint {
             font-family: 'Poppins', sans-serif;
             font-size: 0.7rem;
@@ -819,7 +844,13 @@
             <div class="notepad-card">
                 <div class="notepad-pin">📌</div>
                 <div class="notepad-label">Notepad</div>
-                <textarea class="notepad-input" placeholder="Write your notes here..."></textarea>
+                <textarea class="notepad-input" id="notepadInput" placeholder="Write your notes here...">{{ $notepadContent }}</textarea>
+                @if ($classRoom)
+                <div class="notepad-actions" id="notepadActions">
+                    <button class="notepad-save-btn" id="notepadSave">Save</button>
+                    <button class="notepad-discard-btn" id="notepadDiscard">Discard</button>
+                </div>
+                @endif
             </div>
 
         </div>
@@ -1408,6 +1439,38 @@
     }, { root: document.querySelector('.content'), threshold: 0.15 });
 
     document.querySelectorAll('[data-section]').forEach(el => sectionObserver.observe(el));
+
+    @if ($classRoom)
+    /* ── NOTEPAD SAVE / DISCARD ── */
+    const notepadInput   = document.getElementById('notepadInput');
+    const notepadActions = document.getElementById('notepadActions');
+    const notepadSave    = document.getElementById('notepadSave');
+    const notepadDiscard = document.getElementById('notepadDiscard');
+    const notepadSaveUrl = '{{ route('student.chapter.resistance.notepad') }}';
+    let notepadOriginal  = notepadInput.value;
+
+    notepadInput.addEventListener('input', () => {
+        notepadActions.classList.toggle('visible', notepadInput.value !== notepadOriginal);
+    });
+
+    notepadSave.addEventListener('click', () => {
+        fetch(notepadSaveUrl, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+            body: JSON.stringify({ class_id: {{ $classRoom->id }}, content: notepadInput.value }),
+        }).then(r => {
+            if (r.ok) {
+                notepadOriginal = notepadInput.value;
+                notepadActions.classList.remove('visible');
+            }
+        });
+    });
+
+    notepadDiscard.addEventListener('click', () => {
+        notepadInput.value = notepadOriginal;
+        notepadActions.classList.remove('visible');
+    });
+    @endif
 </script>
 
 </body>
