@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
+use App\Models\Enrollment;
 use App\Models\NotepadNote;
 use App\Models\QuizAttempt;
 use Illuminate\Http\JsonResponse;
@@ -372,11 +373,10 @@ class DashboardController extends Controller
 
     public function unenrollClass(Request $request, ClassRoom $classRoom): RedirectResponse
     {
-        $request->user()->enrolledClasses()->detach($classRoom->id);
-
-        NotepadNote::where('student_id', $request->user()->id)
+        Enrollment::where('student_id', $request->user()->id)
             ->where('class_room_id', $classRoom->id)
-            ->delete();
+            ->first()
+            ?->delete();
 
         return redirect()->route('student.learning-module')
             ->with('success', 'You have unenrolled from ' . $classRoom->name . '.');
