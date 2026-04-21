@@ -94,10 +94,19 @@ class DashboardController extends Controller
             ->first();
         abort_if(! $classRoom, 403);
 
-        NotepadNote::updateOrCreate(
-            ['student_id' => $request->user()->id, 'class_room_id' => $classId, 'chapter_slug' => 'resistance'],
-            ['content' => $request->input('content', '')]
-        );
+        $content = $request->input('content') ?? '';
+
+        if (trim($content) === '') {
+            NotepadNote::where('student_id', $request->user()->id)
+                ->where('class_room_id', $classId)
+                ->where('chapter_slug', 'resistance')
+                ->delete();
+        } else {
+            NotepadNote::updateOrCreate(
+                ['student_id' => $request->user()->id, 'class_room_id' => $classId, 'chapter_slug' => 'resistance'],
+                ['content' => $content]
+            );
+        }
 
         return response()->json(['ok' => true]);
     }
