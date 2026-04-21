@@ -479,23 +479,24 @@
 
         <div class="content">
         <h3 class="section-label">Course Category</h3>
+        @php
+            $subjectStyles = [
+                'physics'   => 'physics',
+                'chemistry' => 'chemistry',
+                'biology'   => 'biology',
+                'english'   => 'english',
+            ];
+        @endphp
         <div class="categories-grid">
-            <a href="{{ route('student.learning-module') }}" class="cat-card physics">
-                <div class="cat-info">📁 Physics</div>
+            @forelse ($enrolledSubjects as $subj)
+            <a href="{{ route('student.learning-module', ['subject' => $subj]) }}"
+               class="cat-card {{ $subjectStyles[$subj] ?? 'physics' }}">
+                <div class="cat-info">📁 {{ ucfirst($subj) }}</div>
                 <span>&rsaquo;</span>
             </a>
-            <!--<a href="#" class="cat-card chemistry">
-                <div class="cat-info">📁 Chemistry</div>
-                <span>&rsaquo;</span>
-            </a>
-            <a href="#" class="cat-card biology">
-                <div class="cat-info">📁 Biology</div>
-                <span>&rsaquo;</span>
-            </a>
-            <a href="#" class="cat-card english">
-                <div class="cat-info">📁 English</div>
-                <span>&rsaquo;</span>
-            </a>-->
+            @empty
+            <p style="grid-column:1/-1;font-size:0.82rem;color:var(--text-light);">No classes enrolled yet.</p>
+            @endforelse
         </div>
 
         <div class="dashboard-body">

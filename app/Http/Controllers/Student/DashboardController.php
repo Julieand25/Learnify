@@ -46,10 +46,17 @@ class DashboardController extends Controller
             ->max('sections_reached') ?? 0;
         $notesPct = (int) round($sectionsReached / 3 * 100);
 
+        $enrolledSubjects = $user->enrolledClasses()
+            ->select('subject')
+            ->distinct()
+            ->orderBy('subject')
+            ->pluck('subject');
+
         return view('student.dashboard', [
-            'user'     => $user,
-            'quizPct'  => $quizPct,
-            'notesPct' => $notesPct,
+            'user'             => $user,
+            'quizPct'          => $quizPct,
+            'notesPct'         => $notesPct,
+            'enrolledSubjects' => $enrolledSubjects,
         ]);
     }
 
@@ -166,15 +173,22 @@ class DashboardController extends Controller
 
     public function learningModule(Request $request): View
     {
-        $enrolledClasses = $request->user()
+        $query = $request->user()
             ->enrolledClasses()
             ->with('teacher')
-            ->orderBy('enrollments.created_at', 'asc')
-            ->get();
+            ->orderBy('enrollments.created_at', 'asc');
+
+        $subject = $request->query('subject');
+        if ($subject) {
+            $query->where('subject', $subject);
+        }
+
+        $enrolledClasses = $query->get();
 
         return view('student.learning-module', [
             'user'            => $request->user(),
             'enrolledClasses' => $enrolledClasses,
+            'subject'         => $subject,
         ]);
     }
 

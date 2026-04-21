@@ -400,8 +400,15 @@
         <div class="content">
 
             <div class="page-header">
-                <h3>My Classes</h3>
+                <h3>My Classes{{ isset($subject) && $subject ? ' — ' . ucfirst($subject) : '' }}</h3>
+                @if (isset($subject) && $subject)
+                <p>
+                    Showing <strong>{{ ucfirst($subject) }}</strong> classes only.
+                    <a href="{{ route('student.learning-module') }}" style="color:var(--teal);font-weight:600;text-decoration:none;">View all</a>
+                </p>
+                @else
                 <p>Your enrolled classes appear below. Use the search to join a new class.</p>
+                @endif
             </div>
 
             <!-- Join a Class -->
