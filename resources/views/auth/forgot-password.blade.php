@@ -298,44 +298,50 @@
                 No worries! Enter your registered email address and we'll send you a link to reset your password.
             </p>
 
-            {{-- Success status after sending email --}}
             @if (session('status'))
                 <div class="status-msg">
-                    {{ session('status') }}
+                    We have emailed your password reset link to <strong>{{ session('email') ?? old('email') }}</strong>.
                 </div>
+
+                <p class="back-row" style="margin-top: 16px;">
+                    Wrong email?
+                    <a href="{{ route('password.request') }}">Try again</a>
+                </p>
+            @else
+                <form method="POST" action="{{ route('password.email') }}">
+                    @csrf
+
+                    {{-- Email --}}
+                    <div class="field">
+                        <div class="label-row">
+                            <label for="email">Email address</label>
+                        </div>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            value="{{ old('email') }}"
+                            required
+                            autofocus
+                            autocomplete="username"
+                        >
+                        @foreach ($errors->get('email') as $msg)
+                            <p class="error-msg">{{ $msg }}</p>
+                        @endforeach
+                    </div>
+
+                    <button type="submit" class="btn-send">Send Reset Link</button>
+
+                </form>
             @endif
 
-            <form method="POST" action="{{ route('password.email') }}">
-                @csrf
-
-                {{-- Email --}}
-                <div class="field">
-                    <div class="label-row">
-                        <label for="email">Email address</label>
-                    </div>
-                    <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        value="{{ old('email') }}"
-                        required
-                        autofocus
-                        autocomplete="username"
-                    >
-                    @foreach ($errors->get('email') as $msg)
-                        <p class="error-msg">{{ $msg }}</p>
-                    @endforeach
-                </div>
-
-                <button type="submit" class="btn-send">Send Reset Link</button>
-
-            </form>
-
-            <p class="back-row">
-                Remember your password?
-                <a href="{{ route('login') }}">Sign In</a>
-            </p>
+            @if (!session('status'))
+                <p class="back-row">
+                    Remember your password?
+                    <a href="{{ route('login') }}">Sign In</a>
+                </p>
+            @endif
 
         </div>
     </div>
