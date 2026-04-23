@@ -300,7 +300,7 @@
 
             @if (session('status'))
                 <div class="status-msg">
-                    We have emailed your password reset link to <strong>{{ session('email') ?? old('email') }}</strong>.
+                    We have emailed your password reset link to <strong style="color: #60b4ff;">{{ session('email') ?? old('email') }}</strong>.
                 </div>
 
                 <p class="back-row" style="margin-top: 16px;">
@@ -362,6 +362,7 @@
     handleOverflow();
     window.addEventListener('resize', handleOverflow);
 </script>
+
 
 </body>
 </html>
