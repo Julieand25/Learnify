@@ -285,7 +285,7 @@
             <h1>RESET<br>PASSWORD</h1>
 
             <p class="desc">
-                Enter your email address and a new password below to reset your account password.
+                Enter your new password below to reset your account password.
             </p>
 
             <form method="POST" action="{{ route('password.store') }}">
@@ -294,25 +294,7 @@
                 {{-- Token --}}
                 <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                {{-- Email --}}
-                <div class="field">
-                    <div class="label-row">
-                        <label for="email">Email address</label>
-                    </div>
-                    <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        value="{{ old('email', $request->email) }}"
-                        required
-                        readonly
-                        autocomplete="username"
-                        style="opacity: 0.6; cursor: not-allowed;"
-                    >
-                    @foreach ($errors->get('email') as $msg)
-                        <p class="error-msg">{{ $msg }}</p>
-                    @endforeach
-                </div>
+                <input type="hidden" name="email" value="{{ old('email', $request->email) }}">
 
                 {{-- New Password --}}
                 <div class="field">
