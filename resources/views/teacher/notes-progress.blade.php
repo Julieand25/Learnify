@@ -540,6 +540,9 @@
     const plotHeight = 288;
     const plot       = document.getElementById('barPlot');
 
+    // Clear any bar-groups that may already exist (prevents duplicates on cached/replayed pages)
+    plot.querySelectorAll('.bar-group').forEach(el => el.remove());
+
     function makeGroup(barClass, heightPx, pctText, labelText, titleText) {
         const group = document.createElement('div');
         group.className = 'bar-group';
