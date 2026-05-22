@@ -8,6 +8,7 @@ use App\Models\ChapterProgress;
 use App\Models\ClassRoom;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -69,8 +70,8 @@ class DashboardController extends Controller
                     'notes_pct'  => $notesPct,
                     'quiz_pct'   => $quizPct,
                     'quiz_label' => $quizLabel,
-                    'notes_url'  => route('teacher.my-classes.notes-progress', $class->id),
-                    'quiz_url'   => route('teacher.my-classes.quiz-progress', $class->id),
+                    'notes_url'  => route('teacher.my-classes.student-notes-progress', [$class->id, $s->id]),
+                    'quiz_url'   => route('teacher.my-classes.student-quiz-progress', [$class->id, $s->id]),
                 ];
             });
 
@@ -280,6 +281,56 @@ class DashboardController extends Controller
             }
             return ['name' => $s->name, 'quiz_pct' => $quizPct];
         });
+
+        return view('teacher.quiz-progress', [
+            'user'        => $request->user(),
+            'classRoom'   => $classRoom,
+            'studentData' => $studentData,
+        ]);
+    }
+
+    public function notesProgressStudent(Request $request, ClassRoom $classRoom, User $student): View
+    {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+        abort_unless($classRoom->students()->where('id', $student->id)->exists(), 404);
+
+        $sections = ChapterProgress::where('chapter_slug', 'resistance')
+            ->where('class_room_id', $classRoom->id)
+            ->where('student_id', $student->id)
+            ->value('sections_reached') ?? 0;
+
+        $studentProgress = collect([[
+            'name'             => $student->name,
+            'sections_reached' => (int) $sections,
+            'percent'          => (int) round((($sections) / 3) * 100),
+        ]]);
+
+        return view('teacher.notes-progress', [
+            'user'            => $request->user(),
+            'classRoom'       => $classRoom,
+            'studentProgress' => $studentProgress,
+        ]);
+    }
+
+    public function quizProgressStudent(Request $request, ClassRoom $classRoom, User $student): View
+    {
+        abort_if($classRoom->teacher_id !== $request->user()->id, 403);
+        abort_unless($classRoom->students()->where('id', $student->id)->exists(), 404);
+
+        $quizPct = 0;
+        $quiz     = $classRoom->quiz()->first();
+        if ($quiz) {
+            $attempt = QuizAttempt::where('quiz_id', $quiz->id)
+                ->where('student_id', $student->id)
+                ->whereNotNull('submitted_at')
+                ->first(['score', 'total']);
+
+            if ($attempt) {
+                $quizPct = $attempt->total > 0 ? (int) round($attempt->score / $attempt->total * 100) : 100;
+            }
+        }
+
+        $studentData = collect([['name' => $student->name, 'quiz_pct' => $quizPct]]);
 
         return view('teacher.quiz-progress', [
             'user'        => $request->user(),

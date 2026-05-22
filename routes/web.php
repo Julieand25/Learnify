@@ -40,6 +40,9 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/my-classes/{classRoom}/students', [TeacherDashboard::class, 'classStudents'])->name('my-classes.students');
     Route::get('/my-classes/{classRoom}/notes-progress', [TeacherDashboard::class, 'notesProgress'])->name('my-classes.notes-progress');
     Route::get('/my-classes/{classRoom}/quiz-progress', [TeacherDashboard::class, 'quizProgress'])->name('my-classes.quiz-progress');
+    // Student-specific progress pages
+    Route::get('/my-classes/{classRoom}/students/{student}/notes-progress', [TeacherDashboard::class, 'notesProgressStudent'])->name('my-classes.student-notes-progress');
+    Route::get('/my-classes/{classRoom}/students/{student}/quiz-progress', [TeacherDashboard::class, 'quizProgressStudent'])->name('my-classes.student-quiz-progress');
 
     Route::get('/edit-quiz', [TeacherDashboard::class, 'editQuiz'])->name('edit-quiz');
     Route::get('/edit-quiz/{classRoom}', [TeacherDashboard::class, 'editQuizClass'])->name('edit-quiz.class');
