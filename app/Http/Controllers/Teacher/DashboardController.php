@@ -292,7 +292,7 @@ class DashboardController extends Controller
     public function notesProgressStudent(Request $request, ClassRoom $classRoom, User $student): View
     {
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
-        abort_unless($classRoom->students()->where('id', $student->id)->exists(), 404);
+        abort_unless($classRoom->students()->where('users.id', $student->id)->exists(), 404);
 
         $sections = ChapterProgress::where('chapter_slug', 'resistance')
             ->where('class_room_id', $classRoom->id)
@@ -315,7 +315,7 @@ class DashboardController extends Controller
     public function quizProgressStudent(Request $request, ClassRoom $classRoom, User $student): View
     {
         abort_if($classRoom->teacher_id !== $request->user()->id, 403);
-        abort_unless($classRoom->students()->where('id', $student->id)->exists(), 404);
+        abort_unless($classRoom->students()->where('users.id', $student->id)->exists(), 404);
 
         $quizPct = 0;
         $quiz     = $classRoom->quiz()->first();
